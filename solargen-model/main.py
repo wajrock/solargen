@@ -1,9 +1,9 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
 from datetime import datetime
 from app.services.weather_service import weather_service
 from app.models import PredictionsResponse, ModelInfoResponse, SitesResponse
-from fastapi import HTTPException
+from fastapi import FastAPI, HTTPException, Depends
+from app.services.auth import verify_token
 
 import joblib
 import numpy as np
@@ -88,7 +88,7 @@ def _build_predictions(df) -> dict:
     }
 
 
-@app.get("/model-info", response_model=ModelInfoResponse, summary="Model metadata and performance metrics")
+@app.get("/model-info", response_model=ModelInfoResponse, summary="Model metadata and performance metrics", dependencies=[Depends(verify_token)])
 def model_info():
     info = ml_modules["features_info"]
     return {
@@ -101,7 +101,7 @@ def model_info():
         "sites_count": len(info["sites"]),
     }
 
-@app.get("/sites", response_model=SitesResponse, summary="List of all 25 sites with their metadata")
+@app.get("/sites", response_model=SitesResponse, summary="List of all 25 sites with their metadata", dependencies=[Depends(verify_token)])
 def get_sites():
     sites = ml_modules["sites"]
     return {
@@ -109,7 +109,7 @@ def get_sites():
         "sites": sites,
     }
 
-@app.get("/predictions", response_model=PredictionsResponse, summary="Hourly solar power predictions for all 25 sites")
+@app.get("/predictions", response_model=PredictionsResponse, summary="Hourly solar power predictions for all 25 sites", dependencies=[Depends(verify_token)])
 def get_predictions():
     try:
         return _build_predictions(weather_service.get_forecast())
@@ -117,7 +117,7 @@ def get_predictions():
         raise HTTPException(status_code=500, detail="Une erreur est survenue.")
 
 
-@app.get("/predictions/{date}", response_model=PredictionsResponse, summary="Hourly solar power predictions for a specific date (YYYY-MM-DD)")
+@app.get("/predictions/{date}", response_model=PredictionsResponse, summary="Hourly solar power predictions for a specific date (YYYY-MM-DD)", dependencies=[Depends(verify_token)])
 def get_predictions_by_date(date: str):
     try:
         return _build_predictions(weather_service.get_forecast(date_str=date))

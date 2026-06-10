@@ -5,7 +5,6 @@ import openmeteo_requests
 import requests
 from retry_requests import retry
 
-
 class WeatherService:
     def __init__(self):
         self.lat          = -37.71828652
