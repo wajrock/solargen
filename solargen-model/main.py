@@ -1,10 +1,13 @@
-# main.py
-from fastapi import FastAPI, HTTPException, Query
 from contextlib import asynccontextmanager
-from collections import defaultdict
+from fastapi import FastAPI
+from datetime import datetime
+from app.services.weather_service import weather_service
+from app.models import PredictionsResponse, ModelInfoResponse, SitesResponse
+from fastapi import HTTPException
+
 import joblib
 import numpy as np
-from app.services.weather_service import weather_service
+import pandas as pd
 
 ml_modules = {}
 
@@ -18,91 +21,105 @@ FEATURES = [
     'kwp',
 ]
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    try:
-        ml_modules["model"]         = joblib.load("model/modele_solar_prediction.pkl")
-        ml_modules["features_info"] = joblib.load("model/features_info.pkl")
-        print(f"✅ Modèle chargé — R²={ml_modules['features_info']['r2_final']:.4f}")
-    except Exception as e:
-        print(f"❌ {str(e)}")
-        raise e
+    ml_modules["model"]         = joblib.load("model/model_solar_prediction.pkl")
+    ml_modules["features_info"] = joblib.load("model/features_info.pkl")
+    ml_modules["sites"]         = pd.read_csv("data/sites_final.csv").to_dict("records")
     yield
     ml_modules.clear()
 
-app = FastAPI(title="SolarGen API", version="2.0.0", lifespan=lifespan)
+
+app = FastAPI(
+    title="SolarGen ML Service",
+    description="Solar power prediction API for RMIT Bundoora Campus — 25 sites — GradientBoosting R²=0.867",
+    version="1.0.0",
+    lifespan=lifespan,
+)
 
 
-@app.get("/health")
-def health():
-    info = ml_modules.get("features_info", {})
-    return {
-        "status":    "ok",
-        "model":     info.get("best_model"),
-        "r2":        info.get("r2_final"),
-        "mae":       info.get("mae_final"),
-        "train_end": info.get("date_train_end"),
-    }
+def _build_predictions(df) -> dict:
+    """Build predictions response from a weather dataframe."""
+    sites = ml_modules["features_info"]["sites"]
 
+    weather_hours = []
+    for _, row in df.iterrows():
+        weather_hours.append({
+            "hour":                  int(row["timestamp"].hour),
+            "apparent_temperature":  round(float(row["apparent_temperature"]), 2),
+            "relative_humidity":     round(float(row["relative_humidity"]), 2),
+            "dew_point_temperature": round(float(row["dew_point_temperature"]), 2),
+            "shortwave_radiation":   round(float(row["shortwave_radiation"]), 2),
+        })
 
-@app.get("/api/solar/predictions")
-def get_predictions(
-    site_name: str  = Query("Campus La Trobe"),
-    kwp:       float = Query(...),
-    date:      str  = Query(None),
-):
-    if "model" not in ml_modules:
-        raise HTTPException(status_code=503, detail="Modèle non initialisé.")
+    sites_predictions = []
+    for site in sites:
+        kwp       = site["kwp"]
+        df["kwp"] = kwp
 
-    try:
-        # 1. Météo
-        df = weather_service.get_forecast(date_str=date)
-
-        # 2. Matrice features dans l'ordre strict du notebook
-        df['kwp'] = kwp
-        X = df[FEATURES].values
-
-        # 3. Inférence — GradientBoosting ne nécessite pas de scaler
         efficiencies = np.clip(
-            ml_modules["model"].predict(X).flatten(),
+            ml_modules["model"].predict(df[FEATURES].values).flatten(),
             0, None
         )
 
-        # 4. Groupement par jour
-        predictions_by_day = defaultdict(lambda: {
-            "total_production_kw": 0.0,
-            "efficiencies":        [],
-            "hourly_details":      [],
-        })
-
-        for idx, row in df.iterrows():
-            day      = row["timestamp"].strftime("%Y-%m-%d")
-            eff      = float(efficiencies[idx])
-            prod_kw  = eff * kwp
-
-            predictions_by_day[day]["total_production_kw"] += prod_kw
-            predictions_by_day[day]["efficiencies"].append(eff)
-            predictions_by_day[day]["hourly_details"].append({
-                "hour":                  int(row["timestamp"].hour),
-                "timestamp":             row["timestamp"].strftime("%Y-%m-%d %H:%M:%S"),
-                "apparent_temperature":  round(float(row["apparent_temperature"]), 2),
-                "relative_humidity":     round(float(row["relative_humidity"]), 2),
-                "shortwave_radiation":   round(float(row["shortwave_radiation"]), 2),
-                "efficiency":            round(eff, 4),
-                "production_kw":         round(prod_kw, 4),
+        hours = []
+        for i, (_, row) in enumerate(df.iterrows()):
+            eff = float(efficiencies[i])
+            hours.append({
+                "hour":          int(row["timestamp"].hour),
+                "efficiency":    round(eff, 4),
+                "production_kw": round(eff * kwp, 4),
             })
 
-        return [
-            {
-                "date":              day,
-                "site_name":         site_name,
-                "kwp":               kwp,
-                "total_production_kw": round(content["total_production_kw"], 4),
-                "average_efficiency":  round(float(np.mean(content["efficiencies"])), 4),
-                "hourly_predictions":  content["hourly_details"],
-            }
-            for day, content in sorted(predictions_by_day.items())
-        ]
+        sites_predictions.append({
+            "site_id":             site["id"],
+            "site_key":            site["site_key"],
+            "kwp":                 kwp,
+            "total_production_kw": round(sum(h["production_kw"] for h in hours), 4),
+            "hours":               hours,
+        })
 
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    return {
+        "date":       df["timestamp"].iloc[0].strftime("%Y-%m-%d"),
+        "fetched_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+        "weather":    weather_hours,
+        "sites":      sites_predictions,
+    }
+
+
+@app.get("/model-info", response_model=ModelInfoResponse, summary="Model metadata and performance metrics")
+def model_info():
+    info = ml_modules["features_info"]
+    return {
+        "model":       info["best_model"],
+        "r2":          round(info["r2_final"],4),
+        "mae":         round(info["mae_final"],4),
+        "train_end":   info["date_train_end"],
+        "features":    info["features"],
+        "hyperparams": info["hyperparams"],
+        "sites_count": len(info["sites"]),
+    }
+
+@app.get("/sites", response_model=SitesResponse, summary="List of all 25 sites with their metadata")
+def get_sites():
+    sites = ml_modules["sites"]
+    return {
+        "count": len(sites),
+        "sites": sites,
+    }
+
+@app.get("/predictions", response_model=PredictionsResponse, summary="Hourly solar power predictions for all 25 sites")
+def get_predictions():
+    try:
+        return _build_predictions(weather_service.get_forecast())
+    except Exception:
+        raise HTTPException(status_code=500, detail="Une erreur est survenue.")
+
+
+@app.get("/predictions/{date}", response_model=PredictionsResponse, summary="Hourly solar power predictions for a specific date (YYYY-MM-DD)")
+def get_predictions_by_date(date: str):
+    try:
+        return _build_predictions(weather_service.get_forecast(date_str=date))
+    except Exception:
+        raise HTTPException(status_code=500, detail="Une erreur est survenue.")

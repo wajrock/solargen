@@ -6,7 +6,11 @@ __pycache__/
 *.pyc
 .cache/
 .cache.sqlite
-solargen-model/data
+solargen-model/data/site_details.csv
+solargen-model/data/solar_production.csv
+solargen-model/data/summary.csv
+solargen-model/data/weather_open_meteo.csv
+solargen-model/data/weather_unisolar.csv
 
 # ENVIRONNEMENTS
 .env
