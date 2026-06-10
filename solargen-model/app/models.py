@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 
 class WeatherHour(BaseModel):
-    hour:                  int
+    hour:                  str
     apparent_temperature:  float
     relative_humidity:     float
     dew_point_temperature: float
@@ -12,7 +12,7 @@ class WeatherHour(BaseModel):
 
 
 class PredictionHour(BaseModel):
-    hour:          int
+    hour:          str
     efficiency:    float
     production_kw: float
 

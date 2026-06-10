@@ -46,7 +46,7 @@ def _build_predictions(df) -> dict:
     weather_hours = []
     for _, row in df.iterrows():
         weather_hours.append({
-            "hour":                  int(row["timestamp"].hour),
+            "hour":                  row["timestamp"].strftime("%Y-%m-%d %H:%M:%S"),
             "apparent_temperature":  round(float(row["apparent_temperature"]), 2),
             "relative_humidity":     round(float(row["relative_humidity"]), 2),
             "dew_point_temperature": round(float(row["dew_point_temperature"]), 2),
@@ -67,7 +67,7 @@ def _build_predictions(df) -> dict:
         for i, (_, row) in enumerate(df.iterrows()):
             eff = float(efficiencies[i])
             hours.append({
-                "hour":          int(row["timestamp"].hour),
+                "hour":          row["timestamp"].strftime("%Y-%m-%d %H:%M:%S"),
                 "efficiency":    round(eff, 4),
                 "production_kw": round(eff * kwp, 4),
             })
