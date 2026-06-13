@@ -1,26 +1,24 @@
-from contextlib import asynccontextmanager
-from datetime import datetime
+# SERVICES
 from app.services.weather_service import weather_service
-from app.models import PredictionsResponse, ModelInfoResponse, SitesResponse
-from fastapi import FastAPI, HTTPException, Depends
+from app.services.model_service import get_model_infos
+from app.services.installation_service import get_installation_infos
+from app.services.prediction_service import build_predictions
 from app.services.auth import verify_token
 
+# FASTAPI
+from fastapi import FastAPI, HTTPException, Depends
+from contextlib import asynccontextmanager
+from dotenv import load_dotenv
+load_dotenv()
+
+# MODELS
+from app.models import PredictionsResponse, ModelInfoResponse, InstallationResponse
+
+# MISC
 import joblib
-import numpy as np
 import pandas as pd
 
 ml_modules = {}
-
-FEATURES = [
-    'apparent_temperature',
-    'relative_humidity',
-    'dew_point_temperature',
-    'shortwave_radiation',
-    'h_sin', 'h_cos',
-    'm_sin', 'm_cos',
-    'kwp',
-]
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -38,81 +36,20 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+@app.get("/model-infos", response_model=ModelInfoResponse, summary="Model metadata and performance metrics", dependencies=[Depends(verify_token)])
+def model_infos():
+    infos = ml_modules["features_info"]
+    return get_model_infos(infos)
 
-def _build_predictions(df) -> dict:
-    """Build predictions response from a weather dataframe."""
-    sites = ml_modules["features_info"]["sites"]
-
-    weather_hours = []
-    for _, row in df.iterrows():
-        weather_hours.append({
-            "hour":                  row["timestamp"].strftime("%Y-%m-%d %H:%M:%S"),
-            "apparent_temperature":  round(float(row["apparent_temperature"]), 2),
-            "relative_humidity":     round(float(row["relative_humidity"]), 2),
-            "dew_point_temperature": round(float(row["dew_point_temperature"]), 2),
-            "shortwave_radiation":   round(float(row["shortwave_radiation"]), 2),
-        })
-
-    sites_predictions = []
-    for site in sites:
-        kwp       = site["kwp"]
-        df["kwp"] = kwp
-
-        efficiencies = np.clip(
-            ml_modules["model"].predict(df[FEATURES].values).flatten(),
-            0, None
-        )
-
-        hours = []
-        for i, (_, row) in enumerate(df.iterrows()):
-            eff = float(efficiencies[i])
-            hours.append({
-                "hour":          row["timestamp"].strftime("%Y-%m-%d %H:%M:%S"),
-                "efficiency":    round(eff, 4),
-                "production_kw": round(eff * kwp, 4),
-            })
-
-        sites_predictions.append({
-            "site_id":             site["id"],
-            "site_key":            site["site_key"],
-            "kwp":                 kwp,
-            "total_production_kw": round(sum(h["production_kw"] for h in hours), 4),
-            "hours":               hours,
-        })
-
-    return {
-        "date":       df["timestamp"].iloc[0].strftime("%Y-%m-%d"),
-        "fetched_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-        "weather":    weather_hours,
-        "sites":      sites_predictions,
-    }
-
-
-@app.get("/model-info", response_model=ModelInfoResponse, summary="Model metadata and performance metrics", dependencies=[Depends(verify_token)])
-def model_info():
-    info = ml_modules["features_info"]
-    return {
-        "model":       info["best_model"],
-        "r2":          round(info["r2_final"],4),
-        "mae":         round(info["mae_final"],4),
-        "train_end":   info["date_train_end"],
-        "features":    info["features"],
-        "hyperparams": info["hyperparams"],
-        "sites_count": len(info["sites"]),
-    }
-
-@app.get("/sites", response_model=SitesResponse, summary="List of all 25 sites with their metadata", dependencies=[Depends(verify_token)])
-def get_sites():
+@app.get("/installation", response_model=InstallationResponse, summary="List of all 25 sites with their metadata", dependencies=[Depends(verify_token)])
+def get_installation():
     sites = ml_modules["sites"]
-    return {
-        "count": len(sites),
-        "sites": sites,
-    }
+    return get_installation_infos(sites)
 
-@app.get("/predictions", response_model=PredictionsResponse, summary="Hourly solar power predictions for all 25 sites", dependencies=[Depends(verify_token)])
+@app.get("/predictions", response_model=PredictionsResponse, summary="Hourly solar power predictions for the current day", dependencies=[Depends(verify_token)])
 def get_predictions():
     try:
-        return _build_predictions(weather_service.get_forecast())
+        return build_predictions(ml_modules,weather_service.get_forecast())
     except Exception:
         raise HTTPException(status_code=500, detail="Une erreur est survenue.")
 
@@ -120,6 +57,6 @@ def get_predictions():
 @app.get("/predictions/{date}", response_model=PredictionsResponse, summary="Hourly solar power predictions for a specific date (YYYY-MM-DD)", dependencies=[Depends(verify_token)])
 def get_predictions_by_date(date: str):
     try:
-        return _build_predictions(weather_service.get_forecast(date_str=date))
-    except Exception:
+        return build_predictions(ml_modules,weather_service.get_forecast(date_str=date))
+    except Exception as e:
         raise HTTPException(status_code=500, detail="Une erreur est survenue.")

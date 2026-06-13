@@ -4,15 +4,15 @@ from pydantic import BaseModel
 
 
 class WeatherHour(BaseModel):
-    hour:                  str
+    timestamp:              str
     apparent_temperature:  float
     relative_humidity:     float
     dew_point_temperature: float
     shortwave_radiation:   float
 
 
-class PredictionHour(BaseModel):
-    hour:          str
+class Production(BaseModel):
+    timestamp:     str
     efficiency:    float
     production_kw: float
 
@@ -21,7 +21,7 @@ class SitePrediction(BaseModel):
     site_id:             str
     kwp:                 float
     total_production_kw: float
-    hours:               List[PredictionHour]
+    productions:         List[Production]
 
 
 class PredictionsResponse(BaseModel):
@@ -30,11 +30,11 @@ class PredictionsResponse(BaseModel):
     weather:    List[WeatherHour]
     sites:      List[SitePrediction]
 
-
 class ModelInfoResponse(BaseModel):
     model:       str
     r2:          float
     mae:         float
+    train_start: str
     train_end:   str
     features:    List[str]
     hyperparams: dict
@@ -43,12 +43,12 @@ class ModelInfoResponse(BaseModel):
 class Site(BaseModel):
     id:             str
     kwp:            float
-    latitude:       float
-    longitude:      float
     panel_count:    float
     panel_model:    str
     inverter_model: str
 
-class SitesResponse(BaseModel):
-    count: int
-    sites: List[Site]
+class InstallationResponse(BaseModel):
+    name:       str
+    latitude:   float
+    longitude:  float
+    sites:      List[Site]

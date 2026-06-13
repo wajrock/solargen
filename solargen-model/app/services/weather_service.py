@@ -24,21 +24,13 @@ class WeatherService:
 
     def _parse_response(self, response) -> pd.DataFrame:
         """Parse OpenMeteo response into a clean DataFrame."""
-        hourly = response.Hourly()
-
-        timestamps = pd.date_range(
-            start=pd.to_datetime(hourly.Time(),    unit="s", utc=True),
-            end=  pd.to_datetime(hourly.TimeEnd(), unit="s", utc=True),
-            freq=pd.Timedelta(seconds=hourly.Interval()),
-            inclusive="left",
-        ).tz_convert("Australia/Melbourne")
-
+        
         df = pd.DataFrame({
-            "timestamp":             timestamps,
-            "apparent_temperature":  hourly.Variables(0).ValuesAsNumpy(),
-            "relative_humidity":     hourly.Variables(1).ValuesAsNumpy(),
-            "dew_point_temperature": hourly.Variables(2).ValuesAsNumpy(),
-            "shortwave_radiation":   hourly.Variables(3).ValuesAsNumpy(),
+            "timestamp":             pd.to_datetime(response["hourly"]["time"]).tz_localize("Australia/Melbourne", ambiguous=False, nonexistent='shift_forward'),
+            "apparent_temperature":  response["hourly"]["apparent_temperature"],
+            "relative_humidity":     response["hourly"]["relative_humidity_2m"],
+            "dew_point_temperature": response["hourly"]["dew_point_2m"],
+            "shortwave_radiation":   response["hourly"]["shortwave_radiation"],
         })
 
         df['h_sin'] = np.sin(2 * np.pi * df['timestamp'].dt.hour  / 24)
@@ -58,7 +50,7 @@ class WeatherService:
                 "start_date": date_str,
                 "end_date":   date_str,
             }
-            response = self.openmeteo.weather_api(self.archive_url, params=params)[0]
+            response = requests.get(self.archive_url, params=params).json()
         else:
             params = {
                 "latitude":      self.lat,
@@ -67,7 +59,7 @@ class WeatherService:
                 "timezone":      "Australia/Melbourne",
                 "forecast_days": 1,
             }
-            response = self.openmeteo.weather_api(self.forecast_url, params=params)[0]
+            response = requests.get(self.forecast_url, params=params).json()
 
         return self._parse_response(response)
 
