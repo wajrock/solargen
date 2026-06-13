@@ -1,0 +1,14 @@
+venv/
+.venv/
+env/
+__pycache__/
+*.pyc
+.cache/
+.cache.sqlite
+
+data/site_details.csv
+data/solar_production.csv
+data/summary.csv
+data/weather_open_meteo.csv
+data/weather_unisolar.csv
+
