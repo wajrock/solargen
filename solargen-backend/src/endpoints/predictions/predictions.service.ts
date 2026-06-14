@@ -3,8 +3,8 @@ import {Cron} from '@nestjs/schedule';
 import axios from 'axios';
 import {PrismaService} from '../../prisma/prisma.service';
 import {FastApiPredictionResponse} from '../../types/fastapi.types';
-import {GlobalPredictionDto, SitePredictionDto} from '../../types/prediction.types';
 import {WeatherService} from '../weather/weather.service';
+import {GlobalPredictionDto, SitePredictionDto} from './dto/predictions.dto';
 
 @Injectable()
 export class PredictionsService {
@@ -57,7 +57,7 @@ export class PredictionsService {
     @Cron('0 1 * * *', {timeZone: 'Australia/Melbourne'})
     async scheduledAddTodayPredictions() {
         const result = await this.addTodayPredictions();
-        console.log(result.message);
+        console.info(result.message);
     }
 
     async addTodayPredictions() {
@@ -98,7 +98,12 @@ export class PredictionsService {
         return {predictionCount, weatherCount};
     }
 
-    private async insertPredictions(data: FastApiPredictionResponse, predictionCount: number, weatherCount: number, date: string) {
+    private async insertPredictions(
+        data: FastApiPredictionResponse,
+        predictionCount: number,
+        weatherCount: number,
+        date: string,
+    ) {
         const [weatherResult, predictionResult] = await Promise.all([
             this.prismaService.weather.createMany({
                 data: data.weather.map((w) => ({...w, fetched_at: new Date(data.fetched_at)})),
@@ -122,7 +127,10 @@ export class PredictionsService {
         if (totalPredictions === 600 && totalWeather === 24) {
             return {success: true, message: `Predictions for ${date} inserted`};
         } else {
-            return {success: false, message: `Incomplete data for ${date} — weather: ${totalWeather}/24, predictions: ${totalPredictions}/600`};
+            return {
+                success: false,
+                message: `Incomplete data for ${date}`,
+            };
         }
     }
 }

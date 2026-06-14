@@ -1,6 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {PrismaService} from '../../prisma/prisma.service';
-import {InstallationDto, SiteDto} from '../../types/installation.types';
+import {InstallationDto} from './dto/installation.dto';
+import {SiteDto} from './dto/sites.dto';
 
 @Injectable()
 export class InstallationService {
@@ -17,10 +18,27 @@ export class InstallationService {
     }
 
     async getSites(): Promise<SiteDto[]> {
-        return await this.prismaService.site.findMany();
+        return await this.prismaService.site.findMany({
+            select: {
+                id: true,
+                kwp: true,
+                panel_count: true,
+                panel_model: true,
+                inverter_model: true,
+            },
+        });
     }
 
     async getSite(siteId: string): Promise<SiteDto | null> {
-        return await this.prismaService.site.findUnique({where: {id: siteId}});
+        return await this.prismaService.site.findUnique({
+            where: {id: siteId},
+            select: {
+                id: true,
+                kwp: true,
+                panel_count: true,
+                panel_model: true,
+                inverter_model: true,
+            },
+        });
     }
 }

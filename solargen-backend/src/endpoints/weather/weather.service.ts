@@ -1,6 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {PrismaService} from '../../prisma/prisma.service';
-import {WeatherDto} from '../../types/weather.types';
+import {WeatherDto} from './dto/weather.dto';
 
 @Injectable()
 export class WeatherService {
