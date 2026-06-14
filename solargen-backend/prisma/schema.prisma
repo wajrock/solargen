@@ -1,18 +1,31 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
   provider = "mysql"
 }
 
+model Installation {
+  id             Int       @id @default(autoincrement())
+  name           String
+  latitude       Float
+  longitude      Float
+  sites          Site[]
+  
+  @@map("installation")
+}
+
 model Site {
-  id             String       @id
-  kwp            Float
-  panel_count    Float?
-  panel_model    String?
-  inverter_model String?
-  predictions    Prediction[]
+  id                String        @id
+  kwp               Float
+  panel_count       Float?
+  panel_model       String?
+  inverter_model    String?
+  installation_id   Int
+  installation      Installation  @relation(fields: [installation_id], references: [id])
+  predictions       Prediction[]
 
   @@map("sites")
 }
@@ -20,7 +33,7 @@ model Site {
 model Prediction {
   id            Int      @id @default(autoincrement())
   site_id       String
-  timestamp     DateTime
+  timestamp     String
   efficiency    Float
   production_kw Float
   fetched_at    DateTime
@@ -32,7 +45,7 @@ model Prediction {
 
 model Weather {
   id                    Int      @id @default(autoincrement())
-  timestamp             DateTime
+  timestamp             String @unique
   apparent_temperature  Float
   relative_humidity     Float
   dew_point_temperature Float
@@ -47,6 +60,7 @@ model ModelInfo {
   model       String
   r2          Float
   mae         Float
+  train_start String
   train_end   String
   features    Json
   hyperparams Json
