@@ -6,6 +6,8 @@ import {PredictionsModule} from './endpoints/predictions/predictions.module';
 import {WeatherModule} from './endpoints/weather/weather.module';
 import {ScheduleModule} from '@nestjs/schedule';
 import {InstallationModule} from './endpoints/installation/installation.module';
+import {ApiKeyGuard} from './guards/api-key.guard';
+import {APP_GUARD} from '@nestjs/core';
 
 @Module({
     imports: [
@@ -17,6 +19,11 @@ import {InstallationModule} from './endpoints/installation/installation.module';
         WeatherModule,
         InstallationModule,
     ],
-    providers: [],
+    providers: [
+        {
+            provide: APP_GUARD,
+            useClass: ApiKeyGuard,
+        },
+    ],
 })
 export class AppModule {}
