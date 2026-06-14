@@ -7,9 +7,18 @@ import {ConfigModule} from '@nestjs/config';
 import {ModelInfoModule} from './endpoints/model-info/model-info.module';
 import {PredictionsModule} from './endpoints/predictions/predictions.module';
 import {WeatherModule} from './endpoints/weather/weather.module';
+import {ScheduleModule} from '@nestjs/schedule';
 
 @Module({
-    imports: [ConfigModule.forRoot({isGlobal: true}), PrismaModule, SitesModule, ModelInfoModule, PredictionsModule, WeatherModule],
+    imports: [
+        ConfigModule.forRoot({isGlobal: true}),
+        ScheduleModule.forRoot(),
+        PrismaModule,
+        SitesModule,
+        ModelInfoModule,
+        PredictionsModule,
+        WeatherModule,
+    ],
     controllers: [AppController],
     providers: [AppService],
 })

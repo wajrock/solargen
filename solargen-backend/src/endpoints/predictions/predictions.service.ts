@@ -1,9 +1,10 @@
 import {Injectable} from '@nestjs/common';
+import {Cron} from '@nestjs/schedule';
+import axios from 'axios';
 import {PrismaService} from '../../prisma/prisma.service';
+import {FastApiPredictionResponse} from '../../types/fastapi.types';
 import {GlobalPredictionDto, SitePredictionDto} from '../../types/prediction.types';
 import {WeatherService} from '../weather/weather.service';
-import {FastApiPredictionResponse} from '../../types/fastapi.types';
-import axios from 'axios';
 
 @Injectable()
 export class PredictionsService {
@@ -53,6 +54,12 @@ export class PredictionsService {
         };
     }
 
+    @Cron('0 1 * * *', {timeZone: 'Australia/Melbourne'})
+    async scheduledAddTodayPredictions() {
+        const result = await this.addTodayPredictions();
+        console.log(result.message);
+    }
+
     async addTodayPredictions() {
         const date = new Date().toLocaleDateString('en-CA', {timeZone: 'Australia/Melbourne'});
 
@@ -62,7 +69,9 @@ export class PredictionsService {
             return {success: true, message: `${date} already exists`};
         }
 
-        const {data} = await axios.get<FastApiPredictionResponse>(`${process.env.FASTAPI_URL}/predictions`, {headers: {'X-API-Key': process.env.FASTAPI_KEY}});
+        const {data} = await axios.get<FastApiPredictionResponse>(`${process.env.FASTAPI_URL}/predictions`, {
+            headers: {'X-API-Key': process.env.FASTAPI_KEY},
+        });
 
         return this.insertPredictions(data, predictionCount, weatherCount, date);
     }
@@ -74,7 +83,9 @@ export class PredictionsService {
             return {success: true, message: `${date} already exists`};
         }
 
-        const {data} = await axios.get<FastApiPredictionResponse>(`${process.env.FASTAPI_URL}/predictions/${date}`, {headers: {'X-API-Key': process.env.FASTAPI_KEY}});
+        const {data} = await axios.get<FastApiPredictionResponse>(`${process.env.FASTAPI_URL}/predictions/${date}`, {
+            headers: {'X-API-Key': process.env.FASTAPI_KEY},
+        });
 
         return this.insertPredictions(data, predictionCount, weatherCount, date);
     }
