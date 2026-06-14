@@ -1,7 +1,9 @@
 import {Controller, Get, Param, Post} from '@nestjs/common';
 import {GlobalPredictionDto, SitePredictionDto} from '../../types/prediction.types';
 import {PredictionsService} from './predictions.service';
+import {ApiTags} from '@nestjs/swagger';
 
+@ApiTags('predictions')
 @Controller('predictions')
 export class PredictionsController {
     private todayDate: string = new Date().toLocaleDateString('en-CA', {
@@ -28,11 +30,6 @@ export class PredictionsController {
     @Get('past/:date/:site')
     async findByDateAndSite(@Param('date') date: string, @Param('site') site: string): Promise<SitePredictionDto> {
         return await this.predictionsService.getByDateAndSite(date, site);
-    }
-
-    @Post('today')
-    async insertTodayPrediction(): Promise<any> {
-        return await this.predictionsService.addTodayPredictions();
     }
 
     @Post('past/:date')
