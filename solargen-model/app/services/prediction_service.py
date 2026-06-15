@@ -37,14 +37,14 @@ def build_predictions(ml_modules, df_weather) -> dict:
             0, None
         )
 
-        hours = [
-            {
+        hours = []
+        for i, (_, row) in enumerate(df_weather.iterrows()):
+            eff = float(efficiencies[i]) if row["shortwave_radiation"] > 0 else 0.0
+            hours.append({
                 "timestamp":     row["timestamp"].strftime("%Y-%m-%dT%H:%M:%S"),
-                "efficiency":    round(float(efficiencies[i]), 4),
-                "production_kw": round(float(efficiencies[i]) * kwp, 4),
-            }
-            for i, (_, row) in enumerate(df_weather.iterrows())
-        ]
+                "efficiency":    round(eff, 4),
+                "production_kw": round(eff * kwp, 4),
+            })
 
         sites_predictions.append({
             "site_id":             site["id"],
