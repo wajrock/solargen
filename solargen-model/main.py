@@ -22,26 +22,25 @@ ml_modules = {}
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    ml_modules["model"]         = joblib.load("model/model_solar_prediction.pkl")
-    ml_modules["features_info"] = joblib.load("model/features_info.pkl")
-    ml_modules["sites"]         = pd.read_csv("data/sites_final.csv").to_dict("records")
+    ml_modules["model"]      = joblib.load("model/model_solar_prediction.pkl")
+    ml_modules["model_info"] = joblib.load("model/model_info.pkl")
+    ml_modules["sites"]      = pd.read_csv("data/sites_final.csv").to_dict("records")
     yield
     ml_modules.clear()
 
-
 app = FastAPI(
     title="SolarGen ML Service",
-    description="Solar power prediction API for RMIT Bundoora Campus — 25 sites — GradientBoosting R²=0.867",
+    description="Solar power prediction API for RMIT Bundoora Campus — 21 sites — LightGBM R²=0.887",
     version="1.0.0",
     lifespan=lifespan,
 )
 
 @app.get("/model-infos", response_model=ModelInfoResponse, summary="Model metadata and performance metrics", dependencies=[Depends(verify_token)])
 def model_infos():
-    infos = ml_modules["features_info"]
+    infos = ml_modules["model_info"]
     return get_model_infos(infos)
 
-@app.get("/installation", response_model=InstallationResponse, summary="List of all 25 sites with their metadata", dependencies=[Depends(verify_token)])
+@app.get("/installation", response_model=InstallationResponse, summary="List of all 21 sites with their metadata", dependencies=[Depends(verify_token)])
 def get_installation():
     sites = ml_modules["sites"]
     return get_installation_infos(sites)

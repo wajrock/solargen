@@ -1,7 +1,4 @@
-# app/services/weather_service.py
-import numpy as np
 import pandas as pd
-import openmeteo_requests
 import requests
 from retry_requests import retry
 
@@ -12,54 +9,44 @@ class WeatherService:
         self.forecast_url = "https://api.open-meteo.com/v1/forecast"
         self.archive_url  = "https://archive-api.open-meteo.com/v1/archive"
         self.hourly_vars  = [
-            "apparent_temperature",
+            "temperature_2m",
             "relative_humidity_2m",
-            "dew_point_2m",
+            "cloud_cover",
             "shortwave_radiation",
+            "diffuse_radiation",
         ]
-
-        session        = requests.Session()
-        retry_session  = retry(session, retries=5, backoff_factor=0.2)
-        self.openmeteo = openmeteo_requests.Client(session=retry_session)
+        self.session = retry(requests.Session(), retries=5, backoff_factor=0.2)
 
     def _parse_response(self, response) -> pd.DataFrame:
-        """Parse OpenMeteo response into a clean DataFrame."""
-        
-        df = pd.DataFrame({
-            "timestamp":             pd.to_datetime(response["hourly"]["time"]).tz_localize("Australia/Melbourne", ambiguous=False, nonexistent='shift_forward'),
-            "apparent_temperature":  response["hourly"]["apparent_temperature"],
-            "relative_humidity":     response["hourly"]["relative_humidity_2m"],
-            "dew_point_temperature": response["hourly"]["dew_point_2m"],
-            "shortwave_radiation":   response["hourly"]["shortwave_radiation"],
+        return pd.DataFrame({
+            "timestamp"          : pd.to_datetime(response["hourly"]["time"]).tz_localize("Australia/Melbourne", ambiguous=False, nonexistent="shift_forward"),
+            "temperature"        : response["hourly"]["temperature_2m"],
+            "relative_humidity"  : response["hourly"]["relative_humidity_2m"],
+            "cloud_cover"        : response["hourly"]["cloud_cover"],
+            "shortwave_radiation": response["hourly"]["shortwave_radiation"],
+            "diffuse_radiation"  : response["hourly"]["diffuse_radiation"],
         })
-
-        df['h_sin'] = np.sin(2 * np.pi * df['timestamp'].dt.hour  / 24)
-        df['h_cos'] = np.cos(2 * np.pi * df['timestamp'].dt.hour  / 24)
-        df['m_sin'] = np.sin(2 * np.pi * df['timestamp'].dt.month / 12)
-        df['m_cos'] = np.cos(2 * np.pi * df['timestamp'].dt.month / 12)
-
-        return df
 
     def get_forecast(self, date_str: str = None) -> pd.DataFrame:
         if date_str:
             params = {
-                "latitude":   self.lat,
-                "longitude":  self.lon,
-                "hourly":     self.hourly_vars,
-                "timezone":   "Australia/Melbourne",
+                "latitude"  : self.lat,
+                "longitude" : self.lon,
+                "hourly"    : self.hourly_vars,
+                "timezone"  : "Australia/Melbourne",
                 "start_date": date_str,
-                "end_date":   date_str,
+                "end_date"  : date_str,
             }
-            response = requests.get(self.archive_url, params=params).json()
+            response = self.session.get(self.archive_url, params=params).json()
         else:
             params = {
-                "latitude":      self.lat,
-                "longitude":     self.lon,
-                "hourly":        self.hourly_vars,
-                "timezone":      "Australia/Melbourne",
-                "forecast_days": 1,
+                "latitude"      : self.lat,
+                "longitude"     : self.lon,
+                "hourly"        : self.hourly_vars,
+                "timezone"      : "Australia/Melbourne",
+                "forecast_days" : 1,
             }
-            response = requests.get(self.forecast_url, params=params).json()
+            response = self.session.get(self.forecast_url, params=params).json()
 
         return self._parse_response(response)
 
