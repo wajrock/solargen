@@ -19,7 +19,7 @@ class WeatherService:
 
     def _parse_response(self, response) -> pd.DataFrame:
         return pd.DataFrame({
-            "timestamp"          : pd.to_datetime(response["hourly"]["time"]).tz_localize("Australia/Melbourne", ambiguous=False, nonexistent="shift_forward"),
+            "timestamp"          : pd.to_datetime(response["hourly"]["time"]),
             "temperature"        : response["hourly"]["temperature_2m"],
             "relative_humidity"  : response["hourly"]["relative_humidity_2m"],
             "cloud_cover"        : response["hourly"]["cloud_cover"],
