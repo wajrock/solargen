@@ -1,13 +1,12 @@
 import {Module} from '@nestjs/common';
-import {PrismaModule} from './prisma/prisma.module';
 import {ConfigModule} from '@nestjs/config';
+import {ScheduleModule} from '@nestjs/schedule';
+import {AppController} from './app.controller';
+import {InstallationModule} from './endpoints/installation/installation.module';
 import {ModelInfoModule} from './endpoints/model-info/model-info.module';
 import {PredictionsModule} from './endpoints/predictions/predictions.module';
 import {WeatherModule} from './endpoints/weather/weather.module';
-import {ScheduleModule} from '@nestjs/schedule';
-import {InstallationModule} from './endpoints/installation/installation.module';
-import {ApiKeyGuard} from './guards/api-key.guard';
-import {APP_GUARD} from '@nestjs/core';
+import {PrismaModule} from './prisma/prisma.module';
 
 @Module({
     imports: [
@@ -19,11 +18,6 @@ import {APP_GUARD} from '@nestjs/core';
         WeatherModule,
         InstallationModule,
     ],
-    providers: [
-        {
-            provide: APP_GUARD,
-            useClass: ApiKeyGuard,
-        },
-    ],
+    controllers: [AppController],
 })
 export class AppModule {}

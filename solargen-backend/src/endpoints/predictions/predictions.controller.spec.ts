@@ -8,23 +8,25 @@ const mockGlobalPrediction = {
     weather: [
         {
             timestamp: '2025-06-14T00:00:00',
-            apparent_temperature: 21.5,
+            temperature: 21.5,
             relative_humidity: 65,
-            dew_point_temperature: 12.3,
+            cloud_cover: 44,
             shortwave_radiation: 450.2,
+            diffuse_radiation: 210,
         },
     ],
 };
 
 const mockSitePrediction = {
-    production: [{site_id: 'SITE01', timestamp: '2025-06-14T00:00:00', efficiency: 0.8, production_kw: 12.4}],
+    production: [{site_id: 'SITE01', timestamp: '2025-06-14T00:00:00', capacity_factor: 0.8, solar_generation: 12.4}],
     weather: [
         {
             timestamp: '2025-06-14T00:00:00',
-            apparent_temperature: 21.5,
+            temperature: 21.5,
             relative_humidity: 65,
-            dew_point_temperature: 12.3,
+            cloud_cover: 44,
             shortwave_radiation: 450.2,
+            diffuse_radiation: 210,
         },
     ],
 };

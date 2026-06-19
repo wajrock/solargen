@@ -3,21 +3,24 @@ import {PredictionsService} from './predictions.service';
 import {PrismaService} from '../../prisma/prisma.service';
 import {WeatherService} from '../weather/weather.service';
 import axios from 'axios';
+import {WeatherDto} from '../weather/dto/weather.dto';
+import {FastApiPredictionResponse} from '../../types/fastapi.types';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-const mockWeather = [
+const mockWeather: WeatherDto[] = [
     {
         timestamp: '2025-06-14T00:00:00',
-        apparent_temperature: 21.5,
+        temperature: 21.5,
         relative_humidity: 65,
-        dew_point_temperature: 12.3,
+        cloud_cover: 44,
         shortwave_radiation: 450.2,
+        diffuse_radiation: 210,
     },
 ];
 
-const mockFastApiResponse = {
+const mockFastApiResponse: {data: FastApiPredictionResponse} = {
     data: {
         date: '2025-06-14T00:00:00',
         fetched_at: '2025-06-14T00:00:00',
@@ -26,7 +29,8 @@ const mockFastApiResponse = {
             {
                 site_id: 'SITE01',
                 kwp: 25.5,
-                productions: [{timestamp: '2025-06-14T00:00:00', efficiency: 0.8, production_kw: 12.4}],
+                total_solar_generation: 13.2,
+                productions: [{timestamp: '2025-06-14T00:00:00', capacity_factor: 0.8, solar_generation: 12.4}],
             },
         ],
     },
@@ -62,8 +66,6 @@ describe('PredictionsService', () => {
         }).compile();
 
         service = module.get<PredictionsService>(PredictionsService);
-        process.env.FASTAPI_URL = 'http://localhost:8000';
-        process.env.FASTAPI_KEY = 'test-key';
     });
 
     afterEach(() => {
@@ -73,29 +75,29 @@ describe('PredictionsService', () => {
     describe('getByDate', () => {
         it('should return aggregated production and weather', async () => {
             mockPrismaService.prediction.groupBy.mockResolvedValue([
-                {timestamp: '2025-06-14T00:00:00', _sum: {production_kw: 125.4}},
+                {timestamp: '2025-06-14T00:00:00', _sum: {solar_generation: 125.4}},
             ]);
 
             const result = await service.getByDate('2025-06-14');
 
-            expect(result.production).toEqual([{timestamp: '2025-06-14T00:00:00', total_production_kw: 125.4}]);
+            expect(result.production).toEqual([{timestamp: '2025-06-14T00:00:00', total_solar_generation: 125.4}]);
             expect(result.weather).toEqual(mockWeather);
         });
 
-        it('should handle null production_kw sum', async () => {
+        it('should handle null solar_generation sum', async () => {
             mockPrismaService.prediction.groupBy.mockResolvedValue([
-                {timestamp: '2025-06-14T00:00:00', _sum: {production_kw: null}},
+                {timestamp: '2025-06-14T00:00:00', _sum: {solar_generation: null}},
             ]);
 
             const result = await service.getByDate('2025-06-14');
-            expect(result.production[0].total_production_kw).toBe(0);
+            expect(result.production[0].total_solar_generation).toBe(0);
         });
     });
 
     describe('getByDateAndSite', () => {
         it('should return site production and weather', async () => {
             const mockProduction = [
-                {site_id: 'SITE01', timestamp: '2025-06-14T00:00:00', efficiency: 0.8, production_kw: 12.4},
+                {site_id: 'SITE01', timestamp: '2025-06-14T00:00:00', capacity_factor: 0.8, solar_generation: 12.4},
             ];
             mockPrismaService.prediction.findMany.mockResolvedValue(mockProduction);
 
@@ -108,7 +110,7 @@ describe('PredictionsService', () => {
 
     describe('addTodayPredictions', () => {
         it('should return already exists if data is complete', async () => {
-            mockPrismaService.prediction.count.mockResolvedValue(600);
+            mockPrismaService.prediction.count.mockResolvedValue(504);
             mockPrismaService.weather.count.mockResolvedValue(24);
 
             const result = await service.addTodayPredictions();
@@ -121,7 +123,7 @@ describe('PredictionsService', () => {
             mockPrismaService.weather.count.mockResolvedValue(0);
             mockedAxios.get.mockResolvedValue(mockFastApiResponse);
             mockPrismaService.weather.createMany.mockResolvedValue({count: 24});
-            mockPrismaService.prediction.createMany.mockResolvedValue({count: 600});
+            mockPrismaService.prediction.createMany.mockResolvedValue({count: 504});
 
             const result = await service.addTodayPredictions();
             expect(result.success).toBe(true);
@@ -131,7 +133,7 @@ describe('PredictionsService', () => {
 
     describe('addPredictionByDate', () => {
         it('should return already exists if data is complete', async () => {
-            mockPrismaService.prediction.count.mockResolvedValue(600);
+            mockPrismaService.prediction.count.mockResolvedValue(504);
             mockPrismaService.weather.count.mockResolvedValue(24);
 
             const result = await service.addPredictionByDate('2025-06-14');
@@ -144,7 +146,7 @@ describe('PredictionsService', () => {
             mockPrismaService.weather.count.mockResolvedValue(0);
             mockedAxios.get.mockResolvedValue(mockFastApiResponse);
             mockPrismaService.weather.createMany.mockResolvedValue({count: 24});
-            mockPrismaService.prediction.createMany.mockResolvedValue({count: 600});
+            mockPrismaService.prediction.createMany.mockResolvedValue({count: 504});
 
             const result = await service.addPredictionByDate('2025-06-14');
             expect(result.success).toBe(true);

@@ -10,8 +10,8 @@ const mockModelInfo: ModelInfoDto = {
     mae: 0.0209,
     train_start: '2020-01-08',
     train_end: '2021-12-22',
-    features: ['apparent_temperature', 'relative_humidity', 'shortwave_radiation'],
-    sites_count: 25,
+    features: ['temperature', 'relative_humidity', 'shortwave_radiation'],
+    sites_count: 21,
 };
 
 const mockModelInfoService = {

@@ -12,10 +12,11 @@ export class WeatherService {
             orderBy: {timestamp: 'asc'},
             select: {
                 timestamp: true,
-                apparent_temperature: true,
+                temperature: true,
                 relative_humidity: true,
-                dew_point_temperature: true,
+                cloud_cover: true,
                 shortwave_radiation: true,
+                diffuse_radiation: true,
             },
         });
     }

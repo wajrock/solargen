@@ -1,29 +1,30 @@
-export interface FastApiWeather {
-    timestamp: string;
-    apparent_temperature: number;
-    relative_humidity: number;
-    dew_point_temperature: number;
-    shortwave_radiation: number;
-}
-
-export interface FastApiProduction {
-    timestamp: string;
-    efficiency: number;
-    production_kw: number;
-}
-
-export interface FastApiSite {
-    site_id: string;
-    kwp: number;
-    total_production_kw: number;
-    productions: FastApiProduction[];
-}
-
 export interface FastApiPredictionResponse {
     date: string;
     fetched_at: string;
     weather: FastApiWeather[];
     sites: FastApiSite[];
+}
+
+export interface FastApiWeather {
+    timestamp: string;
+    temperature: number;
+    relative_humidity: number;
+    cloud_cover: number;
+    shortwave_radiation: number;
+    diffuse_radiation: number;
+}
+
+export interface FastApiSite {
+    site_id: string;
+    kwp: number;
+    total_solar_generation: number;
+    productions: FastApiProduction[];
+}
+
+export interface FastApiProduction {
+    timestamp: string;
+    capacity_factor: number;
+    solar_generation: number;
 }
 
 export interface FastApiInstallationResponse {
@@ -48,6 +49,5 @@ export interface FastApiModelInfo {
     train_start: string;
     train_end: string;
     features: object;
-    hyperparams: object;
     sites_count: number;
 }

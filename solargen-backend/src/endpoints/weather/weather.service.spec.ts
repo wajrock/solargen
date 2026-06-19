@@ -6,17 +6,19 @@ import {WeatherDto} from './dto/weather.dto';
 const mockWeather: WeatherDto[] = [
     {
         timestamp: '2025-06-14T00:00:00',
-        apparent_temperature: 21.5,
+        temperature: 21.5,
         relative_humidity: 65,
-        dew_point_temperature: 12.3,
+        cloud_cover: 44,
         shortwave_radiation: 450.2,
+        diffuse_radiation: 210,
     },
     {
         timestamp: '2025-06-14T01:00:00',
-        apparent_temperature: 20.1,
-        relative_humidity: 70,
-        dew_point_temperature: 11.8,
+        temperature: 18,
+        relative_humidity: 30,
+        cloud_cover: 50,
         shortwave_radiation: 0,
+        diffuse_radiation: 0,
     },
 ];
 
@@ -53,10 +55,11 @@ describe('WeatherService', () => {
             orderBy: {timestamp: 'asc'},
             select: {
                 timestamp: true,
-                apparent_temperature: true,
+                temperature: true,
                 relative_humidity: true,
-                dew_point_temperature: true,
+                cloud_cover: true,
                 shortwave_radiation: true,
+                diffuse_radiation: true,
             },
         });
     });

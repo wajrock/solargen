@@ -1,15 +1,15 @@
-import {PrismaClient} from '@prisma/client';
 import {PrismaMariaDb} from '@prisma/adapter-mariadb';
+import {PrismaClient} from '@prisma/client';
 import axios from 'axios';
 import {FastApiInstallationResponse, FastApiModelInfo} from '../src/types/fastapi.types';
 
 const adapter = new PrismaMariaDb(process.env.DATABASE_URL_RUNTIME!);
 const prisma = new PrismaClient({adapter});
+const API = process.env.FASTAPI_URL;
+const HEADERS = {'X-API-Key': process.env.FASTAPI_KEY};
 
 async function seedInstallation() {
-    const {data} = await axios.get<FastApiInstallationResponse>(`${process.env.FASTAPI_URL}/installation`, {
-        headers: {'X-API-Key': process.env.FASTAPI_KEY},
-    });
+    const {data} = await axios.get<FastApiInstallationResponse>(`${API}/installation`, {headers: HEADERS});
 
     let installation = await prisma.installation.findFirst();
     if (!installation) {
@@ -48,9 +48,7 @@ async function seedModelInfo() {
         return;
     }
 
-    const {data} = await axios.get<FastApiModelInfo>(`${process.env.FASTAPI_URL}/model-info`, {
-        headers: {'X-API-Key': process.env.FASTAPI_KEY},
-    });
+    const {data} = await axios.get<FastApiModelInfo>(`${API}/model-infos`, {headers: HEADERS});
 
     await prisma.modelInfo.create({
         data: {
@@ -58,6 +56,8 @@ async function seedModelInfo() {
             fetched_at: new Date(),
         },
     });
+
+    console.log('Model info seeded');
 }
 
 async function main() {

@@ -6,7 +6,7 @@ export class GlobalProductionDto {
     timestamp!: string;
 
     @ApiProperty({example: 125.4})
-    total_production_kw!: number;
+    total_solar_generation!: number;
 }
 
 export class GlobalPredictionDto {
@@ -22,10 +22,10 @@ export class SiteProductionDto {
     timestamp!: string;
 
     @ApiProperty({example: 0.8765})
-    efficiency!: number;
+    capacity_factor!: number;
 
     @ApiProperty({example: 12.4})
-    production_kw!: number;
+    solar_generation!: number;
 }
 
 export class SitePredictionDto {

@@ -18,7 +18,7 @@ export class PredictionsService {
             this.prismaService.prediction.groupBy({
                 by: ['timestamp'],
                 where: {timestamp: {startsWith: date}},
-                _sum: {production_kw: true},
+                _sum: {solar_generation: true},
                 orderBy: {timestamp: 'asc'},
             }),
             this.weatherService.getByDate(date),
@@ -27,7 +27,7 @@ export class PredictionsService {
         return {
             production: production.map((p) => ({
                 timestamp: p.timestamp,
-                total_production_kw: Math.round((p._sum.production_kw ?? 0) * 100) / 100,
+                total_solar_generation: Math.round((p._sum.solar_generation ?? 0) * 100) / 100,
             })),
             weather,
         };
@@ -41,8 +41,8 @@ export class PredictionsService {
                 select: {
                     site_id: true,
                     timestamp: true,
-                    efficiency: true,
-                    production_kw: true,
+                    capacity_factor: true,
+                    solar_generation: true,
                 },
             }),
             this.weatherService.getByDate(date),
@@ -65,7 +65,7 @@ export class PredictionsService {
 
         const {predictionCount, weatherCount} = await this.countExisting(date);
 
-        if (predictionCount === 600 && weatherCount === 24) {
+        if (predictionCount === 504 && weatherCount === 24) {
             return {success: true, message: `${date} already exists`};
         }
 
@@ -79,7 +79,7 @@ export class PredictionsService {
     async addPredictionByDate(date: string) {
         const {predictionCount, weatherCount} = await this.countExisting(date);
 
-        if (predictionCount === 600 && weatherCount === 24) {
+        if (predictionCount === 504 && weatherCount === 24) {
             return {success: true, message: `${date} already exists`};
         }
 
@@ -124,7 +124,7 @@ export class PredictionsService {
         const totalPredictions = predictionCount + predictionResult.count;
         const totalWeather = weatherCount + weatherResult.count;
 
-        if (totalPredictions === 600 && totalWeather === 24) {
+        if (totalPredictions === 504 && totalWeather === 24) {
             return {success: true, message: `Predictions for ${date} inserted`};
         } else {
             return {

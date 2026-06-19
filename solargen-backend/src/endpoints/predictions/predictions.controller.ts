@@ -1,8 +1,9 @@
-import {BadRequestException, Controller, Get, Param, Post} from '@nestjs/common';
-import {ApiExcludeEndpoint, ApiParam, ApiResponse, ApiTags} from '@nestjs/swagger';
+import {BadRequestException, Controller, Get, Param, Post, UseGuards} from '@nestjs/common';
+import {ApiParam, ApiResponse, ApiTags} from '@nestjs/swagger';
+import {ApiKeyGuard} from '../../guards/api-key.guard';
 import {PredictionParamDto} from './dto/prediction.param.dto';
-import {PredictionsService} from './predictions.service';
 import {GlobalPredictionDto, SitePredictionDto} from './dto/predictions.dto';
+import {PredictionsService} from './predictions.service';
 
 @ApiTags('predictions')
 @Controller('predictions')
@@ -27,7 +28,7 @@ export class PredictionsController {
     @ApiResponse({status: 200, type: [GlobalPredictionDto]})
     async findByDate(@Param() params: PredictionParamDto): Promise<GlobalPredictionDto> {
         if (params.date! >= this.getTodayDate()) {
-            throw new BadRequestException('Date must be in the past');
+            throw new BadRequestException('enter a past date.');
         }
         return await this.predictionsService.getByDate(params.date!);
     }
@@ -38,16 +39,17 @@ export class PredictionsController {
     @ApiResponse({status: 200, type: [SitePredictionDto]})
     async findByDateAndSite(@Param() params: PredictionParamDto): Promise<SitePredictionDto> {
         if (params.date! >= this.getTodayDate()) {
-            throw new BadRequestException('Date must be in the past');
+            throw new BadRequestException('enter a past date.');
         }
         return await this.predictionsService.getByDateAndSite(params.date!, params.siteId!);
     }
 
     @Post('past/:date')
-    @ApiExcludeEndpoint()
+    @UseGuards(ApiKeyGuard)
+    @ApiParam({name: 'date', example: '2025-06-25'})
     async insertPredictionByDate(@Param() params: PredictionParamDto): Promise<{success: boolean; message: string}> {
         if (params.date! >= this.getTodayDate()) {
-            throw new BadRequestException('Date must be in the past');
+            throw new BadRequestException('enter a past date.');
         }
         return await this.predictionsService.addPredictionByDate(params.date!);
     }

@@ -16,7 +16,7 @@ export class ModelInfoDto {
     @ApiProperty({example: '2021-12-31'})
     train_end!: string;
 
-    @ApiProperty({example: ['apparent_temperature', 'relative_humidity', 'shortwave_radiation']})
+    @ApiProperty({example: ['temperature', 'relative_humidity', 'shortwave_radiation']})
     features!: object;
 
     @ApiProperty({example: 20})
