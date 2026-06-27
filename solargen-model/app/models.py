@@ -40,12 +40,18 @@ class ModelInfoResponse(BaseModel):
     features:    List[str]
     sites_count: int
 
+
+class Inverter(BaseModel):
+    model:    str
+    quantity: int
+
+
 class Site(BaseModel):
-    id:             str
-    kwp:            float
-    panel_count:    float
-    panel_model:    str
-    inverter_model: str
+    id:          str
+    kwp:         float
+    panel_count: float
+    panel_model: str
+    inverters:   List[Inverter]
 
 class InstallationResponse(BaseModel):
     name:      str
