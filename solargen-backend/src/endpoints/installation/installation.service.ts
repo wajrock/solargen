@@ -1,44 +1,48 @@
 import {Injectable} from '@nestjs/common';
 import {PrismaService} from '../../prisma/prisma.service';
 import {InstallationDto} from './dto/installation.dto';
-import {SiteDto} from './dto/sites.dto';
+import {InverterDto} from './dto/sites.dto';
 
 @Injectable()
 export class InstallationService {
     constructor(private readonly prismaService: PrismaService) {}
 
     async getInstallationInfos(): Promise<InstallationDto | null> {
-        const result = await this.prismaService.installation.findFirst({
-            select: {name: true, latitude: true, longitude: true},
-        });
+        const [installation, capacityFactorPerSite] = await Promise.all([
+            this.prismaService.installation.findFirst({
+                include: {
+                    sites: {
+                        select: {id: true, kwp: true, panel_model: true, inverters: true},
+                    },
+                },
+            }),
+            this.prismaService.prediction.groupBy({
+                by: ['site_id'],
+                where: {capacity_factor: {gt: 0}},
+                _avg: {capacity_factor: true},
+            }),
+        ]);
 
-        if (!result) return null;
+        if (!installation) return null;
 
-        return result;
-    }
+        const avgCapacityFactorBySiteId = new Map(
+            capacityFactorPerSite.map((entry) => [entry.site_id, entry._avg.capacity_factor ?? 0]),
+        );
 
-    async getSites(): Promise<SiteDto[]> {
-        return await this.prismaService.site.findMany({
-            select: {
-                id: true,
-                kwp: true,
-                panel_count: true,
-                panel_model: true,
-                inverter_model: true,
-            },
-        });
-    }
+        const totalCapacity = installation.sites.reduce((sum, site) => sum + site.kwp, 0);
 
-    async getSite(siteId: string): Promise<SiteDto | null> {
-        return await this.prismaService.site.findUnique({
-            where: {id: siteId},
-            select: {
-                id: true,
-                kwp: true,
-                panel_count: true,
-                panel_model: true,
-                inverter_model: true,
-            },
-        });
+        return {
+            name: installation.name,
+            latitude: installation.latitude,
+            longitude: installation.longitude,
+            total_capacity: totalCapacity,
+            sites: installation.sites.map((site) => ({
+                id: site.id,
+                kwp: site.kwp,
+                panel_model: site.panel_model,
+                inverters: site.inverters as unknown as InverterDto[],
+                avg_capacity_factor: parseFloat((avgCapacityFactorBySiteId.get(site.id) ?? 0).toFixed(3)),
+            })),
+        };
     }
 }

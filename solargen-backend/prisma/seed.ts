@@ -32,7 +32,7 @@ async function seedInstallation() {
                 kwp: site.kwp,
                 panel_count: site.panel_count,
                 panel_model: site.panel_model,
-                inverter_model: site.inverter_model,
+                inverters: site.inverters,
                 installation_id: installation.id,
             },
         });

@@ -1,18 +1,26 @@
 import {ApiProperty} from '@nestjs/swagger';
 
+export class InverterDto {
+    @ApiProperty({example: 'SolarEdge SE25K'})
+    model!: string;
+
+    @ApiProperty({example: 2})
+    quantity!: number;
+}
+
 export class SiteDto {
-    @ApiProperty({example: 'SITE01'})
+    @ApiProperty({example: '0Y6D'})
     id!: string;
 
-    @ApiProperty({example: 25.5})
+    @ApiProperty({example: 94.24})
     kwp!: number;
 
-    @ApiProperty({example: 10, nullable: true})
-    panel_count!: number | null;
+    @ApiProperty({example: 'Trina 310W'})
+    panel_model!: string;
 
-    @ApiProperty({example: 'JA Solar JAM72S30', nullable: true})
-    panel_model!: string | null;
+    @ApiProperty({type: [InverterDto]})
+    inverters!: InverterDto[];
 
-    @ApiProperty({example: 'Fronius Symo 15.0', nullable: true})
-    inverter_model!: string | null;
+    @ApiProperty({example: 0.17})
+    avg_capacity_factor!: number;
 }

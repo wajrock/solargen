@@ -19,16 +19,38 @@ export class PredictionsService {
                 by: ['timestamp'],
                 where: {timestamp: {startsWith: date}},
                 _sum: {solar_generation: true},
+                _avg: {capacity_factor: true},
                 orderBy: {timestamp: 'asc'},
             }),
             this.weatherService.getByDate(date),
         ]);
 
+        const mappedProduction = production.map((p) => ({
+            timestamp: p.timestamp,
+            total_solar_generation: parseFloat((p._sum.solar_generation ?? 0).toFixed(2)),
+            avg_capacity_factor: parseFloat((p._avg.capacity_factor ?? 0).toFixed(3)),
+        }));
+
+        const peak = mappedProduction.reduce(
+            (max, p) => (p.total_solar_generation > max.total_solar_generation ? p : max),
+            mappedProduction[0],
+        );
+
+        const dayHours = mappedProduction.filter(
+            (p) => weather.find((w) => w.timestamp === p.timestamp)?.shortwave_radiation ?? 0 > 0,
+        );
+
         return {
-            production: production.map((p) => ({
-                timestamp: p.timestamp,
-                total_solar_generation: Math.round((p._sum.solar_generation ?? 0) * 100) / 100,
-            })),
+            date,
+            daily_solar_generation: parseFloat(
+                mappedProduction.reduce((s, p) => s + p.total_solar_generation, 0).toFixed(2),
+            ),
+            daily_avg_capacity_factor: parseFloat(
+                (dayHours.reduce((s, p) => s + p.avg_capacity_factor, 0) / dayHours.length).toFixed(3),
+            ),
+            peak_timestamp: peak?.timestamp ?? null,
+            peak_solar_generation: peak?.total_solar_generation ?? 0,
+            production: mappedProduction,
             weather,
         };
     }
@@ -48,7 +70,24 @@ export class PredictionsService {
             this.weatherService.getByDate(date),
         ]);
 
+        const dayHours = production.filter(
+            (p) => weather.find((w) => w.timestamp === p.timestamp)?.shortwave_radiation ?? 0 > 0,
+        );
+
+        const peak = production.reduce(
+            (max, p) => (p.solar_generation > max.solar_generation ? p : max),
+            production[0],
+        );
+
         return {
+            date,
+            site_id: site,
+            daily_solar_generation: parseFloat(production.reduce((s, p) => s + p.solar_generation, 0).toFixed(2)),
+            daily_avg_capacity_factor: parseFloat(
+                (dayHours.reduce((s, p) => s + p.capacity_factor, 0) / dayHours.length).toFixed(3),
+            ),
+            peak_timestamp: peak?.timestamp ?? null,
+            peak_solar_generation: peak?.solar_generation ?? 0,
             production,
             weather,
         };

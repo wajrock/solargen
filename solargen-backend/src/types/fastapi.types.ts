@@ -39,7 +39,7 @@ export interface FastApiSiteConfig {
     kwp: number;
     panel_count: number;
     panel_model: string;
-    inverter_model: string;
+    inverters: {model: string; quantity: number};
 }
 
 export interface FastApiModelInfo {

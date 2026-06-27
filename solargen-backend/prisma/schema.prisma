@@ -20,9 +20,9 @@ model Installation {
 model Site {
   id                String        @id
   kwp               Float
-  panel_count       Float?
-  panel_model       String?
-  inverter_model    String?
+  panel_count       Int
+  panel_model       String
+  inverters         Json
   installation_id   Int
   installation      Installation  @relation(fields: [installation_id], references: [id])
   predictions       Prediction[]
@@ -40,6 +40,7 @@ model Prediction {
   site             Site     @relation(fields: [site_id], references: [id])
 
   @@unique([site_id, timestamp])
+  @@index([site_id, capacity_factor])
   @@map("predictions")
 }
 
