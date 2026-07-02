@@ -16,6 +16,10 @@ async function bootstrap() {
         .addTag('model-info', 'ML model metadata and performance metrics')
         .addTag('installation', 'Installation and solar site configuration and metadata')
         .addTag('predictions', 'Hourly solar generation predictions and weather data over 24 hours, by date and site')
+        .addTag(
+            'history',
+            'Monthly solar generation and performance statistics comparison between current and previous year',
+        )
         .addApiKey({type: 'apiKey', name: 'x-api-key', in: 'header'}, 'x-api-key')
         .addSecurityRequirements('x-api-key')
         .build();
@@ -30,6 +34,8 @@ async function bootstrap() {
     app.enableCors({
         origin: '*',
     });
+
+    app.enableShutdownHooks();
 
     await app.listen(process.env.PORT ?? 3000);
 }

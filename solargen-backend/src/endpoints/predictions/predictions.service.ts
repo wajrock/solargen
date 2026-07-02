@@ -4,7 +4,15 @@ import axios from 'axios';
 import {PrismaService} from '../../prisma/prisma.service';
 import {FastApiPredictionResponse} from '../../types/fastapi.types';
 import {WeatherService} from '../weather/weather.service';
-import {GlobalPredictionDto, SitePredictionDto} from './dto/predictions.dto';
+import {GlobalPredictionDto, HourlyDto, ProductionMetricsDto, SitePredictionDto} from './dto/predictions.dto';
+import {getHourlyAverage, getYearAndMonth, getMonthlyAvgDaily} from './predictions.utils';
+import {WeatherDto} from '../weather/dto/weather.dto';
+
+interface MonthlyPrediction {
+    timestamp: string;
+    _sum: {solar_generation: number | null};
+    _avg: {capacity_factor: number | null};
+}
 
 @Injectable()
 export class PredictionsService {
@@ -14,85 +22,129 @@ export class PredictionsService {
     ) {}
 
     async getByDate(date: string): Promise<GlobalPredictionDto> {
-        const [production, weather] = await Promise.all([
-            this.prismaService.prediction.groupBy({
-                by: ['timestamp'],
-                where: {timestamp: {startsWith: date}},
-                _sum: {solar_generation: true},
-                _avg: {capacity_factor: true},
-                orderBy: {timestamp: 'asc'},
-            }),
+        const month = getYearAndMonth(date);
+
+        const [monthHourlyPredictions, weatherData] = await Promise.all([
+            this.fetchMonthPredictions(month),
             this.weatherService.getByDate(date),
         ]);
 
-        const mappedProduction = production.map((p) => ({
-            timestamp: p.timestamp,
-            total_solar_generation: parseFloat((p._sum.solar_generation ?? 0).toFixed(2)),
-            avg_capacity_factor: parseFloat((p._avg.capacity_factor ?? 0).toFixed(3)),
-        }));
+        const hourlyPredictionsData = this.formatHourlyPredictionsData(monthHourlyPredictions, date, weatherData);
 
-        const peak = mappedProduction.reduce(
-            (max, p) => (p.total_solar_generation > max.total_solar_generation ? p : max),
-            mappedProduction[0],
+        const peak = hourlyPredictionsData.reduce(
+            (max, hourly) => (hourly.production.solar_generation > max.production.solar_generation ? hourly : max),
+            hourlyPredictionsData[0],
         );
 
-        const dayHours = mappedProduction.filter(
-            (p) => weather.find((w) => w.timestamp === p.timestamp)?.shortwave_radiation ?? 0 > 0,
-        );
+        const monthlyAvgDaily = getMonthlyAvgDaily(hourlyPredictionsData);
 
-        return {
-            date,
-            daily_solar_generation: parseFloat(
-                mappedProduction.reduce((s, p) => s + p.total_solar_generation, 0).toFixed(2),
-            ),
-            daily_avg_capacity_factor: parseFloat(
-                (dayHours.reduce((s, p) => s + p.avg_capacity_factor, 0) / dayHours.length).toFixed(3),
-            ),
-            peak_timestamp: peak?.timestamp ?? null,
-            peak_solar_generation: peak?.total_solar_generation ?? 0,
-            production: mappedProduction,
-            weather,
-        };
+        return this.formatPredictionResponse(date, hourlyPredictionsData, monthlyAvgDaily, peak);
     }
 
-    async getByDateAndSite(date: string, site: string): Promise<SitePredictionDto> {
-        const [production, weather] = await Promise.all([
-            this.prismaService.prediction.findMany({
-                where: {timestamp: {startsWith: date}, site_id: site},
-                orderBy: {timestamp: 'asc'},
-                select: {
-                    site_id: true,
-                    timestamp: true,
-                    capacity_factor: true,
-                    solar_generation: true,
+    async getByDateAndSite(date: string, siteId: string): Promise<SitePredictionDto> {
+        const month = getYearAndMonth(date);
+
+        const [monthHourlyPredictions, weatherData] = await Promise.all([
+            this.fetchMonthPredictions(month, siteId),
+            this.weatherService.getByDate(date),
+        ]);
+
+        const hourlyPredictionsData = this.formatHourlyPredictionsData(monthHourlyPredictions, date, weatherData);
+
+        const peak = hourlyPredictionsData.reduce(
+            (max, hourly) => (hourly.production.solar_generation > max.production.solar_generation ? hourly : max),
+            hourlyPredictionsData[0],
+        );
+
+        const monthlyAvgDaily = getMonthlyAvgDaily(hourlyPredictionsData);
+
+        return this.formatPredictionResponse(
+            date,
+            hourlyPredictionsData,
+            monthlyAvgDaily,
+            peak,
+            siteId,
+        ) as SitePredictionDto;
+    }
+
+    private fetchMonthPredictions(month: string, siteId?: string) {
+        return this.prismaService.prediction.groupBy({
+            by: ['timestamp'],
+            where: {timestamp: {startsWith: month}, ...(siteId && {site_id: siteId})},
+            _sum: {solar_generation: true},
+            _avg: {capacity_factor: true},
+        });
+    }
+
+    private formatHourlyPredictionsData(
+        monthHourlyPredictions: MonthlyPrediction[],
+        currentDate: string,
+        weatherData: WeatherDto[],
+    ) {
+        const currentDatePredictions = monthHourlyPredictions.filter(
+            (prediction) => prediction.timestamp.slice(0, 10) === currentDate,
+        );
+
+        return currentDatePredictions.map((prediction) => {
+            const monthHourlyAvg = getHourlyAverage(monthHourlyPredictions, prediction.timestamp);
+            const weatherRecord = weatherData.find((weather) => weather.timestamp === prediction.timestamp);
+            return {
+                timestamp: prediction.timestamp,
+                production: {
+                    solar_generation: parseFloat((prediction._sum.solar_generation ?? 0).toFixed(2)),
+                    capacity_factor: parseFloat((prediction._avg.capacity_factor ?? 0).toFixed(3)),
+                    monthly_avg: {
+                        solar_generation: monthHourlyAvg.solar_generation,
+                        capacity_factor: monthHourlyAvg.capacity_factor,
+                    },
                 },
-            }),
-            this.weatherService.getByDate(date),
-        ]);
+                weather: weatherRecord ?? {
+                    temperature: 0,
+                    relative_humidity: 0,
+                    cloud_cover: 0,
+                    shortwave_radiation: 0,
+                    diffuse_radiation: 0,
+                },
+            };
+        });
+    }
 
-        const dayHours = production.filter(
-            (p) => weather.find((w) => w.timestamp === p.timestamp)?.shortwave_radiation ?? 0 > 0,
-        );
-
-        const peak = production.reduce(
-            (max, p) => (p.solar_generation > max.solar_generation ? p : max),
-            production[0],
-        );
-
+    private formatPredictionResponse(
+        date: string,
+        hourlyPredictionsData: HourlyDto[],
+        monthlyAvgDaily: ProductionMetricsDto,
+        peak: HourlyDto,
+        siteId?: string,
+    ): GlobalPredictionDto | SitePredictionDto {
         return {
             date,
-            site_id: site,
-            daily_solar_generation: parseFloat(production.reduce((s, p) => s + p.solar_generation, 0).toFixed(2)),
-            daily_avg_capacity_factor: parseFloat(
-                (dayHours.reduce((s, p) => s + p.capacity_factor, 0) / dayHours.length).toFixed(3),
-            ),
-            peak_timestamp: peak?.timestamp ?? null,
-            peak_solar_generation: peak?.solar_generation ?? 0,
-            production,
-            weather,
+            ...(siteId && {site_id: siteId}),
+            daily: {
+                solar_generation: parseFloat(
+                    hourlyPredictionsData
+                        .reduce((sum, hourly) => sum + hourly.production.solar_generation, 0)
+                        .toFixed(2),
+                ),
+                capacity_factor: parseFloat(
+                    (
+                        hourlyPredictionsData.reduce((sum, hourly) => sum + hourly.production.capacity_factor, 0) /
+                        hourlyPredictionsData.length
+                    ).toFixed(3),
+                ),
+            },
+            monthly_avg: {
+                solar_generation: monthlyAvgDaily.solar_generation,
+                capacity_factor: monthlyAvgDaily.capacity_factor,
+            },
+            peak: {
+                timestamp: peak?.timestamp ?? null,
+                solar_generation: peak?.production.solar_generation ?? 0,
+            },
+            hourly: hourlyPredictionsData,
         };
     }
 
+    // POST
     @Cron('0 1 * * *', {timeZone: 'Australia/Melbourne'})
     async scheduledAddTodayPredictions() {
         const result = await this.addTodayPredictions();
@@ -150,8 +202,8 @@ export class PredictionsService {
             }),
             this.prismaService.prediction.createMany({
                 data: data.sites.flatMap((site) =>
-                    site.productions.map((p) => ({
-                        ...p,
+                    site.productions.map((production) => ({
+                        ...production,
                         site_id: site.site_id,
                         fetched_at: new Date(data.fetched_at),
                     })),

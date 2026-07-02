@@ -1,73 +1,80 @@
 import {ApiProperty} from '@nestjs/swagger';
-import {WeatherDto} from '../../weather/dto/weather.dto';
 
-export class GlobalProductionDto {
-    @ApiProperty({example: '2026-06-14T00:00:00'})
-    timestamp!: string;
+export class ProductionMetricsDto {
+    @ApiProperty({example: 2920.68, description: 'Solar generation in kWh'})
+    solar_generation!: number;
 
-    @ApiProperty({example: 125.4})
-    total_solar_generation!: number;
-
-    @ApiProperty({example: 0.125})
-    avg_capacity_factor!: number;
-}
-
-export class GlobalPredictionDto {
-    @ApiProperty({example: '2026-06-14'})
-    date!: string;
-
-    @ApiProperty({example: 8500})
-    daily_solar_generation!: number;
-
-    @ApiProperty({example: 0.16})
-    daily_avg_capacity_factor!: number;
-
-    @ApiProperty({example: '2026-06-14T14:00:00'})
-    peak_timestamp!: string;
-
-    @ApiProperty({example: 12.4})
-    peak_solar_generation!: number;
-
-    @ApiProperty({type: [GlobalProductionDto]})
-    production!: GlobalProductionDto[];
-
-    @ApiProperty({type: [WeatherDto]})
-    weather!: WeatherDto[];
-}
-
-export class SiteProductionDto {
-    @ApiProperty({example: '2026-06-14T00:00:00'})
-    timestamp!: string;
-
-    @ApiProperty({example: 0.8765})
+    @ApiProperty({example: 0.138, description: 'Capacity factor (0 to 1)'})
     capacity_factor!: number;
+}
 
-    @ApiProperty({example: 12.4})
+export class PeakDto {
+    @ApiProperty({example: '2026-07-01T13:00:00', description: 'Timestamp of peak production'})
+    timestamp!: string | null;
+
+    @ApiProperty({example: 565.23, description: 'Peak solar generation in kWh'})
     solar_generation!: number;
 }
 
-export class SitePredictionDto {
-    @ApiProperty({example: '2026-06-14'})
+export class HourlyProductionDto {
+    @ApiProperty({example: 565.23, description: 'Solar generation for this hour in kWh'})
+    solar_generation!: number;
+
+    @ApiProperty({example: 0.268, description: 'Capacity factor for this hour (0 to 1)'})
+    capacity_factor!: number;
+
+    @ApiProperty({type: ProductionMetricsDto, description: 'Monthly average for this hour'})
+    monthly_avg!: ProductionMetricsDto;
+}
+
+export class HourlyWeatherDto {
+    @ApiProperty({example: 14.9, description: 'Temperature in °C'})
+    temperature!: number;
+
+    @ApiProperty({example: 72, description: 'Relative humidity in %'})
+    relative_humidity!: number;
+
+    @ApiProperty({example: 88, description: 'Cloud cover in %'})
+    cloud_cover!: number;
+
+    @ApiProperty({example: 281, description: 'Shortwave radiation in W/m²'})
+    shortwave_radiation!: number;
+
+    @ApiProperty({example: 172, description: 'Diffuse radiation in W/m²'})
+    diffuse_radiation!: number;
+}
+
+export class HourlyDto {
+    @ApiProperty({example: '2026-07-01T13:00:00', description: 'Hourly timestamp'})
+    timestamp!: string;
+
+    @ApiProperty({type: HourlyProductionDto})
+    production!: HourlyProductionDto;
+
+    @ApiProperty({type: HourlyWeatherDto, nullable: true})
+    weather!: HourlyWeatherDto | null;
+}
+
+export class PredictionDto {
+    @ApiProperty({example: '2026-07-01', description: 'Prediction date'})
     date!: string;
 
-    @ApiProperty({example: 'SITE01'})
+    @ApiProperty({type: ProductionMetricsDto, description: 'Daily aggregated metrics'})
+    daily!: ProductionMetricsDto;
+
+    @ApiProperty({type: ProductionMetricsDto, description: 'Monthly average daily metrics'})
+    monthly_avg!: ProductionMetricsDto;
+
+    @ApiProperty({type: PeakDto, description: 'Peak production of the day'})
+    peak!: PeakDto;
+
+    @ApiProperty({type: [HourlyDto], description: 'Hourly production and weather data'})
+    hourly!: HourlyDto[];
+}
+
+export class GlobalPredictionDto extends PredictionDto {}
+
+export class SitePredictionDto extends PredictionDto {
+    @ApiProperty({example: '0Y6D', description: 'Unique site identifier'})
     site_id!: string;
-
-    @ApiProperty({example: 2500})
-    daily_solar_generation!: number;
-
-    @ApiProperty({example: 0.16})
-    daily_avg_capacity_factor!: number;
-
-    @ApiProperty({example: '2026-06-14T14:00:00'})
-    peak_timestamp!: string;
-
-    @ApiProperty({example: 12.4})
-    peak_solar_generation!: number;
-
-    @ApiProperty({type: [SiteProductionDto]})
-    production!: SiteProductionDto[];
-
-    @ApiProperty({type: [WeatherDto]})
-    weather!: WeatherDto[];
 }

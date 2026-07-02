@@ -1,9 +1,9 @@
-import {Injectable, OnModuleDestroy, OnModuleInit} from '@nestjs/common';
+import {BeforeApplicationShutdown, Injectable, OnModuleDestroy, OnModuleInit} from '@nestjs/common';
 import {PrismaMariaDb} from '@prisma/adapter-mariadb';
 import {PrismaClient} from '@prisma/client';
 
 @Injectable()
-export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
+export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy, BeforeApplicationShutdown {
     constructor() {
         const adapter = new PrismaMariaDb(process.env.DATABASE_URL_RUNTIME!);
         super({adapter});
@@ -14,6 +14,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
     }
 
     async onModuleDestroy() {
+        await this.$disconnect();
+    }
+
+    async beforeApplicationShutdown() {
         await this.$disconnect();
     }
 }

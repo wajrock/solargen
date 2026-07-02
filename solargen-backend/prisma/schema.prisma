@@ -41,6 +41,8 @@ model Prediction {
 
   @@unique([site_id, timestamp])
   @@index([site_id, capacity_factor])
+  @@index([timestamp])
+  @@index([site_id, timestamp])
   @@map("predictions")
 }
 

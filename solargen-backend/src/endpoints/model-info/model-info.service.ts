@@ -6,7 +6,7 @@ import {ModelInfoDto} from './dto/model-info.dto';
 export class ModelInfoService {
     constructor(private readonly prismaService: PrismaService) {}
 
-    async getModelInfos(): Promise<ModelInfoDto | null> {
+    async getModelInfo(): Promise<ModelInfoDto | null> {
         const result = await this.prismaService.modelInfo.findFirst({
             select: {
                 model: true,
@@ -23,7 +23,7 @@ export class ModelInfoService {
 
         return {
             ...result,
-            features: result.features as object,
+            features: result.features as string[],
         };
     }
 }
