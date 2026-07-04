@@ -1,0 +1,26 @@
+.history {
+    gap: 1rem;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .separator {
+        display: flex;
+        align-items: center;
+        height: 1.5rem;
+    }
+}
+
+.selectTrigger {
+    background-color: var(--block-bg-color);
+}
+
+.comparisonBlocks {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}

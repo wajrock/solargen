@@ -1,25 +1,30 @@
 .navbar {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 2rem;
+    gap: 1rem;
     background-color: var(--block-bg-color);
     border: var(--default-border);
-    border-radius: 1rem;
-    padding: 0.75rem 1rem;
+    border-radius: var(--default-radius);
+    padding: 1.5rem 1.25rem;
+    height: calc(100% - 1.5rem);
 }
 
-.logo {
-    display: flex;
-    align-items: center;
-    svg {
-        height: 2rem;
-    }
+.logo svg {
+    height: 2rem;
 }
 
-.navList {
+.separator {
+    width: 80%;
+}
+
+.navList,
+.secondaryNavList {
     display: flex;
-    gap: 0.375rem;
+    flex-direction: column;
+    gap: 0.25rem;
     list-style: none;
+    width: 100%;
 }
 
 .navLink {
@@ -27,16 +32,17 @@
     display: flex;
     align-items: center;
     gap: 0.375rem;
-    padding: 0.625rem;
-    line-height: 1;
+    padding: 0.5rem 0.625rem 0.5rem 0.375rem;
     color: var(--primary-text-color);
+    opacity: 0.9;
     font-size: 0.875rem;
     border-radius: var(--default-radius);
     transition: background-color 0.3s;
     white-space: nowrap;
 
     &:hover {
-        background-color: #e5e7eb;
+        color: var(--cta-color);
+        font-weight: 500;
     }
 
     &.active {
@@ -50,13 +56,15 @@
     height: 1.125rem;
 }
 
-.navRight {
-    margin-left: auto;
+.locationInfos {
     font-size: 0.875rem;
     display: flex;
-    gap: 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
     text-transform: capitalize;
     white-space: nowrap;
+    color: var(--primary-text-color);
+    margin-top: auto;
 
     & span {
         display: flex;
@@ -67,4 +75,9 @@
             height: 1rem;
         }
     }
+}
+
+.copyright {
+    font-size: 0.7rem;
+    color: var(--secondary-text-color);
 }

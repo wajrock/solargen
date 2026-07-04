@@ -1,0 +1,53 @@
+.filters {
+    display: flex;
+    align-items: end;
+    gap: 0.5rem;
+    width: 100%;
+    margin-bottom: 0.75rem;
+}
+
+.searchbar {
+    position: relative;
+    width: 100%;
+}
+
+.searchIcon {
+    position: absolute;
+    left: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 1rem;
+}
+
+.clearSearchIcon {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 1rem;
+    opacity: 0.25;
+    cursor: pointer;
+}
+
+.searchInput {
+    padding-left: 2rem;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.selectWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.selectLabel {
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0rem 0.25rem;
+    color: var(--secondary-text-color);
+}
+
+.selectTrigger {
+    width: 7rem;
+}

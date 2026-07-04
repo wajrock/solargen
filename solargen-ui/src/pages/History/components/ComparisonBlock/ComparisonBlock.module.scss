@@ -1,0 +1,56 @@
+.comparisonBlock {
+    gap: 1rem;
+}
+
+.comparisonBlockHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bars {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 4rem;
+}
+
+.skeleton {
+    width: 100%;
+    height: 4rem;
+    border-radius: var(--default-radius);
+}
+
+.barGroup {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    gap: 0.5rem;
+}
+
+.bar {
+    width: 100%;
+    border-radius: var(--default-radius);
+    font-size: 0.825rem;
+    padding: 0.125rem 0.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+
+    &.currentValue {
+        background-color: var(--cta-color);
+        color: var(--cta-text-color);
+    }
+
+    &.referencevalue {
+        background-color: var(--hover-color);
+        color: var(--secondary-color);
+    }
+}
+
+.textValue {
+    color: var(--secondary-text-color);
+}

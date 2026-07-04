@@ -1,0 +1,11 @@
+.selectTrigger {
+    background-color: var(--block-bg-color);
+
+    &:focus-visible {
+        box-shadow: none;
+    }
+}
+
+.selectContent {
+    max-height: 14rem;
+}

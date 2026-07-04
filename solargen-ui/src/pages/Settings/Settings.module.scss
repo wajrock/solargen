@@ -1,0 +1,91 @@
+.settings {
+    height: 100%;
+    gap: 2rem;
+}
+
+.title {
+    width: min(100%, 40rem);
+    margin-inline: auto;
+}
+
+.settingsContent {
+    width: min(100%, 40rem);
+    margin-inline: auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.tabsList {
+    height: 1.75rem;
+    padding: 0.1rem;
+}
+
+.tabTrigger {
+    padding: 0;
+    width: 1.5rem;
+
+    & svg {
+        height: 0.875rem;
+    }
+}
+
+.tabTrigger[data-state='active'],
+.tabTrigger:hover {
+    background-color: var(--block-bg-color);
+}
+
+.inputGroup {
+    display: flex;
+    gap: 0.25rem;
+    height: 1.75rem;
+}
+
+.input {
+    height: 100%;
+    padding: 0.25rem 0.5rem;
+    width: 4rem;
+    text-align: end;
+}
+
+.inputButton {
+    height: 100%;
+    aspect-ratio: 1;
+    padding: 0;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+        background-color: var(--cta-color);
+        color: var(--cta-text-color);
+    }
+
+    & svg {
+        height: 0.875rem;
+    }
+}
+
+.ressourceLink {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--primary-text-color);
+    font-weight: 500;
+    cursor: pointer;
+
+    & svg {
+        height: 1.375rem;
+    }
+
+    &:hover {
+        color: var(--cta-color);
+
+        path {
+            color: var(--cta-color) !important;
+        }
+    }
+}

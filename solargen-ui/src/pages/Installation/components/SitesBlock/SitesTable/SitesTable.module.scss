@@ -1,0 +1,53 @@
+.table {
+    overflow-y: scroll;
+    margin-bottom: 1.25rem;
+}
+
+.tableHeader {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: var(--block-bg-color);
+}
+
+.thContent {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    color: var(--secondary-text-color);
+    font-size: 0.875rem;
+
+    & svg {
+        height: 1rem;
+    }
+}
+
+.th:nth-child(1) {
+    width: 6rem;
+}
+
+.th:nth-child(2) {
+    width: 9rem;
+}
+
+.th:nth-child(3) {
+    width: 15rem;
+}
+
+.th:nth-child(4) {
+    width: 14rem;
+}
+
+.th:nth-child(7) {
+    width: 4rem;
+}
+
+.row {
+    height: 2.5rem;
+}
+
+.skeletonCell {
+    border-radius: var(--default-radius);
+    width: 80%;
+    height: 1rem;
+}

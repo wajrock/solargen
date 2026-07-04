@@ -1,0 +1,9 @@
+.tag {
+    width: fit-content;
+    background-color: var(--tag-bg-color);
+    color: var(--tag-text-color);
+    font-weight: 600;
+    padding: 0.125rem 0.375rem;
+    border-radius: var(--default-radius);
+    font-size: 0.75rem;
+}

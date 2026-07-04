@@ -1,51 +1,80 @@
+import {Separator} from '@/components/ui/separator';
+import {BookOpen, Bot, CalendarClock, Home, MapPin, Rows3, Settings} from 'lucide-react';
 import {Link, useLocation} from 'react-router-dom';
-import {Home, Rows3, BookOpen, Settings, MapPin, CalendarClock} from 'lucide-react';
-import styles from './Navbar.module.scss';
-import Logo from '../shared/Logo';
 import {useTime} from '../../hooks/useTime';
+import Logo from './Logo';
+import styles from './Navbar.module.scss';
 
-const navItems = [
-    {path: '/dashboard', icon: Home, label: "Vue d'ensemble"},
+const pagesLinks = [
+    {path: '/predictions', icon: Home, label: 'Prédictions'},
     {path: '/installation', icon: Rows3, label: 'Installation'},
-    {path: '/historique', icon: BookOpen, label: 'Historique'},
-    {path: '/reglages', icon: Settings, label: 'Réglages'},
+    {path: '/history', icon: BookOpen, label: 'Historique'},
+];
+
+const systemLinks = [
+    {path: '/model', icon: Bot, label: 'Modèle ML'},
+    {path: '/settings', icon: Settings, label: 'Réglages'},
 ];
 
 export default function Navbar() {
+    // Hooks
     const location = useLocation();
-    const {date, time} = useTime();
+    const {date} = useTime();
 
     return (
         <nav className={styles.navbar}>
             <Link to={'/'} className={styles.logo}>
                 <Logo />
             </Link>
+            <Separator className={styles.separator} />
 
             <ul className={styles.navList}>
-                {navItems.map(({path, icon: Icon, label}) => (
+                {pagesLinks.map(({path, icon: Icon, label}) => (
                     <li key={path}>
                         <Link
                             to={path}
                             className={`${styles.navLink} ${location.pathname === path ? styles.active : ''}`}
                         >
-                            <Icon className={styles.navIcon} />
+                            <Icon className={styles.navIcon} strokeWidth={2.2} />
                             {label}
                         </Link>
                     </li>
                 ))}
             </ul>
 
-            <div className={styles.navRight}>
+            <Separator className={styles.separator} />
+
+            <ul className={styles.secondaryNavList}>
+                {systemLinks.map(({path, icon: Icon, label}) => (
+                    <li key={path}>
+                        <Link
+                            to={path}
+                            className={`${styles.navLink} ${location.pathname === path ? styles.active : ''}`}
+                        >
+                            <Icon className={styles.navIcon} strokeWidth={2.2} />
+                            {label}
+                        </Link>
+                    </li>
+                ))}
+            </ul>
+
+            <div className={styles.locationInfos}>
                 <span>
                     <CalendarClock />
-                    {time} - {date}
+                    {date}
                 </span>
 
                 <span>
                     <MapPin />
-                    Melbourne, Australie
+                    Melbourne (AU)
                 </span>
             </div>
+
+            <Separator className={styles.separator} />
+
+            <Link to={'https://wajrock.me/'} target="_blank">
+                <p className={styles.copyright}>© {new Date().getFullYear()} Thibaud Wajrock</p>
+            </Link>
         </nav>
     );
 }

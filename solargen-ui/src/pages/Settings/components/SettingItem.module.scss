@@ -1,0 +1,15 @@
+.settingItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--block-bg-color);
+    border-radius: var(--default-radius);
+    border: var(--default-border);
+    padding: 0.75rem 1rem;
+}
+
+.settingItemTitle {
+    color: var(--primary-text-color);
+    font-size: 0.875rem;
+    font-weight: 500;
+}

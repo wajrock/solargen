@@ -1,0 +1,57 @@
+.card,
+.skeletonCard {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.875rem 1rem;
+    border-radius: var(--default-radius);
+    border: var(--default-border);
+    background-color: var(--block-bg-color);
+    white-space: nowrap;
+}
+
+.cardHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--secondary-text-color);
+}
+
+.infoIcon {
+    height: 1rem;
+    color: var(--secondary-text-color);
+}
+
+.cardName {
+    font-family: 'Poppins', 'sans-serif';
+    color: var(--secondary-text-color);
+    font-size: 0.875rem;
+    font-weight: 500;
+    height: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.cardGroup {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cardValue {
+    color: var(--primary-text-color);
+    font-size: 1.125rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    width: fit-content;
+}
+
+.cardValue,
+.skeletonValue {
+    height: 1.25rem;
+}
+
+.skeletonValue {
+    border-radius: var(--default-radius);
+}

@@ -1,0 +1,19 @@
+.trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    border: 0.1rem solid var(--border-color);
+    border-radius: var(--default-radius);
+    background: var(--block-bg-color);
+    color: var(--primary-text-color);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.content {
+    width: fit-content;
+    padding: 0.5rem;
+    background-color: var(--block-bg-color);
+}

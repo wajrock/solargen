@@ -1,0 +1,17 @@
+.block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.blockLabel {
+    color: var(--secondary-text-color);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.blockContent {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}

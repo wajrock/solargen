@@ -1,0 +1,13 @@
+.inverters {
+    display: flex;
+    gap: 0.25rem;
+}
+.inverter {
+    font-size: 0.8rem;
+    border-radius: var(--default-radius);
+    width: fit-content;
+    padding: 0.125rem 0.5rem;
+    font-weight: 500;
+    background-color: #eff6ff;
+    color: #1e40af;
+}

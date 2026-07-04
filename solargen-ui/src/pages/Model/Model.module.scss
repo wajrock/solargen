@@ -1,0 +1,89 @@
+.model {
+    height: 100%;
+    gap: 1.5rem;
+}
+
+.modelHeader {
+    width: min(100%, 40rem);
+    margin-inline: auto;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.modelReportLink svg {
+    height: 1rem;
+}
+
+.section {
+    width: min(100%, 40rem);
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.sectionTitle {
+    color: var(--secondary-text-color);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.predictionsStatus {
+    background-color: var(--block-bg-color);
+    width: 100%;
+    border: var(--default-border);
+    border-radius: var(--default-radius);
+    padding: 0 1rem;
+    height: 3.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.predictionsStatusIcon {
+    height: 1.25rem;
+
+    &.success {
+        color: #10b981;
+    }
+
+    &.error {
+        color: #ef4444;
+    }
+}
+
+.predictionsStatusIconSkeleton {
+    height: 1.25rem;
+    width: 1.25rem;
+    border-radius: 10rem;
+}
+
+.predictionsStatusDate {
+    font-size: 0.95rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.predictionsStatusDateSkeleton {
+    height: 1.25rem;
+    width: 16rem;
+    border-radius: var(--default-radius);
+}
+
+.predictionsStatusFetchDate {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--secondary-text-color);
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+}
+
+.predictionsStatusFetchDateSkeleton {
+    height: 1rem;
+    width: 12.5rem;
+    border-radius: var(--default-radius);
+    margin-left: auto;
+}

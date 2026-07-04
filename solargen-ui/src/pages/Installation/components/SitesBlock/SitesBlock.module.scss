@@ -1,0 +1,21 @@
+.wrapper {
+    height: 100%;
+    overflow: hidden;
+}
+.sitesBlock {
+    padding: 1.25rem 1.25rem 0 1.25rem;
+    height: fit-content;
+    max-height: 100%;
+    overflow: hidden;
+}
+
+.noResults {
+    width: 100%;
+    margin-bottom: 1.25rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--secondary-text-color);
+}

@@ -18,8 +18,13 @@
         /* Linting */
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "erasableSyntaxOnly": true,
-        "noFallthroughCasesInSwitch": true
+        "erasableSyntaxOnly": false,
+        "noFallthroughCasesInSwitch": true,
+
+        "plugins": [{"name": "typescript-plugin-css-modules"}],
+        "paths": {
+            "@/*": ["./src/*"]
+        }
     },
     "include": ["src"]
 }
