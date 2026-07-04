@@ -4,7 +4,13 @@ import axios from 'axios';
 import {PrismaService} from '../../prisma/prisma.service';
 import {FastApiPredictionResponse} from '../../types/fastapi.types';
 import {WeatherService} from '../weather/weather.service';
-import {GlobalPredictionDto, HourlyDto, ProductionMetricsDto, SitePredictionDto} from './dto/predictions.dto';
+import {
+    GlobalPredictionDto,
+    HourlyDto,
+    PredictionStatusDto,
+    ProductionMetricsDto,
+    SitePredictionDto,
+} from './dto/predictions.dto';
 import {getHourlyAverage, getYearAndMonth, getMonthlyAvgDaily} from './predictions.utils';
 import {WeatherDto} from '../weather/dto/weather.dto';
 
@@ -141,6 +147,25 @@ export class PredictionsService {
                 solar_generation: peak?.production.solar_generation ?? 0,
             },
             hourly: hourlyPredictionsData,
+        };
+    }
+
+    async getLastPredictionStatus(): Promise<PredictionStatusDto | null> {
+        const lastPrediction = await this.prismaService.prediction.findFirst({orderBy: {timestamp: 'desc'}});
+
+        if (!lastPrediction) {
+            return null;
+        }
+
+        const date = lastPrediction.timestamp.slice(0, 10);
+        const {predictionCount, weatherCount} = await this.countExisting(date);
+
+        return {
+            date: date,
+            fetched_at: lastPrediction.fetched_at.toISOString(),
+            prediction_count: predictionCount,
+            weather_count: weatherCount,
+            is_complete: predictionCount === 504 && weatherCount === 24,
         };
     }
 

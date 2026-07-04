@@ -27,6 +27,10 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('docs', app, document, {
         customSiteTitle: 'SolarGen Backend API | Documentation',
+
+        swaggerOptions: {
+            operationsSorter: 'method',
+        },
     });
 
     app.useGlobalPipes(new ValidationPipe());

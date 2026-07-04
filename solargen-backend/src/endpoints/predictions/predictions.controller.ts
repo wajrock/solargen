@@ -2,7 +2,7 @@ import {BadRequestException, Controller, Get, NotFoundException, Param, Post, Us
 import {ApiParam, ApiResponse, ApiTags} from '@nestjs/swagger';
 import {ApiKeyGuard} from '../../guards/api-key.guard';
 import {PredictionParamDto} from './dto/prediction.param.dto';
-import {GlobalPredictionDto, SitePredictionDto} from './dto/predictions.dto';
+import {GlobalPredictionDto, PredictionStatusDto, SitePredictionDto} from './dto/predictions.dto';
 import {PredictionsService} from './predictions.service';
 import {PrismaService} from '../../prisma/prisma.service';
 import {getTodayDate} from '../../common/utils/utils';
@@ -15,6 +15,31 @@ export class PredictionsController {
         private readonly predictionsService: PredictionsService,
         private readonly prismaService: PrismaService,
     ) {}
+
+    @Get('status')
+    @ApiResponse({status: 200, type: PredictionStatusDto})
+    @ApiResponse({
+        status: 404,
+        type: ErrorDto,
+        example: {
+            statusCode: 404,
+            error: 'prediction_not_found',
+            message: 'No predictions found in the database.',
+        },
+    })
+    async lastPredictionStatus(): Promise<PredictionStatusDto> {
+        const lastPredictionStatus = await this.predictionsService.getLastPredictionStatus();
+
+        if (!lastPredictionStatus) {
+            throw new NotFoundException({
+                statusCode: 404,
+                error: 'prediction_not_found',
+                message: 'No predictions found in the database.',
+            });
+        }
+
+        return lastPredictionStatus;
+    }
 
     @Get('today')
     @ApiResponse({status: 200, type: GlobalPredictionDto})

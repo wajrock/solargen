@@ -1,5 +1,25 @@
 import {ApiProperty} from '@nestjs/swagger';
 
+export class PredictionStatusDto {
+    @ApiProperty({example: '2026-07-01', description: 'Date of the most recent predictions in the database'})
+    date!: string;
+
+    @ApiProperty({example: '2026-07-01T01:02:34', description: 'Timestamp of most recent predictions fetch'})
+    fetched_at!: string;
+
+    @ApiProperty({example: 504, description: 'Number of prediction records found for this date'})
+    prediction_count!: number;
+
+    @ApiProperty({example: 24, description: 'Number of weather records found for this date'})
+    weather_count!: number;
+
+    @ApiProperty({
+        example: true,
+        description: 'Whether the data for this date is complete (504 predictions and 24 weather records)',
+    })
+    is_complete!: boolean;
+}
+
 export class ProductionMetricsDto {
     @ApiProperty({example: 2920.68, description: 'Solar generation in kWh'})
     solar_generation!: number;
