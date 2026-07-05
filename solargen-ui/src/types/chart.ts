@@ -1,6 +1,3 @@
-import type {TooltipContentProps} from 'recharts';
-import type {ValueType, NameType} from 'recharts/types/component/DefaultTooltipContent';
-
 export enum CHART_TYPE {
     AREA = 'area',
     LINE = 'line',
@@ -14,8 +11,4 @@ export interface AreaSeries {
     label: string;
     color: string;
     unit: string;
-}
-
-export interface ChartTooltipProps extends TooltipContentProps<ValueType, NameType> {
-    series: AreaSeries[];
 }

@@ -1,3 +1,4 @@
+import {PERFORMANCE_LEVEL} from '@/types/installation';
 import type {Site} from '@/types/installation';
 import {formatInverterModel} from './formatters';
 
@@ -10,12 +11,6 @@ export const getStandardDeviation = (sites: Site[], avgCapacityFactor: number): 
         sites.reduce((sum, site) => sum + Math.pow(site.avg_capacity_factor - avgCapacityFactor, 2), 0) / sites.length,
     );
 };
-
-export enum PERFORMANCE_LEVEL {
-    HIGH = 'high',
-    NORMAL = 'normal',
-    LOW = 'low',
-}
 
 export const getSitePerformance = (
     value: number,

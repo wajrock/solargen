@@ -18,3 +18,9 @@ export interface Inverter {
     model: string;
     quantity: number;
 }
+
+export enum PERFORMANCE_LEVEL {
+    HIGH = 'high',
+    NORMAL = 'normal',
+    LOW = 'low',
+}

@@ -1,9 +1,9 @@
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
-import {PERFORMANCE_LEVEL} from '@/utils/installation';
 import {CircleX, Search} from 'lucide-react';
 import styles from './SiteFilters.module.scss';
+import {PERFORMANCE_LEVEL} from '@/types/installation';
 
 interface SiteFilterProps {
     invertersType: string[];

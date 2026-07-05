@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
-import type {ChartTooltipProps} from '@/types/chart';
+import type {AreaSeries} from '@/types/chart';
 import styles from './Chart.module.scss';
+import type {TooltipContentProps} from 'recharts';
+import type {ValueType, NameType} from 'recharts/types/component/DefaultTooltipContent';
+
+export interface ChartTooltipProps extends TooltipContentProps<ValueType, NameType> {
+    series: AreaSeries[];
+}
 
 function ChartTooltip({series, active, label, payload}: ChartTooltipProps) {
     if (!active || !payload?.length) return null;

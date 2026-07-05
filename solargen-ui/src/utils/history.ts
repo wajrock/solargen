@@ -1,6 +1,6 @@
 import {getMelbourneToday} from './date';
 
-export function getCurrentYearMonths(): {value: string; label: string}[] {
+export function getCurrentYearPastMonths(): {value: string; label: string}[] {
     const months = [];
 
     const todayDate = getMelbourneToday();

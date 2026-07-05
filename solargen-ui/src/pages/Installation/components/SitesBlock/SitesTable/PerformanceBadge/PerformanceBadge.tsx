@@ -1,4 +1,5 @@
-import type {PERFORMANCE_LEVEL} from '@/utils/installation';
+import type {PERFORMANCE_LEVEL} from '@/types/installation';
+
 import styles from './PerformanceBadge.module.scss';
 interface PerformanceBadgeProps {
     type: PERFORMANCE_LEVEL;

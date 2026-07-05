@@ -9,7 +9,7 @@ export const formatPredictionsStatusTooltip = (predictionsStatus: PredictionsSta
         return `Il manque ${504 - predictionsStatus.prediction_count} prédictions`;
     }
 
-    if (predictionsStatus.prediction_count < 24) {
+    if (predictionsStatus.weather_count < 24) {
         return `Il manque ${24 - predictionsStatus.weather_count} données météos`;
     }
 

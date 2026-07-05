@@ -1,8 +1,8 @@
 import {Separator} from '@/components/ui/separator';
 import {BookOpen, Bot, CalendarClock, Home, MapPin, Rows3, Settings} from 'lucide-react';
 import {Link, useLocation} from 'react-router-dom';
-import {useTime} from '../../hooks/useTime';
-import Logo from './Logo';
+import {useTime} from '../../../hooks/useTime';
+import Logo from '../Logo';
 import styles from './Navbar.module.scss';
 
 const pagesLinks = [
@@ -22,7 +22,7 @@ export default function Navbar() {
     const {date} = useTime();
 
     return (
-        <nav className={styles.navbar}>
+        <nav className={styles.navbar} data-testid="navbar">
             <Link to={'/'} className={styles.logo}>
                 <Logo />
             </Link>
@@ -33,6 +33,7 @@ export default function Navbar() {
                     <li key={path}>
                         <Link
                             to={path}
+                            data-testid={`nav-link-${path}`}
                             className={`${styles.navLink} ${location.pathname === path ? styles.active : ''}`}
                         >
                             <Icon className={styles.navIcon} strokeWidth={2.2} />
@@ -49,6 +50,7 @@ export default function Navbar() {
                     <li key={path}>
                         <Link
                             to={path}
+                            data-testid={`nav-link-${path}`}
                             className={`${styles.navLink} ${location.pathname === path ? styles.active : ''}`}
                         >
                             <Icon className={styles.navIcon} strokeWidth={2.2} />
@@ -59,7 +61,7 @@ export default function Navbar() {
             </ul>
 
             <div className={styles.locationInfos}>
-                <span>
+                <span data-testid="current-date">
                     <CalendarClock />
                     {date}
                 </span>
@@ -73,7 +75,9 @@ export default function Navbar() {
             <Separator className={styles.separator} />
 
             <Link to={'https://wajrock.me/'} target="_blank">
-                <p className={styles.copyright}>© {new Date().getFullYear()} Thibaud Wajrock</p>
+                <p className={styles.copyright} data-testid="copyright">
+                    © {new Date().getFullYear()} Thibaud Wajrock
+                </p>
             </Link>
         </nav>
     );

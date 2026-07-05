@@ -32,7 +32,7 @@ interface HourlyPrediction {
 }
 
 interface Peak {
-    timestamp: string;
+    timestamp: string | null;
     solar_generation: number;
 }
 

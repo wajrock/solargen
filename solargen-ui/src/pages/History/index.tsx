@@ -2,7 +2,7 @@ import PageHeader from '@/components/shared/PageHeader/PageHeader';
 import SiteSelect from '@/components/shared/SiteSelect/SiteSelect';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {Separator} from '@/components/ui/separator';
-import {getCurrentYearMonths} from '@/utils/history';
+import {getCurrentYearPastMonths} from '@/utils/history';
 import {useEffect, useMemo, useState} from 'react';
 import styles from './History.module.scss';
 import useHistoryParams from './hooks/useHistoryParams';
@@ -29,10 +29,23 @@ function History() {
         document.title = 'Historique | SolarGen';
     }, []);
 
-    const months = useMemo(() => getCurrentYearMonths(), []);
+    const pastMonths = useMemo(() => getCurrentYearPastMonths(), []);
 
     const month = monthParam ?? String(getMelbourneToday().getMonth() + 1).padStart(2, '0');
     const {historyData} = useHistory(month, siteParam);
+    const previousYearDailyByDay = useMemo(
+        () => new Map(historyData?.previous_year.daily.map((day) => [day.date.slice(8, 10), day]) ?? []),
+        [historyData],
+    );
+    const historyChartData = useMemo(
+        () =>
+            historyData?.current_year.daily.map((day) => ({
+                timestamp: formatDate(new Date(day.date), 'dd/MM'),
+                currentYearSolarGeneration: day.solar_generation,
+                lastYearSolarGeneration: previousYearDailyByDay.get(day.date.slice(8, 10))?.solar_generation ?? 0,
+            })) ?? [],
+        [historyData, previousYearDailyByDay],
+    );
 
     useEffect(() => {
         setCurrentMonthLabel(formatDate(new Date(`2025-${month}-01T00:00`), 'MMMM'));
@@ -68,7 +81,7 @@ function History() {
                             <SelectItem className={`select-item ${styles.selectItem}`} value="currentMonth">
                                 Ce mois-ci
                             </SelectItem>
-                            {months.map((month) => (
+                            {pastMonths.map((month) => (
                                 <SelectItem
                                     key={month.value}
                                     value={month.value}
@@ -88,13 +101,7 @@ function History() {
             </PageHeader>
             <Chart
                 className={styles.productionChart}
-                data={
-                    historyData?.current_year.daily.map((day, index) => ({
-                        timestamp: formatDate(new Date(day.date), 'dd/MM'),
-                        currentYearSolarGeneration: day.solar_generation,
-                        lastYearSolarGeneration: historyData.previous_year.daily[index].solar_generation,
-                    })) ?? []
-                }
+                data={historyChartData}
                 xKey="timestamp"
                 title="Production solaire sur 24h"
                 tooltip="Productions prédites par le modèle."
@@ -146,7 +153,7 @@ function History() {
                     currentValue={currentYearCo2Savings}
                     referenceValue={previousYearCo2Savings}
                     absoluteTrend={true}
-                    unit={' kgCo2   '}
+                    unit={' kgCo2'}
                     formatedCurrentValue={formatCO2Savings(currentYearSolarGeneration, co2Rate)}
                     formatedReferenceValue={formatCO2Savings(previousYearSolarGeneration, co2Rate)}
                     currentYear={historyData?.current_year.year ?? 0}
