@@ -2,14 +2,14 @@
     display: flex;
     flex-wrap: wrap;
     align-items: end;
-    gap: 0.5rem;
+    gap: 1rem 0.5rem;
     width: 100%;
     margin-bottom: 0.75rem;
 }
 
 .searchbar {
     position: relative;
-    width: 100%;
+    flex-grow: 1;
 }
 
 .searchIcon {
@@ -51,4 +51,15 @@
 
 .selectTrigger {
     width: 7rem;
+}
+
+@media screen and (max-width: 767px) {
+    .searchbar {
+        width: 100%;
+        margin-top: 0.75rem;
+    }
+
+    .searchInput {
+        font-size: 0.875rem;
+    }
 }

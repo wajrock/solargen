@@ -29,12 +29,12 @@ function MobileHeader() {
                 <Logo />
             </Link>
 
-            <div className={styles.menuBtn} onClick={() => setOpenMenu(true)} data-testid="open-menu-button">
+            <div onClick={() => setOpenMenu(true)} data-testid="open-menu-button">
                 <Menu />
             </div>
             {openMenu && (
                 <div className={styles.menu}>
-                    <div className={styles.menuBtn} onClick={() => setOpenMenu(false)} data-testid="close-menu-button">
+                    <div className={styles.menuBtn} onClick={() => setOpenMenu(false)} data-testid="open-menu-button">
                         <XIcon /> Fermer
                     </div>
                     <nav className={styles.mobileNavBar} data-testid="navbar">

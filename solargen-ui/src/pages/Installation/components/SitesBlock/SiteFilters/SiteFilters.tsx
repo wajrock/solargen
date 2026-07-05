@@ -32,7 +32,7 @@ function SiteFilters({
                     className={styles.searchInput}
                     value={search}
                     onChange={(e) => onSearchChange(e.target.value)}
-                    placeholder="Rechercher un site par identifiant ou modèle.."
+                    placeholder="Rechercher par identifiant/modèle.."
                 />
                 {search.length > 0 && <CircleX className={styles.clearSearchIcon} onClick={() => onSearchChange('')} />}
             </div>

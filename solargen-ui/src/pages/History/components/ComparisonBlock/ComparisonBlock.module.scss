@@ -59,3 +59,14 @@
 .textValue {
     color: var(--secondary-text-color);
 }
+
+@media screen and (max-width: 767px) {
+    .bars {
+        height: fit-content;
+    }
+
+    .barGroup {
+        flex-direction: column;
+        align-items: start;
+    }
+}

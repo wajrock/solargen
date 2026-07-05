@@ -35,6 +35,7 @@
     font-weight: 500;
     gap: 0.5rem;
     color: var(--secondary-text-color);
+    padding: 0.5rem 1rem;
 }
 
 .mobileNavBar {
@@ -60,10 +61,10 @@
     display: flex;
     align-items: center;
     gap: 0.375rem;
-    padding: 0.5rem 0.625rem 0.5rem 0.375rem;
+    padding: 0.5rem 0.625rem 0.5rem 1rem;
     color: var(--primary-text-color);
     opacity: 0.9;
-    font-size: 0.875rem;
+    font-size: 1rem;
     border-radius: var(--default-radius);
     transition: background-color 0.3s;
     white-space: nowrap;
@@ -81,7 +82,7 @@
 }
 
 .navIcon {
-    height: 1.125rem;
+    height: 1.25rem;
 }
 
 .locationInfos {
@@ -106,15 +107,11 @@
 }
 
 .copyright {
-    font-size: 0.7rem;
+    font-size: 0.875rem;
     color: var(--secondary-text-color);
 }
 
 @media screen and (max-width: 767px) {
-    .navbar {
-        display: none;
-    }
-
     .mobileHeader {
         display: flex;
     }

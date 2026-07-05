@@ -23,7 +23,7 @@
 }
 
 .th:nth-child(1) {
-    width: 6rem;
+    width: 8rem;
 }
 
 .th:nth-child(2) {
@@ -36,6 +36,14 @@
 
 .th:nth-child(4) {
     width: 14rem;
+}
+
+.th:nth-child(5) {
+    width: 12rem;
+}
+
+.th:nth-child(6) {
+    width: 10rem;
 }
 
 .th:nth-child(7) {
@@ -55,5 +63,6 @@
 @media screen and (max-width: 767px) {
     .table {
         overflow: unset;
+        width: max-content;
     }
 }
