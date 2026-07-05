@@ -75,6 +75,14 @@ export class HistoryService {
     }
 
     private buildYearData(predictions: MonthPredictions, year: number) {
+        if (predictions.length === 0) {
+            return {
+                year,
+                monthly: {solar_generation: 0, capacity_factor: 0},
+                daily: [],
+            };
+        }
+
         const dailyMap = predictions.reduce(
             (days, prediction) => {
                 const date = prediction.timestamp.slice(0, 10);
@@ -97,9 +105,9 @@ export class HistoryService {
 
         const monthly = {
             solar_generation: parseFloat(daily.reduce((sum, day) => sum + day.solar_generation, 0).toFixed(2)),
-            capacity_factor: parseFloat(
-                (daily.reduce((sum, day) => sum + day.capacity_factor, 0) / daily.length).toFixed(3),
-            ),
+            capacity_factor: daily.length
+                ? parseFloat((daily.reduce((sum, day) => sum + day.capacity_factor, 0) / daily.length).toFixed(3))
+                : 0,
         };
 
         return {year, monthly, daily};

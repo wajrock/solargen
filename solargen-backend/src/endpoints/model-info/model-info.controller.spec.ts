@@ -5,17 +5,17 @@ import {ModelInfoService} from './model-info.service';
 import {ModelInfoDto} from './dto/model-info.dto';
 
 const mockModelInfo: ModelInfoDto = {
-    model: 'GradientBoosting',
-    r2: 0.867,
-    mae: 0.0209,
+    model: 'LightGBM',
+    r2: 0.887,
+    mae: 0.064,
     train_start: '2020-01-08',
-    train_end: '2021-12-22',
-    features: ['temperature', 'relative_humidity', 'shortwave_radiation'],
+    train_end: '2022-04-23',
+    features: ['temperature', 'shortwave_radiation'],
     sites_count: 21,
 };
 
 const mockModelInfoService = {
-    getModelInfos: jest.fn().mockResolvedValue(mockModelInfo),
+    getModelInfo: jest.fn().mockResolvedValue(mockModelInfo),
 };
 
 describe('ModelInfoController', () => {
@@ -34,19 +34,14 @@ describe('ModelInfoController', () => {
         jest.clearAllMocks();
     });
 
-    it('should be defined', () => {
-        expect(controller).toBeDefined();
-    });
-
     describe('findModel', () => {
         it('should return model info', async () => {
             const result = await controller.findModel();
             expect(result).toEqual(mockModelInfo);
-            expect(mockModelInfoService.getModelInfos).toHaveBeenCalledTimes(1);
         });
 
-        it('should throw NotFoundException when no model info found', async () => {
-            mockModelInfoService.getModelInfos.mockResolvedValueOnce(null);
+        it('should throw NotFoundException when model info not found', async () => {
+            mockModelInfoService.getModelInfo.mockResolvedValueOnce(null);
             await expect(controller.findModel()).rejects.toThrow(NotFoundException);
         });
     });

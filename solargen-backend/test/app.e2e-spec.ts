@@ -5,59 +5,93 @@ import {AppModule} from '../src/app.module';
 import {PredictionsService} from '../src/endpoints/predictions/predictions.service';
 import {InstallationService} from '../src/endpoints/installation/installation.service';
 import {ModelInfoService} from '../src/endpoints/model-info/model-info.service';
+import {HistoryService} from '../src/endpoints/history/history.service';
 import {WeatherService} from '../src/endpoints/weather/weather.service';
 import {PrismaService} from '../src/prisma/prisma.service';
 import {Server} from 'node:http';
 
-const API_KEY = 'test-api-key';
+const API_KEY = process.env.BACKEND_API_KEY!;
 
 const mockGlobalPrediction = {
-    production: [{timestamp: '2025-06-14T00:00:00', total_production_kw: 125.4}],
-    weather: [
+    date: '2026-06-15',
+    daily: {solar_generation: 2920.68, capacity_factor: 0.138},
+    monthly_avg: {solar_generation: 2750.4, capacity_factor: 0.129},
+    peak: {timestamp: '2026-06-15T13:00:00', solar_generation: 565.23},
+    hourly: [
         {
-            timestamp: '2025-06-14T00:00:00',
-            temperature: 21.5,
-            relative_humidity: 65,
-            cloud_cover: 44,
-            shortwave_radiation: 450.2,
-            diffuse_radiation: 210,
+            timestamp: '2026-06-15T13:00:00',
+            production: {
+                solar_generation: 565.23,
+                capacity_factor: 0.268,
+                monthly_avg: {solar_generation: 520.1, capacity_factor: 0.2},
+            },
+            weather: {
+                temperature: 14.9,
+                relative_humidity: 72,
+                cloud_cover: 88,
+                shortwave_radiation: 281,
+                diffuse_radiation: 172,
+            },
         },
     ],
 };
 
 const mockSitePrediction = {
-    production: [{site_id: 'SITE01', timestamp: '2025-06-14T00:00:00', capacity_factor: 0.8, solar_generation: 12.4}],
-    weather: [
-        {
-            timestamp: '2025-06-14T00:00:00',
-            temperature: 21.5,
-            relative_humidity: 65,
-            cloud_cover: 44,
-            shortwave_radiation: 450.2,
-            diffuse_radiation: 210,
-        },
-    ],
+    ...mockGlobalPrediction,
+    site_id: '0Y6D',
+};
+
+const mockPredictionStatus = {
+    date: '2026-06-15',
+    fetched_at: '2026-06-15T01:02:34',
+    prediction_count: 504,
+    weather_count: 24,
+    is_complete: true,
 };
 
 const mockInstallation = {
     name: 'Bundoora',
     latitude: -37.71828652,
     longitude: 145.0509752,
+    total_capacity: 1842,
+    sites: [
+        {
+            id: '0Y6D',
+            kwp: 94.24,
+            panel_model: 'Trina 310W',
+            inverters: [{model: 'SolarEdge SE82.8K', quantity: 1}],
+            avg_capacity_factor: 0.2807,
+        },
+    ],
 };
 
-const mockSites = [
-    {id: 'SITE01', kwp: 25.5, panel_count: 10, panel_model: 'JA Solar JAM72S30', inverter_model: 'Fronius Symo 15.0'},
-    {id: 'SITE02', kwp: 18.0, panel_count: null, panel_model: null, inverter_model: null},
-];
-
 const mockModelInfo = {
-    model: 'GradientBoosting',
-    r2: 0.867,
-    mae: 0.0209,
+    model: 'LightGBM',
+    r2: 0.887,
+    mae: 0.064,
     train_start: '2020-01-08',
-    train_end: '2021-12-22',
-    features: ['temperature', 'relative_humidity'],
+    train_end: '2022-04-23',
+    features: ['temperature', 'shortwave_radiation'],
     sites_count: 21,
+};
+
+const mockGlobalHistory = {
+    month: '06',
+    current_year: {
+        year: 2026,
+        monthly: {solar_generation: 87456.32, capacity_factor: 0.138},
+        daily: [{date: '2026-06-01', solar_generation: 2920.68, capacity_factor: 0.138}],
+    },
+    previous_year: {
+        year: 2025,
+        monthly: {solar_generation: 78234.12, capacity_factor: 0.124},
+        daily: [{date: '2025-06-01', solar_generation: 2650.32, capacity_factor: 0.126}],
+    },
+};
+
+const mockSiteHistory = {
+    ...mockGlobalHistory,
+    site_id: '0Y6D',
 };
 
 describe('AppModule (e2e)', () => {
@@ -65,33 +99,39 @@ describe('AppModule (e2e)', () => {
     let server: Server;
 
     beforeAll(async () => {
-        process.env.BACKEND_API_KEY = API_KEY;
-
         const moduleFixture: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         })
             .overrideProvider(PrismaService)
-            .useValue({})
+            .useValue({
+                site: {
+                    findUnique: jest.fn().mockResolvedValue({id: '0Y6D', kwp: 94.24}),
+                },
+            })
             .overrideProvider(PredictionsService)
             .useValue({
                 getByDate: jest.fn().mockResolvedValue(mockGlobalPrediction),
                 getByDateAndSite: jest.fn().mockResolvedValue(mockSitePrediction),
+                getLastPredictionStatus: jest.fn().mockResolvedValue(mockPredictionStatus),
                 addTodayPredictions: jest.fn().mockResolvedValue({success: true, message: 'inserted'}),
                 addPredictionByDate: jest.fn().mockResolvedValue({success: true, message: 'inserted'}),
             })
             .overrideProvider(InstallationService)
             .useValue({
                 getInstallationInfos: jest.fn().mockResolvedValue(mockInstallation),
-                getSites: jest.fn().mockResolvedValue(mockSites),
-                getSite: jest.fn().mockResolvedValue(mockSites[0]),
             })
             .overrideProvider(ModelInfoService)
             .useValue({
-                getModelInfos: jest.fn().mockResolvedValue(mockModelInfo),
+                getModelInfo: jest.fn().mockResolvedValue(mockModelInfo),
+            })
+            .overrideProvider(HistoryService)
+            .useValue({
+                getByMonth: jest.fn().mockResolvedValue(mockGlobalHistory),
+                getByMonthAndSite: jest.fn().mockResolvedValue(mockSiteHistory),
             })
             .overrideProvider(WeatherService)
             .useValue({
-                getByDate: jest.fn().mockResolvedValue(mockGlobalPrediction.weather),
+                getByDate: jest.fn().mockResolvedValue(mockGlobalPrediction.hourly.map((h) => h.weather)),
             })
             .compile();
 
@@ -105,94 +145,93 @@ describe('AppModule (e2e)', () => {
         await app.close();
     }, 30000);
 
-    describe('ApiKeyGuard', () => {
-        it('should return 401 without API key', async () => {
-            await request(server).get('/predictions/today').expect(401);
-        });
-
-        it('should return 401 with invalid API key', async () => {
-            await request(server).get('/predictions/today').set('x-api-key', 'wrong-key').expect(401);
-        });
-    });
-
     describe('/predictions', () => {
+        it('GET /predictions/status → 200', async () => {
+            await request(server).get('/predictions/status').expect(200).expect(mockPredictionStatus);
+        });
+
         it('GET /predictions/today → 200', async () => {
-            await request(server)
-                .get('/predictions/today')
-                .set('x-api-key', API_KEY)
-                .expect(200)
-                .expect(mockGlobalPrediction);
+            await request(server).get('/predictions/today').expect(200).expect(mockGlobalPrediction);
         });
 
         it('GET /predictions/today/:siteId → 200', async () => {
-            await request(server)
-                .get('/predictions/today/SITE01')
-                .set('x-api-key', API_KEY)
-                .expect(200)
-                .expect(mockSitePrediction);
+            await request(server).get('/predictions/today/0Y6D').expect(200).expect(mockSitePrediction);
         });
 
-        it('GET /predictions/past/:date → 200', async () => {
-            await request(server)
-                .get('/predictions/past/2024-01-01')
-                .set('x-api-key', API_KEY)
-                .expect(200)
-                .expect(mockGlobalPrediction);
+        it('GET /predictions/:date → 200', async () => {
+            await request(server).get('/predictions/2024-01-01').expect(200).expect(mockGlobalPrediction);
         });
 
-        it('GET /predictions/past/:date → 400 for invalid date format', async () => {
-            await request(server).get('/predictions/past/invalid-date').set('x-api-key', API_KEY).expect(400);
+        it('GET /predictions/:date → 400 for invalid date format', async () => {
+            await request(server).get('/predictions/invalid-date').expect(400);
         });
 
-        it('GET /predictions/past/:date → 400 for today or future date', async () => {
+        it('GET /predictions/:date → 400 for today or future date', async () => {
             const today = new Date().toLocaleDateString('en-CA', {timeZone: 'Australia/Melbourne'});
-            await request(server).get(`/predictions/past/${today}`).set('x-api-key', API_KEY).expect(400);
+            await request(server).get(`/predictions/${today}`).expect(400);
         });
 
-        it('GET /predictions/past/:date/:siteId → 200', async () => {
+        it('GET /predictions/:date/:siteId → 200', async () => {
+            await request(server).get('/predictions/2024-01-01/0Y6D').expect(200).expect(mockSitePrediction);
+        });
+
+        it('POST /predictions/:date → 401 without API key', async () => {
+            await request(server).post('/predictions/2024-01-01').expect(401);
+        });
+
+        it('POST /predictions/:date → 200 with valid API key', async () => {
             await request(server)
-                .get('/predictions/past/2024-01-01/SITE01')
+                .post('/predictions/2024-01-01')
                 .set('x-api-key', API_KEY)
-                .expect(200)
-                .expect(mockSitePrediction);
+                .expect(201)
+                .expect({success: true, message: 'inserted'});
         });
     });
 
     describe('/installation', () => {
         it('GET /installation → 200', async () => {
-            await request(server).get('/installation').set('x-api-key', API_KEY).expect(200).expect(mockInstallation);
+            await request(server).get('/installation').expect(200).expect(mockInstallation);
         });
 
-        it('GET /installation/sites → 200', async () => {
-            await request(server).get('/installation/sites').set('x-api-key', API_KEY).expect(200).expect(mockSites);
-        });
+        it('GET /installation → 404 when not found', async () => {
+            const service = app.get(InstallationService);
+            jest.spyOn(service, 'getInstallationInfos').mockResolvedValueOnce(null);
 
-        it('GET /installation/sites/:siteId → 200', async () => {
-            await request(server)
-                .get('/installation/sites/SITE01')
-                .set('x-api-key', API_KEY)
-                .expect(200)
-                .expect(mockSites[0]);
-        });
-
-        it('GET /installation/sites/:siteId → 404 when not found', async () => {
-            const module = app.get(InstallationService);
-            jest.spyOn(module, 'getSite').mockResolvedValueOnce(null);
-
-            await request(server).get('/installation/sites/UNKNOWN').set('x-api-key', API_KEY).expect(404);
+            await request(server).get('/installation').expect(404);
         });
     });
 
     describe('/model-info', () => {
         it('GET /model-info → 200', async () => {
-            await request(server).get('/model-info').set('x-api-key', API_KEY).expect(200).expect(mockModelInfo);
+            await request(server).get('/model-info').expect(200).expect(mockModelInfo);
         });
 
         it('GET /model-info → 404 when not found', async () => {
-            const module = app.get(ModelInfoService);
-            jest.spyOn(module, 'getModelInfos').mockResolvedValueOnce(null);
+            const service = app.get(ModelInfoService);
+            jest.spyOn(service, 'getModelInfo').mockResolvedValueOnce(null);
 
-            await request(server).get('/model-info').set('x-api-key', API_KEY).expect(404);
+            await request(server).get('/model-info').expect(404);
+        });
+    });
+
+    describe('/history', () => {
+        it('GET /history/:month → 200', async () => {
+            await request(server).get('/history/06').expect(200).expect(mockGlobalHistory);
+        });
+
+        it('GET /history/:month → 400 for invalid month format', async () => {
+            await request(server).get('/history/13').expect(400);
+        });
+
+        it('GET /history/:month/:siteId → 200', async () => {
+            await request(server).get('/history/06/0Y6D').expect(200).expect(mockSiteHistory);
+        });
+
+        it('GET /history/:month/:siteId → 404 when site not found', async () => {
+            const prisma = app.get(PrismaService);
+            jest.spyOn(prisma.site, 'findUnique').mockResolvedValueOnce(null);
+
+            await request(server).get('/history/06/UNKNOWN').expect(404);
         });
     });
 });

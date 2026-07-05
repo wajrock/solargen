@@ -37,6 +37,10 @@ export class PredictionsService {
 
         const hourlyPredictionsData = this.formatHourlyPredictionsData(monthHourlyPredictions, date, weatherData);
 
+        if (hourlyPredictionsData.length === 0) {
+            return this.formatPredictionResponse(date, [], {solar_generation: 0, capacity_factor: 0});
+        }
+
         const peak = hourlyPredictionsData.reduce(
             (max, hourly) => (hourly.production.solar_generation > max.production.solar_generation ? hourly : max),
             hourlyPredictionsData[0],
@@ -56,6 +60,16 @@ export class PredictionsService {
         ]);
 
         const hourlyPredictionsData = this.formatHourlyPredictionsData(monthHourlyPredictions, date, weatherData);
+
+        if (hourlyPredictionsData.length === 0) {
+            return this.formatPredictionResponse(
+                date,
+                [],
+                {solar_generation: 0, capacity_factor: 0},
+                undefined,
+                siteId,
+            ) as SitePredictionDto;
+        }
 
         const peak = hourlyPredictionsData.reduce(
             (max, hourly) => (hourly.production.solar_generation > max.production.solar_generation ? hourly : max),
@@ -119,7 +133,7 @@ export class PredictionsService {
         date: string,
         hourlyPredictionsData: HourlyDto[],
         monthlyAvgDaily: ProductionMetricsDto,
-        peak: HourlyDto,
+        peak?: HourlyDto,
         siteId?: string,
     ): GlobalPredictionDto | SitePredictionDto {
         return {
@@ -131,12 +145,16 @@ export class PredictionsService {
                         .reduce((sum, hourly) => sum + hourly.production.solar_generation, 0)
                         .toFixed(2),
                 ),
-                capacity_factor: parseFloat(
-                    (
-                        hourlyPredictionsData.reduce((sum, hourly) => sum + hourly.production.capacity_factor, 0) /
-                        hourlyPredictionsData.length
-                    ).toFixed(3),
-                ),
+                capacity_factor: hourlyPredictionsData.length
+                    ? parseFloat(
+                          (
+                              hourlyPredictionsData.reduce(
+                                  (sum, hourly) => sum + hourly.production.capacity_factor,
+                                  0,
+                              ) / hourlyPredictionsData.length
+                          ).toFixed(3),
+                      )
+                    : 0,
             },
             monthly_avg: {
                 solar_generation: monthlyAvgDaily.solar_generation,

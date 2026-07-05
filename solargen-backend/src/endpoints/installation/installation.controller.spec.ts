@@ -40,10 +40,6 @@ describe('InstallationController', () => {
         jest.clearAllMocks();
     });
 
-    it('should be defined', () => {
-        expect(controller).toBeDefined();
-    });
-
     describe('findInstallation', () => {
         it('should return installation info', async () => {
             const result = await controller.findInstallation();

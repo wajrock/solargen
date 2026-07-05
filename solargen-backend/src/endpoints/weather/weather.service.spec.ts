@@ -1,30 +1,10 @@
 import {Test, TestingModule} from '@nestjs/testing';
 import {WeatherService} from './weather.service';
 import {PrismaService} from '../../prisma/prisma.service';
-import {WeatherDto} from './dto/weather.dto';
-
-const mockWeather: WeatherDto[] = [
-    {
-        timestamp: '2025-06-14T00:00:00',
-        temperature: 21.5,
-        relative_humidity: 65,
-        cloud_cover: 44,
-        shortwave_radiation: 450.2,
-        diffuse_radiation: 210,
-    },
-    {
-        timestamp: '2025-06-14T01:00:00',
-        temperature: 18,
-        relative_humidity: 30,
-        cloud_cover: 50,
-        shortwave_radiation: 0,
-        diffuse_radiation: 0,
-    },
-];
 
 const mockPrismaService = {
     weather: {
-        findMany: jest.fn().mockResolvedValue(mockWeather),
+        findMany: jest.fn(),
     },
 };
 
@@ -37,36 +17,45 @@ describe('WeatherService', () => {
         }).compile();
 
         service = module.get<WeatherService>(WeatherService);
-    });
-
-    afterEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should be defined', () => {
-        expect(service).toBeDefined();
-    });
+    describe('getByDate', () => {
+        it('queries weather data filtered by date and ordered chronologically', async () => {
+            mockPrismaService.weather.findMany.mockResolvedValue([]);
 
-    it('should return weather data for a given date', async () => {
-        const result = await service.getByDate('2025-06-14');
-        expect(result).toEqual(mockWeather);
-        expect(mockPrismaService.weather.findMany).toHaveBeenCalledWith({
-            where: {timestamp: {startsWith: '2025-06-14'}},
-            orderBy: {timestamp: 'asc'},
-            select: {
-                timestamp: true,
-                temperature: true,
-                relative_humidity: true,
-                cloud_cover: true,
-                shortwave_radiation: true,
-                diffuse_radiation: true,
-            },
+            await service.getByDate('2026-06-15');
+
+            expect(mockPrismaService.weather.findMany).toHaveBeenCalledWith({
+                where: {timestamp: {startsWith: '2026-06-15'}},
+                orderBy: {timestamp: 'asc'},
+                select: {
+                    timestamp: true,
+                    temperature: true,
+                    relative_humidity: true,
+                    cloud_cover: true,
+                    shortwave_radiation: true,
+                    diffuse_radiation: true,
+                },
+            });
         });
-    });
 
-    it('should return empty array when no weather data found', async () => {
-        mockPrismaService.weather.findMany.mockResolvedValueOnce([]);
-        const result = await service.getByDate('2099-01-01');
-        expect(result).toEqual([]);
+        it('returns the weather records as-is', async () => {
+            const mockWeather = [
+                {
+                    timestamp: '2026-06-15T13:00:00',
+                    temperature: 14.9,
+                    relative_humidity: 72,
+                    cloud_cover: 88,
+                    shortwave_radiation: 281,
+                    diffuse_radiation: 172,
+                },
+            ];
+            mockPrismaService.weather.findMany.mockResolvedValue(mockWeather);
+
+            const result = await service.getByDate('2026-06-15');
+
+            expect(result).toEqual(mockWeather);
+        });
     });
 });

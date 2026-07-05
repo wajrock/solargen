@@ -24,6 +24,10 @@ export function getHourlyAverage(
     const timestampHour = timestamp.slice(11, 16);
     const monthlyHourMatches = monthlyData.filter((d) => d.timestamp.slice(11, 16) === timestampHour);
 
+    if (monthlyHourMatches.length === 0) {
+        return {solar_generation: 0, capacity_factor: 0};
+    }
+
     const hourlyAvgSolarGeneration =
         monthlyHourMatches.reduce((sum, hour) => sum + (hour._sum.solar_generation ?? 0), 0) /
         monthlyHourMatches.length;
@@ -40,6 +44,10 @@ export function getMonthlyAvgDaily(hourly: {production: {monthly_avg: HourlyMont
     solar_generation: number;
     capacity_factor: number;
 } {
+    if (hourly.length === 0) {
+        return {solar_generation: 0, capacity_factor: 0};
+    }
+
     const solar = parseFloat(hourly.reduce((s, h) => s + h.production.monthly_avg.solar_generation, 0).toFixed(2));
     const cf = parseFloat(
         (hourly.reduce((s, h) => s + h.production.monthly_avg.capacity_factor, 0) / hourly.length).toFixed(3),

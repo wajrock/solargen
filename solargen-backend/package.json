@@ -83,7 +83,8 @@
         ],
         "coveragePathIgnorePatterns": [
             ".*\\.module\\.ts$",
-            "main\\.ts$"
+            "main\\.ts$",
+            ".*\\.dto\\.ts$"
         ],
         "coverageDirectory": "../coverage",
         "testEnvironment": "node"

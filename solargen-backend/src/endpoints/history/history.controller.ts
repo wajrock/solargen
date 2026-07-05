@@ -15,9 +15,9 @@ export class HistoryController {
         private readonly historyService: HistoryService,
     ) {}
 
-    @Get(':month/')
+    @Get(':month')
     @ApiParam({name: 'month', example: '02'})
-    @ApiResponse({status: 200, type: [GlobalHistoryDto]})
+    @ApiResponse({status: 200, type: GlobalHistoryDto})
     @ApiResponse({
         status: 404,
         type: ErrorDto,
@@ -48,7 +48,7 @@ export class HistoryController {
     @Get(':month/:siteId')
     @ApiParam({name: 'month', example: '02'})
     @ApiParam({name: 'siteId', example: '0Y6D'})
-    @ApiResponse({status: 200, type: [SiteHistoryDto]})
+    @ApiResponse({status: 200, type: SiteHistoryDto})
     async findByMonthAndSite(@Param() params: HistoryParamDto): Promise<SiteHistoryDto> {
         if (!/^(0[1-9]|1[0-2])$/.test(params.month!)) {
             throw new BadRequestException({
@@ -57,8 +57,6 @@ export class HistoryController {
                 message: 'Month must be in MM format (01-12).',
             });
         }
-
-        const site = await this.prismaService.site.findUnique({where: {id: params.siteId}});
         const currentMonth = new Date(getTodayDate()).getMonth() + 1;
 
         if (parseInt(params.month!) > currentMonth) {
@@ -68,6 +66,8 @@ export class HistoryController {
                 message: 'Month must not be in the future.',
             });
         }
+
+        const site = await this.prismaService.site.findUnique({where: {id: params.siteId}});
 
         if (!site) {
             throw new NotFoundException({

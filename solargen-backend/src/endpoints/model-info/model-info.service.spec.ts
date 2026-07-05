@@ -1,21 +1,20 @@
 import {Test, TestingModule} from '@nestjs/testing';
 import {ModelInfoService} from './model-info.service';
 import {PrismaService} from '../../prisma/prisma.service';
-import {ModelInfoDto} from './dto/model-info.dto';
 
-const mockModelInfo: ModelInfoDto = {
-    model: 'GradientBoosting',
-    r2: 0.867,
-    mae: 0.0209,
+const mockRawModelInfo = {
+    model: 'LightGBM',
+    r2: 0.887,
+    mae: 0.064,
     train_start: '2020-01-08',
-    train_end: '2021-12-22',
+    train_end: '2022-04-23',
     features: ['temperature', 'relative_humidity', 'shortwave_radiation'],
     sites_count: 21,
 };
 
 const mockPrismaService = {
     modelInfo: {
-        findFirst: jest.fn().mockResolvedValue(mockModelInfo),
+        findFirst: jest.fn(),
     },
 };
 
@@ -28,20 +27,16 @@ describe('ModelInfoService', () => {
         }).compile();
 
         service = module.get<ModelInfoService>(ModelInfoService);
-    });
-
-    afterEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should be defined', () => {
-        expect(service).toBeDefined();
-    });
+    describe('getModelInfo', () => {
+        it('should return model info with the correct select fields', async () => {
+            mockPrismaService.modelInfo.findFirst.mockResolvedValue(mockRawModelInfo);
 
-    describe('getModelInfos', () => {
-        it('should return model info', async () => {
-            const result = await service.getModelInfos();
-            expect(result).toEqual(mockModelInfo);
+            const result = await service.getModelInfo();
+
+            expect(result).toEqual(mockRawModelInfo);
             expect(mockPrismaService.modelInfo.findFirst).toHaveBeenCalledWith({
                 select: {
                     model: true,
@@ -55,9 +50,11 @@ describe('ModelInfoService', () => {
             });
         });
 
-        it('should return null when no model info found', async () => {
-            mockPrismaService.modelInfo.findFirst.mockResolvedValueOnce(null);
-            const result = await service.getModelInfos();
+        it('should return null when no model info exists in the database', async () => {
+            mockPrismaService.modelInfo.findFirst.mockResolvedValue(null);
+
+            const result = await service.getModelInfo();
+
             expect(result).toBeNull();
         });
     });

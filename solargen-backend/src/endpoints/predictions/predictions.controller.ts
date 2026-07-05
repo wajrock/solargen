@@ -120,14 +120,6 @@ export class PredictionsController {
         },
     })
     async findByDateAndSite(@Param() params: PredictionParamDto): Promise<SitePredictionDto> {
-        const site = await this.prismaService.site.findUnique({where: {id: params.siteId}});
-        if (!site) {
-            throw new NotFoundException({
-                statusCode: 404,
-                error: 'site_not_found',
-                message: `Site ${params.siteId!} not found`,
-            });
-        }
         if (!/^\d{4}-\d{2}-\d{2}$/.test(params.date!)) {
             throw new BadRequestException({
                 statusCode: 400,
@@ -142,12 +134,29 @@ export class PredictionsController {
                 message: 'Date must be in the past.',
             });
         }
+
+        const site = await this.prismaService.site.findUnique({where: {id: params.siteId}});
+        if (!site) {
+            throw new NotFoundException({
+                statusCode: 404,
+                error: 'site_not_found',
+                message: `Site ${params.siteId!} not found`,
+            });
+        }
+
         return this.predictionsService.getByDateAndSite(params.date!, params.siteId!);
     }
 
     @Post(':date')
     @UseGuards(ApiKeyGuard)
     @ApiParam({name: 'date', example: '2025-06-25', description: 'Date in YYYY-MM-DD format'})
+    @ApiResponse({
+        status: 201,
+        description: 'Predictions successfully inserted or already existing',
+        schema: {
+            example: {success: true, message: 'Predictions for 2025-06-25 inserted'},
+        },
+    })
     @ApiResponse({
         status: 400,
         type: ErrorDto,
@@ -157,6 +166,7 @@ export class PredictionsController {
             message: 'Date must be in YYYY-MM-DD format.',
         },
     })
+    @ApiResponse({status: 401, description: 'Missing or invalid API key'})
     insertPredictionByDate(@Param() params: PredictionParamDto): Promise<{success: boolean; message: string}> {
         if (!/^\d{4}-\d{2}-\d{2}$/.test(params.date!)) {
             throw new BadRequestException({
