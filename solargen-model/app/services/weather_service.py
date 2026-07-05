@@ -18,13 +18,30 @@ class WeatherService:
         self.session = retry(requests.Session(), retries=5, backoff_factor=0.2)
 
     def _parse_response(self, response) -> pd.DataFrame:
+        if not isinstance(response, dict) or "hourly" not in response:
+            raise ValueError("Invalid Open-Meteo response: missing hourly data")
+
+        hourly = response["hourly"]
+        required_keys = (
+            "time",
+            "temperature_2m",
+            "relative_humidity_2m",
+            "cloud_cover",
+            "shortwave_radiation",
+            "diffuse_radiation",
+        )
+
+        missing_keys = [key for key in required_keys if key not in hourly]
+        if missing_keys:
+            raise ValueError(f"Invalid Open-Meteo response: missing keys {missing_keys}")
+
         return pd.DataFrame({
-            "timestamp"          : pd.to_datetime(response["hourly"]["time"]),
-            "temperature"        : response["hourly"]["temperature_2m"],
-            "relative_humidity"  : response["hourly"]["relative_humidity_2m"],
-            "cloud_cover"        : response["hourly"]["cloud_cover"],
-            "shortwave_radiation": response["hourly"]["shortwave_radiation"],
-            "diffuse_radiation"  : response["hourly"]["diffuse_radiation"],
+            "timestamp"          : pd.to_datetime(hourly["time"]),
+            "temperature"        : hourly["temperature_2m"],
+            "relative_humidity"  : hourly["relative_humidity_2m"],
+            "cloud_cover"        : hourly["cloud_cover"],
+            "shortwave_radiation": hourly["shortwave_radiation"],
+            "diffuse_radiation"  : hourly["diffuse_radiation"],
         })
 
     def get_forecast(self, date_str: str = None) -> pd.DataFrame:

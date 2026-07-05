@@ -11,6 +11,9 @@ def parse_inverters(inverter_string: str) -> list:
     return inverters
 
 def get_installation_infos(sites: list) -> dict:
+    if not sites:
+        raise ValueError("No installation sites available")
+
     parsed_sites = []
     
     for site in sites:

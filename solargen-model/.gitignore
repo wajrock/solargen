@@ -5,6 +5,8 @@ __pycache__/
 *.pyc
 .cache/
 .cache.sqlite
+.pytest_cache
+.coverage*
 
 data/site_details.csv
 data/solar_production.csv

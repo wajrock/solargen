@@ -15,16 +15,18 @@ load_dotenv()
 from app.models import PredictionsResponse, ModelInfoResponse, InstallationResponse
 
 # MISC
+from pathlib import Path
 import joblib
 import pandas as pd
 
 ml_modules = {}
+BASE_DIR = Path(__file__).resolve().parent
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    ml_modules["model"]      = joblib.load("model/model_solar_prediction.pkl")
-    ml_modules["model_info"] = joblib.load("model/model_info.pkl")
-    ml_modules["sites"]      = pd.read_csv("data/sites_final.csv").to_dict("records")
+    ml_modules["model"]      = joblib.load(BASE_DIR / "model" / "model_solar_prediction.pkl")
+    ml_modules["model_info"] = joblib.load(BASE_DIR / "model" / "model_info.pkl")
+    ml_modules["sites"]      = pd.read_csv(BASE_DIR / "data" / "sites_final.csv").to_dict("records")
     yield
     ml_modules.clear()
 
