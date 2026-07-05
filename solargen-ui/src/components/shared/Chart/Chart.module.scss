@@ -45,7 +45,7 @@
 
 .chart {
     height: 100% !important;
-    min-height: 12rem;
+    min-height: 4rem;
 }
 
 .chartSkeleton {
@@ -77,4 +77,10 @@
 
 .tooltipValue {
     font-weight: 600;
+}
+
+@media screen and (max-width: 767px) {
+    .chart {
+        min-height: 10rem;
+    }
 }
