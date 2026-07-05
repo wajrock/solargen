@@ -24,17 +24,17 @@ function MobileHeader() {
     ];
 
     return (
-        <nav className={styles.mobileHeader} data-testid="navbar">
+        <section className={styles.mobileHeader}>
             <Link to={'/'} className={styles.logo}>
                 <Logo />
             </Link>
 
-            <div className={styles.menuBtn} onClick={() => setOpenMenu(true)}>
+            <div className={styles.menuBtn} onClick={() => setOpenMenu(true)} data-testid="open-menu-button">
                 <Menu />
             </div>
             {openMenu && (
                 <div className={styles.menu}>
-                    <div className={styles.menuBtn} onClick={() => setOpenMenu(false)}>
+                    <div className={styles.menuBtn} onClick={() => setOpenMenu(false)} data-testid="close-menu-button">
                         <XIcon /> Fermer
                     </div>
                     <nav className={styles.mobileNavBar} data-testid="navbar">
@@ -94,7 +94,7 @@ function MobileHeader() {
                     </nav>
                 </div>
             )}
-        </nav>
+        </section>
     );
 }
 
