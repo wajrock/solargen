@@ -88,6 +88,7 @@ function Overview() {
                         },
                     ]}
                     loading={loading}
+                    className={styles.productionChart}
                 />
                 <div className={styles.weatherCharts}>
                     <Chart

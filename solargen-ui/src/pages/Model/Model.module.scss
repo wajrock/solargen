@@ -7,6 +7,7 @@
     width: min(100%, 40rem);
     margin-inline: auto;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     gap: 0.5rem;
 }
@@ -35,8 +36,9 @@
     border: var(--default-border);
     border-radius: var(--default-radius);
     padding: 0 1rem;
-    height: 3.25rem;
+    min-height: 3.25rem;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 0.5rem;
 }
@@ -64,6 +66,7 @@
     font-weight: 500;
     display: flex;
     align-items: center;
+    margin-right: auto;
 }
 
 .predictionsStatusDateSkeleton {
@@ -76,7 +79,7 @@
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--secondary-text-color);
-    margin-left: auto;
+
     display: flex;
     align-items: center;
 }
@@ -86,4 +89,28 @@
     width: 12.5rem;
     border-radius: var(--default-radius);
     margin-left: auto;
+}
+
+@media screen and (max-width: 767px) {
+    .model {
+        overflow-x: hidden;
+        overflow-y: scroll;
+    }
+
+    .modelHeader {
+        margin-inline: 1rem;
+    }
+
+    .section {
+        width: auto;
+        margin-inline: 1rem;
+    }
+
+    .predictionsStatus {
+        padding: 0.5rem 1rem;
+    }
+
+    .predictionsStatusFetchDate {
+        margin-left: unset;
+    }
 }

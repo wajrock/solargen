@@ -24,3 +24,17 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
 }
+
+@media screen and (max-width: 767px) {
+    .productionChart {
+        width: auto;
+        margin-inline: 1rem;
+    }
+
+    .comparisonBlocks {
+        display: flex;
+        flex-direction: column;
+        width: auto;
+        margin-inline: 1rem;
+    }
+}

@@ -2,27 +2,31 @@ import {Separator} from '@/components/ui/separator';
 import {BookOpen, Bot, CalendarClock, Home, MapPin, Rows3, Settings} from 'lucide-react';
 import {Link, useLocation} from 'react-router-dom';
 import {useTime} from '../../../hooks/useTime';
-import Logo from '../Logo';
+import Logo from '../Logo/Logo';
 import styles from './Navbar.module.scss';
 
-const pagesLinks = [
-    {path: '/predictions', icon: Home, label: 'Prédictions'},
-    {path: '/installation', icon: Rows3, label: 'Installation'},
-    {path: '/history', icon: BookOpen, label: 'Historique'},
-];
+interface NavbarProps {
+    classname?: string;
+}
 
-const systemLinks = [
-    {path: '/model', icon: Bot, label: 'Modèle ML'},
-    {path: '/settings', icon: Settings, label: 'Réglages'},
-];
-
-export default function Navbar() {
+export default function Navbar({classname}: NavbarProps) {
     // Hooks
     const location = useLocation();
     const {date} = useTime();
 
+    const pagesLinks = [
+        {path: '/predictions', icon: Home, label: 'Prédictions'},
+        {path: '/installation', icon: Rows3, label: 'Installation'},
+        {path: '/history', icon: BookOpen, label: 'Historique'},
+    ];
+
+    const systemLinks = [
+        {path: '/model', icon: Bot, label: 'Modèle ML'},
+        {path: '/settings', icon: Settings, label: 'Réglages'},
+    ];
+
     return (
-        <nav className={styles.navbar} data-testid="navbar">
+        <nav className={`${styles.navbar} ${classname}`} data-testid="navbar">
             <Link to={'/'} className={styles.logo}>
                 <Logo />
             </Link>

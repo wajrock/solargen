@@ -8,3 +8,10 @@
 .trainPeriod {
     text-transform: capitalize;
 }
+
+@media screen and (max-width: 767px) {
+    .cards {
+        display: flex;
+        flex-direction: column;
+    }
+}

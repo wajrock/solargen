@@ -4,3 +4,18 @@
     width: 100%;
     gap: 0.5rem;
 }
+
+@media screen and (max-width: 767px) {
+    .cards {
+        display: flex;
+        overflow-x: scroll;
+        scroll-snap-type: x mandatory;
+        min-height: 4.75rem;
+        padding: 0 1rem;
+        scroll-padding: 1rem;
+
+        & > * {
+            scroll-snap-align: start;
+        }
+    }
+}

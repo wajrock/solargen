@@ -90,3 +90,14 @@
         color: var(--cta-color);
     }
 }
+
+@media screen and (max-width: 767px) {
+    .title {
+        margin-inline: 1rem;
+    }
+
+    .settingsContent {
+        margin-inline: 1rem;
+        width: auto;
+    }
+}
