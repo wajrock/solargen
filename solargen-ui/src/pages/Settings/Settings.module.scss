@@ -79,17 +79,14 @@
     padding: 0.375rem 0.5rem;
     border-radius: var(--default-radius);
     border: var(--default-border);
+    border-color: transparent;
+    transition: all 0.3s;
 
     & svg {
         height: 1.25rem;
     }
 
     &:hover {
-        background-color: var(--cta-color);
-        color: var(--cta-text-color);
-
-        path {
-            color: var(--cta-text-color) !important;
-        }
+        color: var(--cta-color);
     }
 }
