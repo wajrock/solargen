@@ -7,6 +7,7 @@ export function useInstallation() {
         queryKey: ['installation'],
         queryFn: () => getInstallation().then((res) => res.data),
         staleTime: Infinity,
+        retry: 1,
     });
 
     return {installationData: data, loading: isLoading, error};

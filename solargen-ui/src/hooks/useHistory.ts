@@ -12,6 +12,7 @@ export function useHistory(month: string, siteId?: string) {
         queryKey: ['history', month, siteId],
         queryFn: getQueryFn(month, siteId),
         staleTime: Infinity,
+        retry: 1,
     });
 
     return {historyData: data, loading: isLoading, error};

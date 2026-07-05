@@ -76,7 +76,7 @@ describe('useHistory', () => {
 
         const {result} = renderHook(() => useHistory('06'), {wrapper: createWrapper()});
 
-        await waitFor(() => expect(result.current.loading).toBe(false));
+        await waitFor(() => expect(result.current.loading).toBe(false), {timeout: 3000});
 
         expect(result.current.error).toBeInstanceOf(Error);
     });

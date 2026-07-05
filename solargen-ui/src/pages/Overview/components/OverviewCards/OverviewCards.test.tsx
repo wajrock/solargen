@@ -63,7 +63,7 @@ describe('OverviewCards', () => {
     });
 
     it('renders skeleton cards when data is undefined', () => {
-        render(<OverviewCards data={undefined} />);
+        render(<OverviewCards data={undefined} loading={false} />);
 
         expect(Card).toHaveBeenCalledWith(
             expect.objectContaining({name: 'Production Totale', skeleton: true}),
@@ -84,8 +84,18 @@ describe('OverviewCards', () => {
         );
     });
 
+    it('renders skeleton cards when loading is true, even if data is present', () => {
+        render(<OverviewCards data={mockData as any} loading={true} />);
+
+        expect(Card).toHaveBeenCalledWith(
+            expect.objectContaining({name: 'Production Totale', skeleton: true}),
+            undefined,
+        );
+        expect(screen.queryByText('1500 kWh')).not.toBeInTheDocument();
+    });
+
     it('displays formatted values using formatter utilities when data is provided', () => {
-        render(<OverviewCards data={mockData as any} />);
+        render(<OverviewCards data={mockData as any} loading={false} />);
 
         expect(formatProduction).toHaveBeenCalledWith(1500);
         expect(screen.getByText('1500 kWh')).toBeInTheDocument();
@@ -106,8 +116,19 @@ describe('OverviewCards', () => {
         expect(screen.getByText('525 A$')).toBeInTheDocument();
     });
 
+    it('displays a dash when peak timestamp is null', () => {
+        const mockDataNoPeak = {
+            ...mockData,
+            peak: {solar_generation: 0, timestamp: null},
+        };
+
+        render(<OverviewCards data={mockDataNoPeak as any} loading={false} />);
+
+        expect(Tag).toHaveBeenCalledWith(expect.objectContaining({text: '—'}), undefined);
+    });
+
     it('calculates and passes correct current and reference values to TrendTag components', () => {
-        render(<OverviewCards data={mockData as any} />);
+        render(<OverviewCards data={mockData as any} loading={false} />);
 
         expect(TrendTag).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -151,7 +172,7 @@ describe('OverviewCards', () => {
     });
 
     it('includes dynamic variable rates in tooltips', () => {
-        render(<OverviewCards data={mockData as any} />);
+        render(<OverviewCards data={mockData as any} loading={false} />);
 
         expect(Card).toHaveBeenCalledWith(
             expect.objectContaining({

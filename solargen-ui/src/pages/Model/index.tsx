@@ -1,10 +1,11 @@
 import Button from '@/components/shared/Button/Button';
 import CustomTooltip from '@/components/shared/CustomTooltip/CustomTooltip';
+import StateMessage from '@/components/shared/StateMessage/StateMessage';
 import useModelInfo from '@/hooks/useModelInfo';
 import {usePredictionsStatus} from '@/hooks/usePrediction';
 import {isoStringToLocalDate} from '@/utils/date';
 import {formatDate} from '@/utils/formatters';
-import {CircleCheck, CircleX} from 'lucide-react';
+import {AlertCircle, CircleCheck, CircleX} from 'lucide-react';
 import {useEffect} from 'react';
 import ModelCards from './components/ModelCards/ModelCards';
 import styles from './Model.module.scss';
@@ -15,8 +16,8 @@ function Model() {
         document.title = 'Modèle ML | SolarGen';
     }, []);
 
-    const {modelInfoData} = useModelInfo();
-    const {predictionsStatusData} = usePredictionsStatus();
+    const {modelInfoData, loading: modelInfoLoading, error: modelInfoError} = useModelInfo();
+    const {predictionsStatusData, loading: statusLoading, error: statusError} = usePredictionsStatus();
 
     return (
         <main className={`page ${styles.model}`}>
@@ -36,34 +37,49 @@ function Model() {
 
             <section className={styles.section}>
                 <h2 className={styles.sectionTitle}>Informations du modèle</h2>
-
-                <ModelCards data={modelInfoData} />
+                {modelInfoError ? (
+                    <StateMessage
+                        icon={<AlertCircle size={48} />}
+                        title="Impossible de charger les informations du modèle"
+                        description="Vérifiez votre connexion ou réessayez."
+                        onRetry={() => window.location.reload()}
+                    />
+                ) : (
+                    <ModelCards data={modelInfoData} loading={modelInfoLoading} />
+                )}
             </section>
 
             <section className={styles.section}>
                 <h2 className={styles.sectionTitle}>Dernière prédictions</h2>
-                {predictionsStatusData ? (
+                {statusError ? (
+                    <StateMessage
+                        icon={<AlertCircle size={48} />}
+                        title="Impossible de charger le statut des prédictions"
+                        description="Vérifiez votre connexion ou réessayez."
+                        onRetry={() => window.location.reload()}
+                    />
+                ) : statusLoading ? (
                     <div className={styles.predictionsStatus}>
-                        <CustomTooltip text={formatPredictionsStatusTooltip(predictionsStatusData)}>
-                            {predictionsStatusData.is_complete ? (
+                        <div className={`skeleton ${styles.predictionsStatusIconSkeleton}`}></div>
+                        <div className={`skeleton ${styles.predictionsStatusDateSkeleton}`}></div>
+                        <div className={`skeleton ${styles.predictionsStatusFetchDateSkeleton}`}></div>
+                    </div>
+                ) : (
+                    <div className={styles.predictionsStatus}>
+                        <CustomTooltip text={formatPredictionsStatusTooltip(predictionsStatusData!)}>
+                            {predictionsStatusData!.is_complete ? (
                                 <CircleCheck className={`${styles.predictionsStatusIcon} ${styles.success}`} />
                             ) : (
                                 <CircleX className={`${styles.predictionsStatusIcon} ${styles.error}`} />
                             )}
                         </CustomTooltip>
                         <span className={styles.predictionsStatusDate}>
-                            Prédictions du {formatDate(new Date(predictionsStatusData.date), 'dd MMMM yyyy')}
+                            Prédictions du {formatDate(new Date(predictionsStatusData!.date), 'dd MMMM yyyy')}
                         </span>
                         <span className={styles.predictionsStatusFetchDate}>
                             Calculées le{' '}
-                            {formatDate(isoStringToLocalDate(predictionsStatusData.fetched_at), 'dd/MM/yy à HH:mm')}
+                            {formatDate(isoStringToLocalDate(predictionsStatusData!.fetched_at), 'dd/MM/yy à HH:mm')}
                         </span>
-                    </div>
-                ) : (
-                    <div className={styles.predictionsStatus}>
-                        <div className={`skeleton ${styles.predictionsStatusIconSkeleton}`}></div>
-                        <div className={`skeleton ${styles.predictionsStatusDateSkeleton}`}></div>
-                        <div className={`skeleton ${styles.predictionsStatusFetchDateSkeleton}`}></div>
                     </div>
                 )}
             </section>

@@ -56,7 +56,7 @@ describe('useModelInfo', () => {
 
         const {result} = renderHook(() => useModelInfo(), {wrapper: createWrapper()});
 
-        await waitFor(() => expect(result.current.loading).toBe(false));
+        await waitFor(() => expect(result.current.loading).toBe(false), {timeout: 3000});
 
         expect(result.current.error).toBeInstanceOf(Error);
     });

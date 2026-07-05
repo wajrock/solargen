@@ -30,6 +30,7 @@ vi.mock('@/components/shared/CustomTooltip/CustomTooltip', () => ({
 vi.mock('lucide-react', () => ({
     CircleCheck: vi.fn(() => <svg data-testid="icon-circle-check" />),
     CircleX: vi.fn(() => <svg data-testid="icon-circle-x" />),
+    AlertCircle: vi.fn(() => <svg data-testid="icon-alert-circle" />),
 }));
 
 describe('Model', () => {
@@ -44,7 +45,7 @@ describe('Model', () => {
 
         vi.mocked(usePredictionsStatus).mockReturnValue({
             predictionsStatusData: undefined,
-            loading: false,
+            loading: true,
             error: null,
         });
 
@@ -53,9 +54,54 @@ describe('Model', () => {
         vi.mocked(formatPredictionsStatusTooltip).mockReturnValue('mocked tooltip');
     });
 
-    it('sets the document title on mount', () => {
+    it('always renders the header, even when a section fails', () => {
+        vi.mocked(useModelInfo).mockReturnValue({
+            modelInfoData: undefined,
+            loading: false,
+            error: new Error('Network error'),
+        });
+
         render(<Model />);
-        expect(document.title).toBe('Modèle ML | SolarGen');
+
+        expect(screen.getByText('Modèle Machine Learning')).toBeInTheDocument();
+        expect(screen.getByText('Voir le rapport')).toBeInTheDocument();
+    });
+
+    it('displays an error message in the model info section when it fails, without affecting the predictions section', () => {
+        vi.mocked(useModelInfo).mockReturnValue({
+            modelInfoData: undefined,
+            loading: false,
+            error: new Error('Network error'),
+        });
+        vi.mocked(usePredictionsStatus).mockReturnValue({
+            predictionsStatusData: {date: '2026-07-05', fetched_at: '2026-07-05T12:00:00Z', is_complete: true} as any,
+            loading: false,
+            error: null,
+        });
+
+        render(<Model />);
+
+        expect(screen.getByText('Impossible de charger les informations du modèle')).toBeInTheDocument();
+        expect(screen.queryByTestId('mock-model-cards')).not.toBeInTheDocument();
+        expect(screen.getByTestId('icon-circle-check')).toBeInTheDocument();
+    });
+
+    it('displays an error message in the predictions status section when it fails, without affecting the model info section', () => {
+        vi.mocked(useModelInfo).mockReturnValue({
+            modelInfoData: {model: 'LightGBM'} as any,
+            loading: false,
+            error: null,
+        });
+        vi.mocked(usePredictionsStatus).mockReturnValue({
+            predictionsStatusData: undefined,
+            loading: false,
+            error: new Error('Network error'),
+        });
+
+        render(<Model />);
+
+        expect(screen.getByText('Impossible de charger le statut des prédictions')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-model-cards')).toBeInTheDocument();
     });
 
     it('passes modelInfoData to ModelCards', () => {
@@ -71,12 +117,24 @@ describe('Model', () => {
         expect(ModelCards).toHaveBeenCalledWith(expect.objectContaining({data: mockModelData}), undefined);
     });
 
-    it('renders skeleton loaders when predictionsStatusData is undefined', () => {
+    it('renders skeleton loaders when statusLoading is true', () => {
         const {container} = render(<Model />);
 
         expect(screen.queryByTestId('mock-tooltip')).not.toBeInTheDocument();
         const skeletons = container.querySelectorAll('.skeleton');
         expect(skeletons).toHaveLength(3);
+    });
+
+    it('does not render skeleton loaders once loading is false and data is present', () => {
+        vi.mocked(usePredictionsStatus).mockReturnValue({
+            predictionsStatusData: {date: '2026-07-05', fetched_at: '2026-07-05T12:00:00Z', is_complete: true} as any,
+            loading: false,
+            error: null,
+        });
+
+        const {container} = render(<Model />);
+
+        expect(container.querySelectorAll('.skeleton')).toHaveLength(0);
     });
 
     it('renders success prediction status with correctly formatted dates when is_complete is true', () => {

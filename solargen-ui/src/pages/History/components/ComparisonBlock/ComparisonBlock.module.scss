@@ -8,6 +8,11 @@
     align-items: center;
 }
 
+.comparisonBlockSkeleton {
+    height: 4rem;
+    border-radius: var(--default-radius);
+}
+
 .bars {
     display: flex;
     flex-direction: column;

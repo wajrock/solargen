@@ -22,15 +22,15 @@ interface AreaChartProps {
     title: string;
     className?: string;
     data: Record<string, unknown>[];
+    loading: boolean;
     series: AreaSeries[];
     xKey: string;
     tooltip?: string;
     interval?: number;
-
     margin: Partial<Margin>;
 }
 
-function Chart({data, className, series, xKey, title, margin, tooltip, interval}: AreaChartProps) {
+function Chart({data, loading, className, series, xKey, title, margin, tooltip, interval}: AreaChartProps) {
     const [showTooltip, setShowTooltip] = useState(false);
 
     const getBarCategoryGap = (pointsCount: number): string => {
@@ -54,7 +54,9 @@ function Chart({data, className, series, xKey, title, margin, tooltip, interval}
                 )}
             </div>
 
-            {data.length > 0 ? (
+            {loading && <div className={`${styles.chartSkeleton} skeleton`}></div>}
+
+            {!loading && (
                 <>
                     <ChartLegend series={series} />
                     <ResponsiveContainer width="100%" className={styles.chart}>
@@ -122,8 +124,6 @@ function Chart({data, className, series, xKey, title, margin, tooltip, interval}
                         </ComposedChart>
                     </ResponsiveContainer>
                 </>
-            ) : (
-                <div className={`${styles.chartSkeleton} skeleton`}></div>
             )}
         </div>
     );

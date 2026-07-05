@@ -19,6 +19,8 @@ import {
 import {getMelbourneToday} from '@/utils/date';
 import ComparisonBlock from './components/ComparisonBlock/ComparisonBlock';
 import useVariables from '@/hooks/useVariables';
+import StateMessage from '@/components/shared/StateMessage/StateMessage';
+import {AlertCircle, Clock} from 'lucide-react';
 
 function History() {
     const {monthParam, siteParam, handleMonthChange, handleSiteChange} = useHistoryParams();
@@ -32,7 +34,8 @@ function History() {
     const pastMonths = useMemo(() => getCurrentYearPastMonths(), []);
 
     const month = monthParam ?? String(getMelbourneToday().getMonth() + 1).padStart(2, '0');
-    const {historyData} = useHistory(month, siteParam);
+    const {historyData, loading, error} = useHistory(month, siteParam);
+
     const previousYearDailyByDay = useMemo(
         () => new Map(historyData?.previous_year.daily.map((day) => [day.date.slice(8, 10), day]) ?? []),
         [historyData],
@@ -62,6 +65,115 @@ function History() {
 
     const currentYearEnergyPrice = historyData ? historyData.current_year.monthly.solar_generation * electricRate : 0;
     const previousYearEnergyPrice = historyData ? historyData.previous_year.monthly.solar_generation * electricRate : 0;
+
+    const isEmpty = !loading && historyData && historyData.current_year.daily.length === 0;
+
+    const handleRetry = () => {
+        window.location.reload();
+    };
+
+    let content;
+
+    if (error) {
+        content = (
+            <StateMessage
+                icon={<AlertCircle size={80} />}
+                title="Impossible de charger les données"
+                description="Vérifiez votre connexion ou réessayez."
+                onRetry={handleRetry}
+            />
+        );
+    } else if (isEmpty) {
+        content = (
+            <StateMessage
+                icon={<Clock size={80} />}
+                title="Aucune donnée pour ce mois"
+                description="Les données historiques ne sont pas encore disponibles pour cette période."
+            />
+        );
+    } else {
+        content = (
+            <>
+                <Chart
+                    className={styles.productionChart}
+                    data={historyChartData}
+                    xKey="timestamp"
+                    title="Production solaire sur 24h"
+                    tooltip="Productions prédites par le modèle."
+                    interval={(historyData?.current_year.daily ?? []).length > 25 ? 1 : 0}
+                    margin={{top: 1, right: 20, left: -20, bottom: -10}}
+                    series={[
+                        {
+                            type: CHART_TYPE.AREA,
+                            key: 'currentYearSolarGeneration',
+                            label: `Production ${currentMonthLabel} ${historyData?.current_year.year}`,
+                            color: 'var(--cta-color)',
+                            unit: 'kWh',
+                        },
+                        {
+                            type: CHART_TYPE.LINE,
+                            key: 'lastYearSolarGeneration',
+                            label: `Production ${currentMonthLabel} ${historyData?.previous_year.year}`,
+                            color: 'var(--secondary-text-color)',
+                            showDash: true,
+                            unit: 'kWh',
+                        },
+                    ]}
+                    loading={loading}
+                />
+                <div className={styles.comparisonBlocks}>
+                    <ComparisonBlock
+                        title={'Production totale'}
+                        currentValue={currentYearSolarGeneration}
+                        referenceValue={previousYearSolarGeneration}
+                        absoluteTrend={false}
+                        unit={'%'}
+                        formatedCurrentValue={formatProduction(currentYearSolarGeneration)}
+                        formatedReferenceValue={formatProduction(previousYearSolarGeneration)}
+                        currentYear={historyData?.current_year.year ?? 0}
+                        referenceYear={historyData?.previous_year.year ?? 0}
+                        loading={loading}
+                    />
+                    <ComparisonBlock
+                        title={"Taux d'utilisation"}
+                        currentValue={currentYearCapacityFactor * 100}
+                        referenceValue={previousYearCapacityFactor * 100}
+                        absoluteTrend={true}
+                        unit={'%'}
+                        formatedCurrentValue={formatCapacityFactor(currentYearCapacityFactor)}
+                        formatedReferenceValue={formatCapacityFactor(previousYearCapacityFactor)}
+                        currentYear={historyData?.current_year.year ?? 0}
+                        referenceYear={historyData?.previous_year.year ?? 0}
+                        loading={loading}
+                    />
+                    <ComparisonBlock
+                        title={'Économies CO₂'}
+                        currentValue={currentYearCo2Savings}
+                        referenceValue={previousYearCo2Savings}
+                        absoluteTrend={true}
+                        unit={' kgCo2'}
+                        formatedCurrentValue={formatCO2Savings(currentYearSolarGeneration, co2Rate)}
+                        formatedReferenceValue={formatCO2Savings(previousYearSolarGeneration, co2Rate)}
+                        currentYear={historyData?.current_year.year ?? 0}
+                        referenceYear={historyData?.previous_year.year ?? 0}
+                        loading={loading}
+                    />
+                    <ComparisonBlock
+                        title={'Énergie valorisée'}
+                        currentValue={currentYearEnergyPrice}
+                        referenceValue={previousYearEnergyPrice}
+                        absoluteTrend={true}
+                        unit={' A$'}
+                        formatedCurrentValue={formatEnergyPrice(currentYearSolarGeneration, electricRate)}
+                        formatedReferenceValue={formatEnergyPrice(previousYearSolarGeneration, electricRate)}
+                        currentYear={historyData?.current_year.year ?? 0}
+                        referenceYear={historyData?.previous_year.year ?? 0}
+                        loading={loading}
+                    />
+                </div>
+            </>
+        );
+    }
 
     return (
         <main className={`page ${styles.history}`}>
@@ -95,82 +207,10 @@ function History() {
                     <div className={styles.separator}>
                         <Separator orientation="vertical" />
                     </div>
-
                     <SiteSelect value={siteParam} onChange={handleSiteChange} />
                 </div>
             </PageHeader>
-            <Chart
-                className={styles.productionChart}
-                data={historyChartData}
-                xKey="timestamp"
-                title="Production solaire sur 24h"
-                tooltip="Productions prédites par le modèle."
-                interval={(historyData?.current_year.daily ?? []).length > 25 ? 1 : 0}
-                margin={{top: 1, right: 20, left: -20, bottom: -10}}
-                series={[
-                    {
-                        type: CHART_TYPE.AREA,
-                        key: 'currentYearSolarGeneration',
-                        label: `Production ${currentMonthLabel} ${historyData?.current_year.year}`,
-                        color: 'var(--cta-color)',
-                        unit: 'kWh',
-                    },
-                    {
-                        type: CHART_TYPE.LINE,
-                        key: 'lastYearSolarGeneration',
-                        label: `Production ${currentMonthLabel} ${historyData?.previous_year.year}`,
-                        color: 'var(--secondary-text-color)',
-                        showDash: true,
-                        unit: 'kWh',
-                    },
-                ]}
-            />
-            <div className={styles.comparisonBlocks}>
-                <ComparisonBlock
-                    title={'Production totale'}
-                    currentValue={currentYearSolarGeneration}
-                    referenceValue={previousYearSolarGeneration}
-                    absoluteTrend={false}
-                    unit={'%'}
-                    formatedCurrentValue={formatProduction(currentYearSolarGeneration)}
-                    formatedReferenceValue={formatProduction(previousYearSolarGeneration)}
-                    currentYear={historyData?.current_year.year ?? 0}
-                    referenceYear={historyData?.previous_year.year ?? 0}
-                />
-                <ComparisonBlock
-                    title={"Taux d'utilisation"}
-                    currentValue={currentYearCapacityFactor * 100}
-                    referenceValue={previousYearCapacityFactor * 100}
-                    absoluteTrend={true}
-                    unit={'%'}
-                    formatedCurrentValue={formatCapacityFactor(currentYearCapacityFactor)}
-                    formatedReferenceValue={formatCapacityFactor(previousYearCapacityFactor)}
-                    currentYear={historyData?.current_year.year ?? 0}
-                    referenceYear={historyData?.previous_year.year ?? 0}
-                />
-                <ComparisonBlock
-                    title={'Économies CO₂'}
-                    currentValue={currentYearCo2Savings}
-                    referenceValue={previousYearCo2Savings}
-                    absoluteTrend={true}
-                    unit={' kgCo2'}
-                    formatedCurrentValue={formatCO2Savings(currentYearSolarGeneration, co2Rate)}
-                    formatedReferenceValue={formatCO2Savings(previousYearSolarGeneration, co2Rate)}
-                    currentYear={historyData?.current_year.year ?? 0}
-                    referenceYear={historyData?.previous_year.year ?? 0}
-                />
-                <ComparisonBlock
-                    title={'Énergie valorisée'}
-                    currentValue={currentYearEnergyPrice}
-                    referenceValue={previousYearEnergyPrice}
-                    absoluteTrend={true}
-                    unit={' A$'}
-                    formatedCurrentValue={formatEnergyPrice(currentYearSolarGeneration, electricRate)}
-                    formatedReferenceValue={formatEnergyPrice(previousYearSolarGeneration, electricRate)}
-                    currentYear={historyData?.current_year.year ?? 0}
-                    referenceYear={historyData?.previous_year.year ?? 0}
-                />
-            </div>
+            {content}
         </main>
     );
 }

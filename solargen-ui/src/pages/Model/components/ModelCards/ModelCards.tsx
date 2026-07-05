@@ -6,10 +6,11 @@ import {formatDate} from '@/utils/formatters';
 
 interface ModelCardsProps {
     data: ModelInfo | undefined;
+    loading: boolean;
 }
 
-function ModelCards({data}: ModelCardsProps) {
-    if (!data) {
+function ModelCards({data, loading}: ModelCardsProps) {
+    if (!data || loading) {
         return (
             <div className={styles.cards}>
                 <Card name="Algorithme" skeleton />

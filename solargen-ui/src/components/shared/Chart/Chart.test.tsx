@@ -23,31 +23,78 @@ const lineSeries: AreaSeries[] = [
 
 describe('Chart', () => {
     it('renders the title', () => {
-        render(<Chart title="Production solaire" data={mockData} series={areaSeries} xKey="timestamp" margin={{}} />);
+        render(
+            <Chart
+                title="Production solaire"
+                data={mockData}
+                series={areaSeries}
+                xKey="timestamp"
+                margin={{}}
+                loading={false}
+            />,
+        );
 
         expect(screen.getByText('Production solaire')).toBeInTheDocument();
     });
 
-    it('renders a skeleton when data is empty', () => {
+    it('renders a skeleton when loading is true, regardless of data', () => {
         const {container} = render(
-            <Chart title="Production solaire" data={[]} series={areaSeries} xKey="timestamp" margin={{}} />,
+            <Chart
+                title="Production solaire"
+                data={mockData}
+                series={areaSeries}
+                xKey="timestamp"
+                margin={{}}
+                loading={true}
+            />,
         );
 
         expect(container.querySelector('.skeleton')).toBeInTheDocument();
     });
 
-    it('does not render a skeleton when data is provided', () => {
+    it('does not render a skeleton when loading is false', () => {
         const {container} = render(
-            <Chart title="Production solaire" data={mockData} series={areaSeries} xKey="timestamp" margin={{}} />,
+            <Chart
+                title="Production solaire"
+                data={mockData}
+                series={areaSeries}
+                xKey="timestamp"
+                margin={{}}
+                loading={false}
+            />,
         );
 
         expect(container.querySelector('.skeleton')).not.toBeInTheDocument();
     });
 
-    it('renders the legend when data is provided', () => {
-        render(<Chart title="Production solaire" data={mockData} series={areaSeries} xKey="timestamp" margin={{}} />);
+    it('renders the legend when loading is false', () => {
+        render(
+            <Chart
+                title="Production solaire"
+                data={mockData}
+                series={areaSeries}
+                xKey="timestamp"
+                margin={{}}
+                loading={false}
+            />,
+        );
 
         expect(screen.getByText('Production (kWh)')).toBeInTheDocument();
+    });
+
+    it('does not show the legend while loading', () => {
+        render(
+            <Chart
+                title="Production solaire"
+                data={mockData}
+                series={areaSeries}
+                xKey="timestamp"
+                margin={{}}
+                loading={true}
+            />,
+        );
+
+        expect(screen.queryByText('Production (kWh)')).not.toBeInTheDocument();
     });
 
     it('does not show the info icon before hovering, even with a tooltip prop', () => {
@@ -58,6 +105,7 @@ describe('Chart', () => {
                 series={areaSeries}
                 xKey="timestamp"
                 margin={{}}
+                loading={false}
                 tooltip="Explication du graphique"
             />,
         );
@@ -74,6 +122,7 @@ describe('Chart', () => {
                 series={areaSeries}
                 xKey="timestamp"
                 margin={{}}
+                loading={false}
                 tooltip="Explication du graphique"
             />,
         );
@@ -86,7 +135,14 @@ describe('Chart', () => {
     it('never shows the info icon when no tooltip prop is provided, even on hover', async () => {
         const user = userEvent.setup();
         const {container} = render(
-            <Chart title="Production solaire" data={mockData} series={areaSeries} xKey="timestamp" margin={{}} />,
+            <Chart
+                title="Production solaire"
+                data={mockData}
+                series={areaSeries}
+                xKey="timestamp"
+                margin={{}}
+                loading={false}
+            />,
         );
 
         await user.hover(container.firstChild as Element);
@@ -96,7 +152,14 @@ describe('Chart', () => {
 
     it('renders without crashing for bar series type', () => {
         const {container} = render(
-            <Chart title="Historique" data={mockData} series={barSeries} xKey="timestamp" margin={{}} />,
+            <Chart
+                title="Historique"
+                data={mockData}
+                series={barSeries}
+                xKey="timestamp"
+                margin={{}}
+                loading={false}
+            />,
         );
 
         expect(container.querySelector('.skeleton')).not.toBeInTheDocument();
@@ -104,7 +167,14 @@ describe('Chart', () => {
 
     it('renders without crashing for line series type', () => {
         const {container} = render(
-            <Chart title="Historique" data={mockData} series={lineSeries} xKey="timestamp" margin={{}} />,
+            <Chart
+                title="Historique"
+                data={mockData}
+                series={lineSeries}
+                xKey="timestamp"
+                margin={{}}
+                loading={false}
+            />,
         );
 
         expect(container.querySelector('.skeleton')).not.toBeInTheDocument();

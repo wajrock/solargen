@@ -31,15 +31,36 @@ describe('Installation', () => {
         vi.unstubAllGlobals();
     });
 
-    it('sets the document title on mount', () => {
+    it('displays an error message when the request fails', () => {
+        vi.mocked(useInstallation).mockReturnValue({
+            installationData: undefined,
+            loading: false,
+            error: new Error('Network error'),
+        });
+
         render(<Installation />);
-        expect(document.title).toBe('Mon Installation | SolarGen');
+
+        expect(screen.getByText('Impossible de charger les données')).toBeInTheDocument();
+        expect(screen.getByText('Réessayer')).toBeInTheDocument();
+    });
+
+    it('does not render InstallationCards or SitesBlock when there is an error', () => {
+        vi.mocked(useInstallation).mockReturnValue({
+            installationData: undefined,
+            loading: false,
+            error: new Error('Network error'),
+        });
+
+        render(<Installation />);
+
+        expect(screen.queryByTestId('mock-installation-cards')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('mock-sites-block')).not.toBeInTheDocument();
     });
 
     it('opens google maps with campus coordinates when the button is clicked', () => {
         render(<Installation />);
 
-        fireEvent.click(screen.getByText(/Campus de Bundooraa/i));
+        fireEvent.click(screen.getByText(/Campus de Bundoora/i));
 
         expect(mockWindowOpen).toHaveBeenCalledTimes(1);
         expect(mockWindowOpen).toHaveBeenCalledWith('https://maps.google.com/?q=-37.71828652,145.0509752', '_blank');
@@ -58,7 +79,7 @@ describe('Installation', () => {
         expect(InstallationCards).toHaveBeenCalledWith(expect.objectContaining({data: mockData}), undefined);
     });
 
-    it('defaults to an empty array for sites when installationData is null', () => {
+    it('defaults to an empty array for sites when installationData is undefined', () => {
         vi.mocked(useInstallation).mockReturnValue({
             installationData: undefined,
             loading: true,

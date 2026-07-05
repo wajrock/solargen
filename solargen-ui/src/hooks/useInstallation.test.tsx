@@ -62,7 +62,7 @@ describe('useInstallation', () => {
 
         const {result} = renderHook(() => useInstallation(), {wrapper: createWrapper()});
 
-        await waitFor(() => expect(result.current.loading).toBe(false));
+        await waitFor(() => expect(result.current.loading).toBe(false), {timeout: 3000});
 
         expect(result.current.error).toBeInstanceOf(Error);
     });

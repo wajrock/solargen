@@ -15,12 +15,13 @@ import Tag from '@/components/shared/Tag/Tag';
 
 interface OverviewCardsProps {
     data: GlobalPrediction | SitePrediction | undefined;
+    loading: boolean;
 }
 
-function OverviewCards({data}: OverviewCardsProps) {
+function OverviewCards({data, loading}: OverviewCardsProps) {
     const {co2Rate, electricRate} = useVariables();
 
-    if (!data) {
+    if (loading || !data) {
         return (
             <div className={styles.cards}>
                 <Card name="Production Totale" skeleton />

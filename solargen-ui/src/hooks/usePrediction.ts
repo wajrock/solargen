@@ -20,6 +20,7 @@ export function usePredictions(date?: string, siteId?: string) {
         queryKey: ['predictions', date, siteId],
         queryFn: getQueryFn(date, siteId),
         staleTime: Infinity,
+        retry: 1,
     });
 
     return {predictionsData: data, loading: isLoading, error};
@@ -30,6 +31,7 @@ export function usePredictionsStatus() {
         queryKey: ['last-predictions-status'],
         queryFn: () => getLastPredictionsStatus().then((res) => res.data),
         staleTime: 1000 * 60 * 60,
+        retry: 1,
     });
 
     return {predictionsStatusData: data, loading: isLoading, error};

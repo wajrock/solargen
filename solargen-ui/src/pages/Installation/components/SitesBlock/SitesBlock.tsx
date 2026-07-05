@@ -1,19 +1,13 @@
-import type {Site} from '@/types/installation';
+import type {PERFORMANCE_LEVEL, Site} from '@/types/installation';
 import {formatInverterModel} from '@/utils/formatters';
-import {
-    getAvgCapacityFactor,
-    getInvertersType,
-    getSitePerformance,
-    getStandardDeviation,
-    PERFORMANCE_LEVEL,
-} from '@/utils/installation';
+import {getAvgCapacityFactor, getInvertersType, getSitePerformance, getStandardDeviation} from '@/utils/installation';
 import {useMemo, useState} from 'react';
 import SiteFilters from './SiteFilters/SiteFilters';
 import styles from './SitesBlock.module.scss';
 import SitesTable from './SitesTable/SitesTable';
 
 interface SitesBlockProps {
-    sites: Site[] | null;
+    sites: Site[];
     loading: boolean;
 }
 
@@ -24,11 +18,8 @@ function SitesBlock({sites, loading}: SitesBlockProps) {
     const [performanceFilter, setPerformanceFilter] = useState<string>('all');
 
     // Memos
-    const avgCapacityFactor = useMemo(() => getAvgCapacityFactor(sites!), [sites]);
-    const standardDeviation = useMemo(
-        () => getStandardDeviation(sites!, avgCapacityFactor),
-        [sites, avgCapacityFactor],
-    );
+    const avgCapacityFactor = useMemo(() => getAvgCapacityFactor(sites), [sites]);
+    const standardDeviation = useMemo(() => getStandardDeviation(sites, avgCapacityFactor), [sites, avgCapacityFactor]);
 
     const filteredSites = useMemo(
         () =>
@@ -52,7 +43,7 @@ function SitesBlock({sites, loading}: SitesBlockProps) {
         [searchValue, inverterFilter, performanceFilter, sites, avgCapacityFactor, standardDeviation],
     );
 
-    const inverters = useMemo(() => getInvertersType(sites!), [sites]);
+    const inverters = useMemo(() => getInvertersType(sites), [sites]);
 
     return (
         <section className={styles.wrapper}>

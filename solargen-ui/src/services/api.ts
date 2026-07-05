@@ -5,4 +5,5 @@ const baseURL = import.meta.env.VITE_API_BASE_URL ?? 'https://api--solargen-back
 
 export const api: AxiosInstance = axios.create({
     baseURL,
+    timeout: 10000,
 });

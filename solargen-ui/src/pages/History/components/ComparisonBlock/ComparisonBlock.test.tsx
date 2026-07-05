@@ -1,7 +1,6 @@
 import {describe, it, expect} from 'vitest';
 import {render, screen} from '@testing-library/react';
 import ComparisonBlock from './ComparisonBlock';
-import styles from './ComparisonBlock.module.scss';
 
 const baseProps = {
     title: 'Production totale',
@@ -11,21 +10,31 @@ const baseProps = {
     referenceYear: 2025,
     absoluteTrend: false,
     unit: '%',
+    loading: false,
 };
 
 describe('ComparisonBlock', () => {
-    it('renders the bars when currentValue is zero', () => {
-        const {container} = render(<ComparisonBlock {...baseProps} currentValue={0} referenceValue={78234} />);
+    it('renders a skeleton when loading is true', () => {
+        const {container} = render(
+            <ComparisonBlock {...baseProps} currentValue={87456} referenceValue={78234} loading={true} />,
+        );
 
-        expect(container.querySelector(`.${styles.skeleton}`)).not.toBeInTheDocument();
-        expect(screen.getByText('2026')).toBeInTheDocument();
+        expect(container.querySelector('.skeleton')).toBeInTheDocument();
+        expect(screen.queryByText('87 456 kWh')).not.toBeInTheDocument();
     });
 
-    it('renders the bars when referenceValue is zero', () => {
-        const {container} = render(<ComparisonBlock {...baseProps} currentValue={87456} referenceValue={0} />);
+    it('does not render the TrendTag while loading', () => {
+        render(<ComparisonBlock {...baseProps} currentValue={87456} referenceValue={78234} loading={true} />);
 
-        expect(container.querySelector(`.${styles.skeleton}`)).not.toBeInTheDocument();
-        expect(screen.getByText('2025')).toBeInTheDocument();
+        expect(screen.queryByText('2026')).not.toBeInTheDocument();
+    });
+
+    it('renders the bars when loading is false', () => {
+        const {container} = render(<ComparisonBlock {...baseProps} currentValue={87456} referenceValue={78234} />);
+
+        expect(container.querySelector('.skeleton')).not.toBeInTheDocument();
+        expect(screen.getByText('87 456 kWh')).toBeInTheDocument();
+        expect(screen.getByText('78 234 kWh')).toBeInTheDocument();
     });
 
     it('renders full-width bars when both values are zero', () => {
@@ -36,14 +45,6 @@ describe('ComparisonBlock', () => {
 
         expect(currentBar).toHaveStyle({width: '100%'});
         expect(referenceBar).toHaveStyle({width: '100%'});
-    });
-
-    it('renders the bars when both values are provided and non-zero', () => {
-        const {container} = render(<ComparisonBlock {...baseProps} currentValue={87456} referenceValue={78234} />);
-
-        expect(container.querySelector(`.${styles.skeleton}`)).not.toBeInTheDocument();
-        expect(screen.getByText('87 456 kWh')).toBeInTheDocument();
-        expect(screen.getByText('78 234 kWh')).toBeInTheDocument();
     });
 
     it('gives the larger value a full-width bar and the smaller a proportionally reduced one', () => {

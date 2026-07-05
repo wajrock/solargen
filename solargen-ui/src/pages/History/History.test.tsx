@@ -62,9 +62,46 @@ describe('History', () => {
         });
     });
 
-    it('sets the document title on mount', () => {
+    it('displays an error message when the request fails', () => {
+        vi.mocked(useHistory).mockReturnValue({
+            historyData: undefined,
+            loading: false,
+            error: new Error('Network error'),
+        });
+
         render(<History />);
-        expect(document.title).toBe('Historique | SolarGen');
+
+        expect(screen.getByText('Impossible de charger les données')).toBeInTheDocument();
+        expect(screen.getByText('Réessayer')).toBeInTheDocument();
+    });
+
+    it('displays an empty state message when current year daily data is empty', () => {
+        vi.mocked(useHistory).mockReturnValue({
+            historyData: {
+                month: '06',
+                current_year: {year: 2026, monthly: {solar_generation: 0, capacity_factor: 0}, daily: []},
+                previous_year: {year: 2025, monthly: {solar_generation: 0, capacity_factor: 0}, daily: []},
+            },
+            loading: false,
+            error: null,
+        });
+
+        render(<History />);
+
+        expect(screen.getByText('Aucune donnée pour ce mois')).toBeInTheDocument();
+    });
+
+    it('does not display error or empty state while still loading', () => {
+        vi.mocked(useHistory).mockReturnValue({
+            historyData: undefined,
+            loading: true,
+            error: null,
+        });
+
+        render(<History />);
+
+        expect(screen.queryByText('Aucune donnée pour ce mois')).not.toBeInTheDocument();
+        expect(screen.queryByText('Impossible de charger les données')).not.toBeInTheDocument();
     });
 
     it('computes CO2 savings by multiplying solar generation with the current co2Rate', () => {

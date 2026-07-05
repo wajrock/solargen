@@ -4,14 +4,40 @@ import SitesBlock from './components/SitesBlock/SitesBlock';
 import {useInstallation} from '@/hooks/useInstallation';
 import InstallationCards from './components/InstallationCards/InstallationCards';
 import Button from '@/components/shared/Button/Button';
+import StateMessage from '@/components/shared/StateMessage/StateMessage';
+import {AlertCircle} from 'lucide-react';
 import {useEffect} from 'react';
 
 function Installation() {
-    const {installationData, loading} = useInstallation();
+    const {installationData, loading, error} = useInstallation();
 
     useEffect(() => {
         document.title = 'Mon Installation | SolarGen';
     }, []);
+
+    const handleRetry = () => {
+        window.location.reload();
+    };
+
+    let content;
+
+    if (error) {
+        content = (
+            <StateMessage
+                icon={<AlertCircle size={80} />}
+                title="Impossible de charger les données"
+                description="Vérifiez votre connexion ou réessayez."
+                onRetry={handleRetry}
+            />
+        );
+    } else {
+        content = (
+            <>
+                <InstallationCards data={installationData} loading={loading} />
+                <SitesBlock sites={installationData?.sites ?? []} loading={loading} />
+            </>
+        );
+    }
 
     return (
         <main className={`page ${styles.installation}`}>
@@ -45,12 +71,11 @@ function Installation() {
                                 d="M59.1 109.2c15.4-24.1 33.3-35 33.3-63 0-7.7-1.9-14.9-5.2-21.3L25.6 98c2.6 3.4 5.3 7.3 7.9 11.3 9.4 14.5 6.8 23.1 12.8 23.1s3.4-8.7 12.8-23.2"
                             />
                         </svg>
-                        Campus de Bundooraa
+                        Campus de Bundoora
                     </Button>
                 </div>
             </PageHeader>
-            <InstallationCards data={installationData} />
-            <SitesBlock sites={installationData?.sites ?? []} loading={loading} />
+            {content}
         </main>
     );
 }

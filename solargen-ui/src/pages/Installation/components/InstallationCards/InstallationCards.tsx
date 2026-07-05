@@ -8,10 +8,11 @@ import Tag from '@/components/shared/Tag/Tag';
 
 interface InstallationCardsProps {
     data: Installation | undefined;
+    loading: boolean;
 }
 
-function InstallationCards({data}: InstallationCardsProps) {
-    if (!data) {
+function InstallationCards({data, loading}: InstallationCardsProps) {
+    if (loading || !data) {
         return (
             <div className={styles.cards}>
                 <Card name="Capacité Totale" skeleton />

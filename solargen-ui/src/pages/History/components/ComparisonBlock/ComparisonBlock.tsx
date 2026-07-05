@@ -11,6 +11,7 @@ interface ComparisonBlockProps {
     formatedReferenceValue: string;
     absoluteTrend: boolean;
     unit: string;
+    loading: boolean;
 }
 
 function ComparisonBlock({
@@ -23,6 +24,7 @@ function ComparisonBlock({
     formatedReferenceValue,
     absoluteTrend,
     unit,
+    loading,
 }: ComparisonBlockProps) {
     const minValue = Math.min(currentValue, referenceValue);
     const maxValue = Math.max(currentValue, referenceValue);
@@ -45,28 +47,34 @@ function ComparisonBlock({
         <section className={`block ${styles.comparisonBlock}`}>
             <header className={styles.comparisonBlockHeader}>
                 <h2 className="block-title">{title}</h2>
-                <TrendTag
-                    currentValue={currentValue}
-                    referenceValue={referenceValue}
-                    absoluteTrend={absoluteTrend}
-                    unit={unit}
-                />
+                {!loading && (
+                    <TrendTag
+                        currentValue={currentValue}
+                        referenceValue={referenceValue}
+                        absoluteTrend={absoluteTrend}
+                        unit={unit}
+                    />
+                )}
             </header>
 
-            <div className={styles.bars}>
-                <div className={styles.barGroup}>
-                    <div className={`${styles.bar} ${styles.currentValue}`} style={{width: `${currentWidth}%`}}>
-                        {currentYear}
+            {loading ? (
+                <div className={`skeleton ${styles.comparisonBlockSkeleton}`}></div>
+            ) : (
+                <div className={styles.bars}>
+                    <div className={styles.barGroup}>
+                        <div className={`${styles.bar} ${styles.currentValue}`} style={{width: `${currentWidth}%`}}>
+                            {currentYear}
+                        </div>
+                        <span className={styles.textValue}>{formatedCurrentValue}</span>
                     </div>
-                    <span className={styles.textValue}>{formatedCurrentValue}</span>
-                </div>
-                <div className={styles.barGroup}>
-                    <div className={`${styles.bar} ${styles.referencevalue}`} style={{width: `${referenceWidth}%`}}>
-                        {referenceYear}
+                    <div className={styles.barGroup}>
+                        <div className={`${styles.bar} ${styles.referencevalue}`} style={{width: `${referenceWidth}%`}}>
+                            {referenceYear}
+                        </div>
+                        <span className={styles.textValue}>{formatedReferenceValue}</span>
                     </div>
-                    <span className={styles.textValue}>{formatedReferenceValue}</span>
                 </div>
-            </div>
+            )}
         </section>
     );
 }

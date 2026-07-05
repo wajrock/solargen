@@ -24,7 +24,7 @@ describe('ModelCards', () => {
     });
 
     it('renders skeleton cards when data is undefined', () => {
-        render(<ModelCards data={undefined} />);
+        render(<ModelCards data={undefined} loading={false} />);
 
         expect(Card).toHaveBeenCalledWith(expect.objectContaining({name: 'Algorithme', skeleton: true}), undefined);
         expect(Card).toHaveBeenCalledWith(expect.objectContaining({name: 'Score R²', skeleton: true}), undefined);
@@ -35,10 +35,17 @@ describe('ModelCards', () => {
         );
     });
 
-    it('renders model metrics correctly when data is provided', () => {
+    it('renders skeleton cards when loading is true, even if data is present', () => {
+        render(<ModelCards data={mockData as any} loading={true} />);
+
+        expect(Card).toHaveBeenCalledWith(expect.objectContaining({name: 'Algorithme', skeleton: true}), undefined);
+        expect(screen.queryByText('RandomForest')).not.toBeInTheDocument();
+    });
+
+    it('renders model metrics correctly when data is provided and loading is false', () => {
         vi.mocked(formatDate).mockReturnValue('formatted date');
 
-        render(<ModelCards data={mockData as any} />);
+        render(<ModelCards data={mockData as any} loading={false} />);
 
         expect(Card).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -71,7 +78,7 @@ describe('ModelCards', () => {
     it('formats and displays the training period dates correctly', () => {
         vi.mocked(formatDate).mockReturnValueOnce('Janvier 2022').mockReturnValueOnce('Décembre 2022');
 
-        render(<ModelCards data={mockData as any} />);
+        render(<ModelCards data={mockData as any} loading={false} />);
 
         expect(formatDate).toHaveBeenCalledWith(new Date('2022-01-01T00:00:00Z'), 'MMMM yyyy');
         expect(formatDate).toHaveBeenCalledWith(new Date('2023-01-01T00:00:00Z'), 'MMMM yyyy');

@@ -7,6 +7,7 @@ function useModelInfo() {
         queryKey: ['model-info'],
         queryFn: () => getModelInfos().then((res) => res.data),
         staleTime: Infinity,
+        retry: 1,
     });
 
     return {modelInfoData: data, loading: isLoading, error};
