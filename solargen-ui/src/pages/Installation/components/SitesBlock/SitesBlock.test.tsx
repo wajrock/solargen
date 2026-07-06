@@ -50,7 +50,7 @@ describe('SitesBlock', () => {
         const user = userEvent.setup();
         renderSitesBlock();
 
-        const searchInput = screen.getByPlaceholderText('Rechercher un site par identifiant ou modèle..');
+        const searchInput = screen.getByTestId('sites-search-input');
         await user.type(searchInput, 'CIDK');
 
         expect(screen.getByText('#CIDK')).toBeInTheDocument();
@@ -61,7 +61,7 @@ describe('SitesBlock', () => {
         const user = userEvent.setup();
         renderSitesBlock();
 
-        const searchInput = screen.getByPlaceholderText('Rechercher un site par identifiant ou modèle..');
+        const searchInput = screen.getByTestId('sites-search-input');
         await user.type(searchInput, 'SunPower');
 
         expect(screen.getByText('#J7XV')).toBeInTheDocument();
@@ -72,7 +72,7 @@ describe('SitesBlock', () => {
         const user = userEvent.setup();
         renderSitesBlock();
 
-        const searchInput = screen.getByPlaceholderText('Rechercher un site par identifiant ou modèle..');
+        const searchInput = screen.getByTestId('sites-search-input');
         await user.type(searchInput, 'INEXISTANT');
 
         expect(screen.getByText('Aucun résultats')).toBeInTheDocument();
@@ -103,7 +103,7 @@ describe('SitesBlock', () => {
         const user = userEvent.setup();
         renderSitesBlock();
 
-        const searchInput = screen.getByPlaceholderText('Rechercher un site par identifiant ou modèle..');
+        const searchInput = screen.getByTestId('sites-search-input');
         await user.type(searchInput, 'J7XV');
 
         await user.click(screen.getByRole('combobox', {name: /ondulateur/i}));

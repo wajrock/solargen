@@ -1,43 +1,52 @@
 @import url('https://fonts.googleapis.com/css2?family=Mona+Sans:ital,wght@0,200..900;1,200..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 :root {
+    color-scheme: light;
+
     --bg-color: #f9fafb;
-    --cta-color: #2563eb;
+    --drawer-color: #f1f5f9;
     --block-bg-color: white;
+    --overlay-color: rgba(0, 0, 0, 0.35);
 
     --hover-color: #e5e7eb;
     --skeleton-color: #f3f4f6;
 
+    --cta-color: #2563eb;
+    --cta-text-color: #eff6ff;
+
     --tag-bg-color: #eaeff5;
     --tag-text-color: #334155;
 
-    --cta-text-color: #eff6ff;
     --primary-text-color: #030712;
     --secondary-text-color: #6b7280;
 
     --border-color: #e5e7eb;
     --hover-border-color: #9ca3af;
     --default-border: 0.1rem solid var(--border-color);
+
     --default-radius: 0.5rem;
-    color-scheme: white;
 }
 
 :root[data-theme='dark'] {
+    color-scheme: dark;
+
     --bg-color: #020617;
-    --cta-color: #2a65e6;
+    --drawer-color: #0f172a;
     --block-bg-color: #0f172a;
+    --overlay-color: rgba(0, 0, 0, 0.6);
 
     --hover-color: #1e293b;
     --skeleton-color: #1e293b;
 
+    --cta-color: #2a65e6;
+
     --tag-bg-color: #1e293b;
     --tag-text-color: #cbd5e1;
 
-    --border-color: #1f2937;
-
     --primary-text-color: #f8fafc;
     --secondary-text-color: #94a3b8;
-    color-scheme: dark;
+
+    --border-color: #1f2937;
 }
 
 * {
@@ -52,8 +61,10 @@ input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
+
 input[type='number'] {
     -moz-appearance: textfield;
+    appearance: textfield;
 }
 
 html,

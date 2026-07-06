@@ -43,8 +43,7 @@ describe('SiteFilters', () => {
         const user = userEvent.setup();
 
         render(<SiteFilters {...defaultProps} onSearchChange={handleSearchChange} />);
-
-        const input = screen.getByPlaceholderText('Rechercher un site par identifiant ou modèle..');
+        const input = screen.getByTestId('sites-search-input');
         await user.type(input, 'C');
 
         expect(handleSearchChange).toHaveBeenCalledWith('C');

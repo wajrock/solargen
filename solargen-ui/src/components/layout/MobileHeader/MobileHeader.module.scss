@@ -14,28 +14,37 @@
     height: 2rem;
 }
 
-.menu {
+.mobileMenuOverlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     z-index: 999;
-    background-color: var(--bg-color);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background-color: var(--overlay-color);
     gap: 1rem;
-    padding: 2rem;
 }
 
-.menuBtn {
+.drawerMenu {
+    padding: 1.5rem;
+    width: fit-content;
+    height: 100%;
+    background-color: var(--drawer-color);
+    border-left: var(--default-border);
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: end;
+    animation: openDrawer 0.4s;
+}
+
+.btnCloseDrawerMenu {
     display: flex;
     align-items: center;
     font-weight: 500;
     gap: 0.5rem;
     color: var(--secondary-text-color);
-    padding: 0.5rem 1rem;
 }
 
 .mobileNavBar {
@@ -43,7 +52,6 @@
     flex-direction: column;
     align-items: center;
     gap: 1rem;
-    padding: 1.5rem 1.25rem;
     height: 100%;
 }
 
@@ -88,7 +96,8 @@
 .locationInfos {
     font-size: 0.875rem;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
     gap: 0.5rem;
     text-transform: capitalize;
     white-space: nowrap;
@@ -109,6 +118,15 @@
 .copyright {
     font-size: 0.875rem;
     color: var(--secondary-text-color);
+}
+
+@keyframes openDrawer {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
 }
 
 @media screen and (max-width: 767px) {

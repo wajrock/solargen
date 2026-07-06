@@ -33,6 +33,7 @@ function SiteFilters({
                     value={search}
                     onChange={(e) => onSearchChange(e.target.value)}
                     placeholder="Rechercher par identifiant/modèle.."
+                    data-testid="sites-search-input"
                 />
                 {search.length > 0 && <CircleX className={styles.clearSearchIcon} onClick={() => onSearchChange('')} />}
             </div>
