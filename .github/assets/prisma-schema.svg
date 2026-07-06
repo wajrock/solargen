@@ -1,0 +1,147 @@
+<svg viewBox="0 0 1030 630" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
+    </marker>
+  </defs>
+
+  <rect width="1030" height="630" rx="16" fill="#ffffff"/>
+
+  <g transform="translate(50,25)">
+
+  <g transform="translate(-10,-10)">
+  <!-- ================= Installation ================= -->
+  <rect x="30" y="30" width="230" height="180" rx="8" fill="#f1f5f9" stroke="#334155" stroke-width="2"/>
+  <rect x="30" y="30" width="230" height="32" fill="#334155"/>
+  <rect x="30" y="30" width="230" height="8" rx="8" fill="#334155"/>
+  <text x="145" y="51" text-anchor="middle" font-size="13" fill="#ffffff" font-weight="700">Installation</text>
+
+  <text x="45" y="82" font-size="11" fill="#0f172a" font-weight="700">id</text>
+  <text x="140" y="82" font-size="11" fill="#64748b">Int (PK)</text>
+  <text x="45" y="100" font-size="11" fill="#0f172a">name</text>
+  <text x="140" y="100" font-size="11" fill="#64748b">String</text>
+  <text x="45" y="118" font-size="11" fill="#0f172a">latitude</text>
+  <text x="140" y="118" font-size="11" fill="#64748b">Float</text>
+  <text x="45" y="136" font-size="11" fill="#0f172a">longitude</text>
+  <text x="140" y="136" font-size="11" fill="#64748b">Float</text>
+  <text x="45" y="154" font-size="11" fill="#0f172a">sites</text>
+  <text x="140" y="154" font-size="11" fill="#64748b">Site[]</text>
+
+  <text x="45" y="186" font-size="10" fill="#94a3b8">@@map("installation")</text>
+
+  <!-- ================= Site ================= -->
+  <rect x="360" y="30" width="230" height="230" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+  <rect x="360" y="30" width="230" height="32" fill="#2563eb"/>
+  <rect x="360" y="30" width="230" height="8" rx="8" fill="#2563eb"/>
+  <text x="475" y="51" text-anchor="middle" font-size="13" fill="#ffffff" font-weight="700">Site</text>
+
+  <text x="375" y="82" font-size="11" fill="#0f172a" font-weight="700">id</text>
+  <text x="470" y="82" font-size="11" fill="#64748b">String (PK)</text>
+  <text x="375" y="100" font-size="11" fill="#0f172a">kwp</text>
+  <text x="470" y="100" font-size="11" fill="#64748b">Float</text>
+  <text x="375" y="118" font-size="11" fill="#0f172a">panel_count</text>
+  <text x="470" y="118" font-size="11" fill="#64748b">Int</text>
+  <text x="375" y="136" font-size="11" fill="#0f172a">panel_model</text>
+  <text x="470" y="136" font-size="11" fill="#64748b">String</text>
+  <text x="375" y="154" font-size="11" fill="#0f172a">inverters</text>
+  <text x="470" y="154" font-size="11" fill="#64748b">Json</text>
+  <text x="375" y="172" font-size="11" fill="#0f172a" font-weight="700">installation_id</text>
+  <text x="470" y="172" font-size="11" fill="#64748b">Int (FK)</text>
+  <text x="375" y="190" font-size="11" fill="#0f172a">installation</text>
+  <text x="470" y="190" font-size="11" fill="#64748b">Installation</text>
+  <text x="375" y="208" font-size="11" fill="#0f172a">predictions</text>
+  <text x="470" y="208" font-size="11" fill="#64748b">Prediction[]</text>
+
+  <text x="375" y="240" font-size="10" fill="#94a3b8">@@map("sites")</text>
+
+  <!-- ================= Prediction ================= -->
+  <rect x="690" y="30" width="230" height="270" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+  <rect x="690" y="30" width="230" height="32" fill="#dc2626"/>
+  <rect x="690" y="30" width="230" height="8" rx="8" fill="#dc2626"/>
+  <text x="805" y="51" text-anchor="middle" font-size="13" fill="#ffffff" font-weight="700">Prediction</text>
+
+  <text x="705" y="82" font-size="11" fill="#0f172a" font-weight="700">id</text>
+  <text x="800" y="82" font-size="11" fill="#64748b">Int (PK)</text>
+  <text x="705" y="100" font-size="11" fill="#0f172a" font-weight="700">site_id</text>
+  <text x="800" y="100" font-size="11" fill="#64748b">String (FK)</text>
+  <text x="705" y="118" font-size="11" fill="#0f172a">timestamp</text>
+  <text x="800" y="118" font-size="11" fill="#64748b">String</text>
+  <text x="705" y="136" font-size="11" fill="#0f172a">capacity_factor</text>
+  <text x="800" y="136" font-size="11" fill="#64748b">Float</text>
+  <text x="705" y="154" font-size="11" fill="#0f172a">solar_generation</text>
+  <text x="800" y="154" font-size="11" fill="#64748b">Float</text>
+  <text x="705" y="172" font-size="11" fill="#0f172a">fetched_at</text>
+  <text x="800" y="172" font-size="11" fill="#64748b">DateTime</text>
+  <text x="705" y="190" font-size="11" fill="#0f172a">site</text>
+  <text x="800" y="190" font-size="11" fill="#64748b">Site</text>
+
+  <text x="705" y="222" font-size="10" fill="#94a3b8">@@unique([site_id, timestamp])</text>
+  <text x="705" y="236" font-size="10" fill="#94a3b8">@@index([site_id, capacity_factor])</text>
+  <text x="705" y="250" font-size="10" fill="#94a3b8">@@index([timestamp])</text>
+  <text x="705" y="264" font-size="10" fill="#94a3b8">@@index([site_id, timestamp])</text>
+  <text x="705" y="282" font-size="10" fill="#94a3b8">@@map("predictions")</text>
+
+  <!-- Relationship lines (top row) -->
+  <line x1="260" y1="118" x2="356" y2="118" stroke="#475569" stroke-width="1.75" marker-end="url(#arrow2)"/>
+  <text x="308" y="108" text-anchor="middle" font-size="10" fill="#334155" font-weight="600">1 : N</text>
+
+  <line x1="590" y1="118" x2="686" y2="118" stroke="#475569" stroke-width="1.75" marker-end="url(#arrow2)"/>
+  <text x="638" y="108" text-anchor="middle" font-size="10" fill="#334155" font-weight="600">1 : N</text>
+  </g>
+
+  <g transform="translate(-10,-30)">
+  <!-- ================= Weather ================= -->
+  <rect x="30" y="340" width="230" height="240" rx="8" fill="#fefce8" stroke="#ca8a04" stroke-width="2"/>
+  <rect x="30" y="340" width="230" height="32" fill="#ca8a04"/>
+  <rect x="30" y="340" width="230" height="8" rx="8" fill="#ca8a04"/>
+  <text x="145" y="361" text-anchor="middle" font-size="13" fill="#ffffff" font-weight="700">Weather</text>
+
+  <text x="45" y="392" font-size="11" fill="#0f172a" font-weight="700">id</text>
+  <text x="155" y="392" font-size="11" fill="#64748b">Int (PK)</text>
+  <text x="45" y="410" font-size="11" fill="#0f172a">timestamp</text>
+  <text x="155" y="410" font-size="11" fill="#64748b">String (unique)</text>
+  <text x="45" y="428" font-size="11" fill="#0f172a">temperature</text>
+  <text x="155" y="428" font-size="11" fill="#64748b">Float</text>
+  <text x="45" y="446" font-size="11" fill="#0f172a">relative_humidity</text>
+  <text x="155" y="446" font-size="11" fill="#64748b">Float</text>
+  <text x="45" y="464" font-size="11" fill="#0f172a">cloud_cover</text>
+  <text x="155" y="464" font-size="11" fill="#64748b">Float</text>
+  <text x="45" y="482" font-size="11" fill="#0f172a">shortwave_radiation</text>
+  <text x="155" y="482" font-size="11" fill="#64748b">Float</text>
+  <text x="45" y="500" font-size="11" fill="#0f172a">diffuse_radiation</text>
+  <text x="155" y="500" font-size="11" fill="#64748b">Float</text>
+  <text x="45" y="518" font-size="11" fill="#0f172a">fetched_at</text>
+  <text x="155" y="518" font-size="11" fill="#64748b">DateTime</text>
+
+  <text x="45" y="550" font-size="10" fill="#94a3b8">@@map("weather")</text>
+
+  <!-- ================= ModelInfo ================= -->
+  <rect x="360" y="340" width="230" height="250" rx="8" fill="#f3e8ff" stroke="#9333ea" stroke-width="2"/>
+  <rect x="360" y="340" width="230" height="32" fill="#9333ea"/>
+  <rect x="360" y="340" width="230" height="8" rx="8" fill="#9333ea"/>
+  <text x="475" y="361" text-anchor="middle" font-size="13" fill="#ffffff" font-weight="700">ModelInfo</text>
+
+  <text x="375" y="392" font-size="11" fill="#0f172a" font-weight="700">id</text>
+  <text x="470" y="392" font-size="11" fill="#64748b">Int (PK)</text>
+  <text x="375" y="410" font-size="11" fill="#0f172a">model</text>
+  <text x="470" y="410" font-size="11" fill="#64748b">String</text>
+  <text x="375" y="428" font-size="11" fill="#0f172a">r2</text>
+  <text x="470" y="428" font-size="11" fill="#64748b">Float</text>
+  <text x="375" y="446" font-size="11" fill="#0f172a">mae</text>
+  <text x="470" y="446" font-size="11" fill="#64748b">Float</text>
+  <text x="375" y="464" font-size="11" fill="#0f172a">train_start</text>
+  <text x="470" y="464" font-size="11" fill="#64748b">String</text>
+  <text x="375" y="482" font-size="11" fill="#0f172a">train_end</text>
+  <text x="470" y="482" font-size="11" fill="#64748b">String</text>
+  <text x="375" y="500" font-size="11" fill="#0f172a">features</text>
+  <text x="470" y="500" font-size="11" fill="#64748b">Json</text>
+  <text x="375" y="518" font-size="11" fill="#0f172a">sites_count</text>
+  <text x="470" y="518" font-size="11" fill="#64748b">Int</text>
+  <text x="375" y="536" font-size="11" fill="#0f172a">fetched_at</text>
+  <text x="470" y="536" font-size="11" fill="#64748b">DateTime</text>
+
+  <text x="375" y="568" font-size="10" fill="#94a3b8">@@map("model_info")</text>
+  </g>
+
+  </g>
+</svg>
