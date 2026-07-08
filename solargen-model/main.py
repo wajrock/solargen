@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent
 async def lifespan(app: FastAPI):
     ml_modules["model"]      = joblib.load(BASE_DIR / "model" / "model_solar_prediction.pkl")
     ml_modules["model_info"] = joblib.load(BASE_DIR / "model" / "model_info.pkl")
-    ml_modules["sites"]      = pd.read_csv(BASE_DIR / "data" / "sites_final.csv").to_dict("records")
+    ml_modules["sites"]      = pd.read_csv(BASE_DIR / "assets" / "sites_final.csv").to_dict("records")
     yield
     ml_modules.clear()
 

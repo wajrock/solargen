@@ -34,13 +34,14 @@ class PredictionsResponse(BaseModel):
 class ModelInfoResponse(BaseModel):
     model:       str
     r2:          float
+    r2_day:      float
     mae:         float
+    mae_day:     float
     train_start: str
     train_end:   str
     features:    List[str]
     sites_count: int
-
-
+    
 class Inverter(BaseModel):
     model:    str
     quantity: int
