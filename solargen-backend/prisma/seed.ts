@@ -48,11 +48,17 @@ async function seedModelInfo() {
         return;
     }
 
-    const {data} = await axios.get<FastApiModelInfo>(`${API}/model-infos`, {headers: HEADERS});
+    const {data: modelInfoData} = await axios.get<FastApiModelInfo>(`${API}/model-infos`, {headers: HEADERS});
 
     await prisma.modelInfo.create({
         data: {
-            ...data,
+            model: modelInfoData.model,
+            r2: modelInfoData.r2_day,
+            mae: modelInfoData.mae_day,
+            train_start: modelInfoData.train_start,
+            train_end: modelInfoData.train_end,
+            features: modelInfoData.features,
+            sites_count: modelInfoData.sites_count,
             fetched_at: new Date(),
         },
     });

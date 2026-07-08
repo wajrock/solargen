@@ -45,7 +45,9 @@ export interface FastApiSiteConfig {
 export interface FastApiModelInfo {
     model: string;
     r2: number;
+    r2_day: number;
     mae: number;
+    mae_day: number;
     train_start: string;
     train_end: string;
     features: object;
