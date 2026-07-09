@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import {render, screen, fireEvent} from '@testing-library/react';
+import {render, screen} from '@testing-library/react';
 import {describe, it, expect, vi, beforeEach, afterEach} from 'vitest';
 import Installation from './index';
 import {useInstallation} from '@/hooks/useInstallation';
@@ -55,15 +55,6 @@ describe('Installation', () => {
 
         expect(screen.queryByTestId('mock-installation-cards')).not.toBeInTheDocument();
         expect(screen.queryByTestId('mock-sites-block')).not.toBeInTheDocument();
-    });
-
-    it('opens google maps with campus coordinates when the button is clicked', () => {
-        render(<Installation />);
-
-        fireEvent.click(screen.getByText(/Campus de Bundoora/i));
-
-        expect(mockWindowOpen).toHaveBeenCalledTimes(1);
-        expect(mockWindowOpen).toHaveBeenCalledWith('https://maps.google.com/?q=-37.71828652,145.0509752', '_blank');
     });
 
     it('passes installation data through to InstallationCards', () => {

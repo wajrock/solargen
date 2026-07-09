@@ -77,6 +77,7 @@ function History() {
     if (error) {
         content = (
             <StateMessage
+                className={styles.alertMessage}
                 icon={<AlertCircle size={80} />}
                 title="Impossible de charger les données"
                 description="Vérifiez votre connexion ou réessayez."
@@ -86,6 +87,7 @@ function History() {
     } else if (isEmpty) {
         content = (
             <StateMessage
+                className={styles.alertMessage}
                 icon={<Clock size={80} />}
                 title="Aucune donnée pour ce mois"
                 description="Les données historiques ne sont pas encore disponibles pour cette période."

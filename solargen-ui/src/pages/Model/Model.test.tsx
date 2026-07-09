@@ -160,7 +160,8 @@ describe('Model', () => {
         expect(screen.getByTestId('icon-circle-check')).toBeInTheDocument();
         expect(screen.queryByTestId('icon-circle-x')).not.toBeInTheDocument();
 
-        expect(isoStringToLocalDate).toHaveBeenCalledWith('2026-07-05T12:00:00Z');
+        expect(formatDate).toHaveBeenCalledWith(new Date('2026-07-05'), 'dd MMMM yyyy');
+        expect(formatDate).toHaveBeenCalledWith(new Date('2026-07-05T12:00:00Z'), 'dd/MM/yy à HH:mm');
         expect(screen.getByText('Prédictions du 05 juillet 2026')).toBeInTheDocument();
         expect(screen.getByText('Calculées le 05/07/26 à 14:00')).toBeInTheDocument();
     });

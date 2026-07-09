@@ -1,9 +1,9 @@
 .stateMessage {
-    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding-top: 2rem;
+    text-align: center;
 
     & svg {
         --icon-size: 2rem;
@@ -15,11 +15,11 @@
 .stateMessageTitle {
     font-weight: 600;
     color: var(--primary-text-color);
-    margin-top: 0.25rem;
+    margin-top: 0.75rem;
 }
 
 .stateMessageDescription {
     font-weight: 400;
     color: var(--secondary-text-color);
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
 }

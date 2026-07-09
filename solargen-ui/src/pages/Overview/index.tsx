@@ -35,6 +35,7 @@ function Overview() {
     if (error) {
         content = (
             <StateMessage
+                className={styles.alertMessage}
                 icon={<AlertCircle />}
                 title="Impossible de charger les données"
                 description="Vérifiez votre connexion ou réessayez."
@@ -44,11 +45,12 @@ function Overview() {
     } else if (isEmpty) {
         content = (
             <StateMessage
+                className={styles.alertMessage}
                 icon={<Clock />}
                 title={isToday ? 'Aucune prédiction disponible pour le moment' : 'Aucune donnée pour cette date'}
                 description={
                     isToday
-                        ? 'Les prédictions du jour seront disponibles après 1h du matin.'
+                        ? 'Les prédictions du jour seront disponibles prochainement.'
                         : "Les prédictions n'ont pas pu être générées pour ce jour."
                 }
             />

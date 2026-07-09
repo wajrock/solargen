@@ -6,11 +6,12 @@ interface StateMessageProps {
     title: string;
     description?: string;
     onRetry?: () => void;
+    className?: string;
 }
 
-function StateMessage({icon, title, description, onRetry}: StateMessageProps) {
+function StateMessage({icon, title, description, onRetry, className}: StateMessageProps) {
     return (
-        <div className={styles.stateMessage}>
+        <div className={`${styles.stateMessage} ${className}`}>
             {icon}
             <h3 className={styles.stateMessageTitle}>{title}</h3>
             {description && <p className={styles.stateMessageDescription}>{description}</p>}

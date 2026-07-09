@@ -92,14 +92,13 @@ function MobileHeader() {
                             </ul>
 
                             <div className={styles.locationInfos}>
-                                <span data-testid="current-date">
-                                    <CalendarClock />
-                                    {date}
-                                </span>
-
                                 <span>
                                     <MapPin />
                                     Melbourne (AU)
+                                </span>
+                                <span data-testid="current-date">
+                                    <CalendarClock />
+                                    {date}
                                 </span>
                             </div>
 
