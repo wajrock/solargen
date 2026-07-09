@@ -90,11 +90,11 @@ src/
 
 ## Data Ingestion
 
-A scheduled cron job runs daily at 1:00 AM (Australia/Melbourne), fetching the day's predictions from `solargen-model` and persisting them to MySQL via Prisma. This keeps the whole architecture self-sufficient — the dashboard always has fresh data without any manual intervention. The same ingestion logic is also exposed through the protected `POST /predictions/:date` endpoint for on-demand backfills.
+A scheduled cron job runs daily at 9:00 AM (Australia/Melbourne), which corresponds to 1:00 AM in France. It fetches the day's predictions from `solargen-model` and persists them to MySQL via Prisma. This keeps the whole architecture self-sufficient, so the dashboard always has fresh data without any manual intervention. The same ingestion logic is also exposed through the protected `POST /predictions/:date` endpoint for on-demand backfills.
 
 ## Testing
 
-The test suite does not require any environment configuration — external dependencies (database, `solargen-model`) are fully mocked. Requires Node.js 20+.
+The test suite does not require any environment configuration, external dependencies (database, `solargen-model`) are fully mocked. Requires Node.js 20+.
 
 ```bash
 npm install
@@ -114,5 +114,5 @@ The service is deployed to [Northflank](https://northflank.com/) through a Docke
 | Trigger        | A push touching `solargen-backend/` triggers a build. Path-based rules keep each service's pipeline independent.                                                                        |
 | Build & verify | In the `builder` stage, dependencies are installed, the Prisma client is generated, and the code is linted, unit-tested, and end-to-end tested. A failure at any step blocks the build. |
 | Compile        | Once verified, the TypeScript source is compiled.                                                                                                                                       |
-| Package        | A separate, minimal `runner` stage installs only production dependencies and copies the compiled output — keeping the final image lean and free of dev tools.                           |
+| Package        | A separate, minimal `runner` stage installs only production dependencies and copies the compiled output, keeping the final image lean and free of dev tools.                           |
 | Deploy         | The resulting image is deployed automatically to Northflank.                                                                                                                            |
