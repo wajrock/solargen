@@ -188,7 +188,7 @@ export class PredictionsService {
     }
 
     // POST
-    @Cron('0 1 * * *', {timeZone: 'Australia/Melbourne'})
+    @Cron('0 9 * * *', {timeZone: 'Australia/Melbourne'})
     async scheduledAddTodayPredictions() {
         const result = await this.addTodayPredictions();
         console.info(result.message);
