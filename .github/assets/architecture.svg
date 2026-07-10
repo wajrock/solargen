@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 500" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1210 590" role="img" style="">
+<title style="fill:rgb(0, 0, 0);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">Architecture solargen</title>
+<desc style="fill:rgb(0, 0, 0);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">solargen-ui au dessus de solargen-backend, relie par une fleche verticale jusqu'au backend, backend et modele dans un conteneur Northflank, connectes a MySQL et Open-Meteo</desc>
 <defs>
   <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
     <path d="M0,0 L10,5 L0,10 z" fill="#4b5563"/>
@@ -8,67 +10,61 @@
   </marker>
 </defs>
 
-<rect x="0" y="0" width="1400" height="500" rx="16" fill="#ffffff"/>
+<rect x="0" y="0" width="1200" height="580" rx="16" fill="#ffffff" style="fill:rgb(255, 255, 255);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
 
-<g transform="translate(-10,0)">
 
-<!-- solargen-ui -->
-<rect x="80" y="100" width="330" height="120" rx="12" fill="#e8f6ef" stroke="#16a34a" stroke-width="1.8"/>
-<text x="245" y="132" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#065f46">solargen-ui</text>
-<text x="245" y="156" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#2f7d5c">React · TypeScript</text>
-<line x1="100" y1="168" x2="390" y2="168" stroke="#16a34a" stroke-width="1" opacity="0.4"/>
-<text x="245" y="190" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-style="italic" fill="#4b8a6f">Hostinger</text>
+<rect x="195" y="30" width="330" height="120" rx="12" fill="#e8f6ef" stroke="#16a34a" stroke-width="1.8" style="fill:rgb(232, 246, 239);stroke:rgb(22, 163, 74);color:rgb(11, 11, 11);stroke-width:1.8px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="360" y="62" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#065f46" style="fill:rgb(6, 95, 70);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Helvetica, Arial, sans-serif;font-size:20px;font-weight:700;text-anchor:middle;dominant-baseline:auto">solargen-ui</text>
+<text x="360" y="86" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#2f7d5c" style="fill:rgb(47, 125, 92);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Helvetica, Arial, sans-serif;font-size:14px;font-weight:400;text-anchor:middle;dominant-baseline:auto">React · TypeScript</text>
+<line x1="215" y1="98" x2="505" y2="98" stroke="#16a34a" stroke-width="1" opacity="0.4" style="fill:rgb(0, 0, 0);stroke:rgb(22, 163, 74);color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.4;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="360" y="120" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-style="italic" fill="#4b8a6f" style="fill:rgb(75, 138, 111);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Helvetica, Arial, sans-serif;font-size:13px;font-weight:400;font-style:italic;text-anchor:middle;dominant-baseline:auto">Hostinger</text>
 
-<!-- ui -> backend (shortened) -->
-<line x1="410" y1="160" x2="502" y2="160" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
-<text x="456" y="148" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#374151">REST</text>
 
-<g transform="translate(-100,0)">
+<line x1="360" y1="150" x2="360" y2="248" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)" style="fill:rgb(0, 0, 0);stroke:rgb(75, 85, 99);color:rgb(11, 11, 11);stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="378" y="170" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#374151" style="fill:rgb(55, 65, 81);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Helvetica, Arial, sans-serif;font-size:13px;font-weight:600;text-anchor:start;dominant-baseline:auto">REST</text>
 
-<!-- Northflank group (backend + model only) -->
-<rect x="590" y="40" width="850" height="230" rx="16" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="6 6"/>
-<text x="1015" y="70" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#374151">Dockerized Backend Services</text>
-<text x="1015" y="88" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" font-style="italic" fill="#6b7280">Hosted on the same internal network on Northflank</text>
 
-<!-- solargen-backend -->
-<rect x="610" y="103" width="330" height="140" rx="12" fill="#fdf3e3" stroke="#d97706" stroke-width="1.8"/>
-<text x="775" y="139" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#92400e">solargen-backend</text>
-<text x="775" y="163" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#b45309">NestJS</text>
+<rect x="165" y="190" width="870" height="220" rx="16" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="6 6" style="fill:none;stroke:rgb(156, 163, 175);color:rgb(11, 11, 11);stroke-width:1.5px;stroke-dasharray:6px, 6px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="600" y="220" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#374151" style="fill:rgb(55, 65, 81);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Helvetica, Arial, sans-serif;font-size:17px;font-weight:700;text-anchor:middle;dominant-baseline:auto">Dockerized Backend Services</text>
+<text x="600" y="238" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" font-style="italic" fill="#6b7280" style="fill:rgb(107, 114, 128);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Helvetica, Arial, sans-serif;font-size:12px;font-weight:400;font-style:italic;text-anchor:middle;dominant-baseline:auto">Hosted on the same internal network on Northflank</text>
 
-<!-- Cron sub-box -->
-<rect x="640" y="179" width="270" height="50" rx="8" fill="none" stroke="#d97706" stroke-width="1.2" stroke-dasharray="4 4"/>
-<text x="775" y="200" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#92400e">Daily Cron</text>
-<text x="775" y="218" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#a8710a">Every day at 1am</text>
 
-<!-- solargen-model -->
-<rect x="1090" y="128" width="330" height="90" rx="12" fill="#f1edfc" stroke="#7c3aed" stroke-width="1.8"/>
-<text x="1255" y="166" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#4c1d95">solargen-model</text>
-<text x="1255" y="190" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#6d28d9">FastAPI · LightGBM (ML)</text>
+<rect x="195" y="250" width="330" height="140" rx="12" fill="#fdf3e3" stroke="#d97706" stroke-width="1.8" style="fill:rgb(253, 243, 227);stroke:rgb(217, 119, 6);color:rgb(11, 11, 11);stroke-width:1.8px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="360" y="286" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#92400e" style="fill:rgb(146, 64, 14);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Helvetica, Arial, sans-serif;font-size:20px;font-weight:700;text-anchor:middle;dominant-baseline:auto">solargen-backend</text>
+<text x="360" y="310" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#b45309" style="fill:rgb(180, 83, 9);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Helvetica, Arial, sans-serif;font-size:14px;font-weight:400;text-anchor:middle;dominant-baseline:auto">NestJS</text>
 
-<!-- MySQL -->
-<rect x="640" y="370" width="270" height="90" rx="12" fill="#eaf2fc" stroke="#2563eb" stroke-width="1.8"/>
-<text x="775" y="408" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1e3a8a">MySQL DB</text>
-<text x="775" y="432" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#1d4ed8">Persisted data</text>
 
-<!-- Open-Meteo -->
-<rect x="1120" y="370" width="270" height="90" rx="12" fill="#fdecee" stroke="#dc2626" stroke-width="1.8"/>
-<text x="1255" y="408" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#7f1d1d">Open-Meteo API</text>
-<text x="1255" y="432" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#b91c1c">Weather Historical/Forecast</text>
+<rect x="225" y="326" width="270" height="50" rx="8" fill="none" stroke="#d97706" stroke-width="1.2" stroke-dasharray="4 4" style="fill:none;stroke:rgb(217, 119, 6);color:rgb(11, 11, 11);stroke-width:1.2px;stroke-dasharray:4px, 4px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="360" y="347" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#92400e" style="fill:rgb(146, 64, 14);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Helvetica, Arial, sans-serif;font-size:13px;font-weight:600;text-anchor:middle;dominant-baseline:auto">Daily Cron</text>
+<text x="360" y="365" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#a8710a" style="fill:rgb(168, 113, 10);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Helvetica, Arial, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:auto">Every day at midnight</text>
 
-<!-- backend -> model -->
-<line x1="940" y1="173" x2="1082" y2="173" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
-<text x="1011" y="161" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#374151">REST</text>
 
-<!-- cron -> model (daily trigger) -->
-<line x1="910" y1="204" x2="1082" y2="201" stroke="#c2760a" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#arrow-amber)"/>
-<text x="996" y="196" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" font-style="italic" fill="#a8710a">daily trigger</text>
+<rect x="675" y="275" width="330" height="90" rx="12" fill="#f1edfc" stroke="#7c3aed" stroke-width="1.8" style="fill:rgb(241, 237, 252);stroke:rgb(124, 58, 237);color:rgb(11, 11, 11);stroke-width:1.8px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="840" y="313" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#4c1d95" style="fill:rgb(76, 29, 149);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Helvetica, Arial, sans-serif;font-size:20px;font-weight:700;text-anchor:middle;dominant-baseline:auto">solargen-model</text>
+<text x="840" y="337" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#6d28d9" style="fill:rgb(109, 40, 217);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Helvetica, Arial, sans-serif;font-size:14px;font-weight:400;text-anchor:middle;dominant-baseline:auto">FastAPI · LightGBM (ML)</text>
 
-<!-- backend -> mysql -->
-<line x1="775" y1="243" x2="775" y2="362" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
 
-<!-- model -> open-meteo -->
-<line x1="1255" y1="218" x2="1255" y2="362" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="225" y="450" width="270" height="90" rx="12" fill="#eaf2fc" stroke="#2563eb" stroke-width="1.8" style="fill:rgb(234, 242, 252);stroke:rgb(37, 99, 235);color:rgb(11, 11, 11);stroke-width:1.8px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="360" y="488" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1e3a8a" style="fill:rgb(30, 58, 138);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Helvetica, Arial, sans-serif;font-size:19px;font-weight:700;text-anchor:middle;dominant-baseline:auto">MySQL DB</text>
+<text x="360" y="512" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#1d4ed8" style="fill:rgb(29, 78, 216);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Helvetica, Arial, sans-serif;font-size:14px;font-weight:400;text-anchor:middle;dominant-baseline:auto">Persisted data</text>
 
-</g>
-</g>
+
+<rect x="705" y="450" width="270" height="90" rx="12" fill="#fdecee" stroke="#dc2626" stroke-width="1.8" style="fill:rgb(253, 236, 238);stroke:rgb(220, 38, 38);color:rgb(11, 11, 11);stroke-width:1.8px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="840" y="488" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#7f1d1d" style="fill:rgb(127, 29, 29);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Helvetica, Arial, sans-serif;font-size:19px;font-weight:700;text-anchor:middle;dominant-baseline:auto">Open-Meteo API</text>
+<text x="840" y="512" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#b91c1c" style="fill:rgb(185, 28, 28);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Helvetica, Arial, sans-serif;font-size:14px;font-weight:400;text-anchor:middle;dominant-baseline:auto">Weather Historical/Forecast</text>
+
+
+<line x1="525" y1="320" x2="668" y2="320" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)" style="fill:rgb(0, 0, 0);stroke:rgb(75, 85, 99);color:rgb(11, 11, 11);stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="596" y="308" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#374151" style="fill:rgb(55, 65, 81);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Helvetica, Arial, sans-serif;font-size:13px;font-weight:600;text-anchor:middle;dominant-baseline:auto">REST</text>
+
+
+<line x1="495" y1="352" x2="668" y2="348" stroke="#c2760a" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#arrow-amber)" style="fill:rgb(0, 0, 0);stroke:rgb(194, 118, 10);color:rgb(11, 11, 11);stroke-width:1.8px;stroke-dasharray:5px, 4px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="580" y="340" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" font-style="italic" fill="#a8710a" style="fill:rgb(168, 113, 10);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Helvetica, Arial, sans-serif;font-size:12px;font-weight:400;font-style:italic;text-anchor:middle;dominant-baseline:auto">daily trigger</text>
+
+
+<line x1="360" y1="390" x2="360" y2="443" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)" style="fill:rgb(0, 0, 0);stroke:rgb(75, 85, 99);color:rgb(11, 11, 11);stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+
+<line x1="840" y1="365" x2="840" y2="443" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)" style="fill:rgb(0, 0, 0);stroke:rgb(75, 85, 99);color:rgb(11, 11, 11);stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
 </svg>
