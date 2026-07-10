@@ -46,7 +46,7 @@ const mockSite = {id: '0Y6D', kwp: 94.24};
 const mockPredictionsService = {
     getByDate: jest.fn().mockResolvedValue(mockGlobalPrediction),
     getByDateAndSite: jest.fn().mockResolvedValue(mockSitePrediction),
-    addPredictionByDate: jest.fn().mockResolvedValue({success: true, message: 'Predictions for 2026-07-01 inserted'}),
+    addPredictions: jest.fn().mockResolvedValue({success: true, message: 'Predictions for 2026-07-01 inserted'}),
     getLastPredictionStatus: jest.fn().mockResolvedValue(mockPredictionStatus),
 };
 
@@ -161,11 +161,20 @@ describe('PredictionsController', () => {
         });
     });
 
+    describe('insertTodayPredictions', () => {
+        it('should insert predictions for today', async () => {
+            const result = await controller.insertTodayPredictions();
+
+            expect(result.success).toBe(true);
+            expect(mockPredictionsService.addPredictions).toHaveBeenCalledWith();
+        });
+    });
+
     describe('insertPredictionByDate', () => {
         it('should insert predictions for a past date', async () => {
             const result = await controller.insertPredictionByDate({date: '2024-01-01'});
             expect(result.success).toBe(true);
-            expect(mockPredictionsService.addPredictionByDate).toHaveBeenCalledWith('2024-01-01');
+            expect(mockPredictionsService.addPredictions).toHaveBeenCalledWith('2024-01-01');
         });
 
         it('should throw BadRequestException for invalid date format', () => {

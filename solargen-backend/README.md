@@ -17,18 +17,19 @@ REST API powering the SolarGen dashboard. It serves solar production predictions
 
 ## Endpoints Overview
 
-| Method | Endpoint                     | Description                                                    |
-| ------ | ---------------------------- | -------------------------------------------------------------- |
-| `GET`  | `/predictions/status`        | Status of the most recently fetched predictions                |
-| `GET`  | `/predictions/today`         | Today's hourly predictions, campus-wide                        |
-| `GET`  | `/predictions/today/:siteId` | Today's hourly predictions for a specific site                 |
-| `GET`  | `/predictions/:date`         | Hourly predictions for a past date, campus-wide                |
-| `GET`  | `/predictions/:date/:siteId` | Hourly predictions for a past date and site                    |
-| `GET`  | `/installation`              | Metadata and performance for all 21 sites                      |
-| `GET`  | `/history/:month`            | Current vs. previous year comparison for a given month         |
-| `GET`  | `/history/:month/:siteId`    | Same comparison, scoped to a specific site                     |
-| `GET`  | `/model-info`                | Model metrics (R², MAE) and training details                   |
-| `POST` | `/predictions/:date`         | Triggers prediction ingestion for a date. Requires an API key. |
+| Method | Endpoint                     | Description                                                             |
+| ------ | ---------------------------- | ----------------------------------------------------------------------- |
+| `GET`  | `/predictions/status`        | Status of the most recently fetched predictions                         |
+| `GET`  | `/predictions/today`         | Today's hourly predictions, campus-wide                                 |
+| `GET`  | `/predictions/today/:siteId` | Today's hourly predictions for a specific site                          |
+| `GET`  | `/predictions/:date`         | Hourly predictions for a past date, campus-wide                         |
+| `GET`  | `/predictions/:date/:siteId` | Hourly predictions for a past date and site                             |
+| `GET`  | `/installation`              | Metadata and performance for all 21 sites                               |
+| `GET`  | `/history/:month`            | Current vs. previous year comparison for a given month                  |
+| `GET`  | `/history/:month/:siteId`    | Same comparison, scoped to a specific site                              |
+| `GET`  | `/model-info`                | Model metrics (R², MAE) and training details                            |
+| `POST` | `/predictions/today`         | Triggers prediction ingestion for the current day. Requires an API key. |
+| `POST` | `/predictions/:date`         | Triggers prediction ingestion for a past date. Requires an API key.     |
 
 **Example response** — `GET /predictions/today` (truncated, showing one of 24 hourly entries)
 
@@ -96,6 +97,19 @@ A scheduled cron job runs daily at 9:00 AM (Australia/Melbourne), which correspo
 
 The test suite does not require any environment configuration, external dependencies (database, `solargen-model`) are fully mocked. Requires Node.js 20+.
 
+Latest test results:
+
+| Type       | Test Suites          | Tests                |
+| ---------- | -------------------- | -------------------- |
+| Unit tests | 12 passed / 12 total | 73 passed / 73 total |
+| E2E tests  | 1 passed / 1 total   | 25 passed / 25 total |
+
+Unit tests coverage report:
+
+| % Lines   | % Statements | % Functions | % Branches |
+| --------- | ------------ | ----------- | ---------- |
+| **98.44** | 98.63        | 97.14       | 83.78      |
+
 ```bash
 npm install
 npm run test        # unit tests
@@ -114,5 +128,5 @@ The service is deployed to [Northflank](https://northflank.com/) through a Docke
 | Trigger        | A push touching `solargen-backend/` triggers a build. Path-based rules keep each service's pipeline independent.                                                                        |
 | Build & verify | In the `builder` stage, dependencies are installed, the Prisma client is generated, and the code is linted, unit-tested, and end-to-end tested. A failure at any step blocks the build. |
 | Compile        | Once verified, the TypeScript source is compiled.                                                                                                                                       |
-| Package        | A separate, minimal `runner` stage installs only production dependencies and copies the compiled output, keeping the final image lean and free of dev tools.                           |
+| Package        | A separate, minimal `runner` stage installs only production dependencies and copies the compiled output, keeping the final image lean and free of dev tools.                            |
 | Deploy         | The resulting image is deployed automatically to Northflank.                                                                                                                            |

@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {BadGatewayException, Injectable, InternalServerErrorException} from '@nestjs/common';
 import {Cron} from '@nestjs/schedule';
 import axios from 'axios';
 import {PrismaService} from '../../prisma/prisma.service';
@@ -13,6 +13,7 @@ import {
 } from './dto/predictions.dto';
 import {getHourlyAverage, getYearAndMonth, getMonthlyAvgDaily} from './predictions.utils';
 import {WeatherDto} from '../weather/dto/weather.dto';
+import {getTodayDate} from '../../common/utils/utils';
 
 interface MonthlyPrediction {
     timestamp: string;
@@ -188,40 +189,36 @@ export class PredictionsService {
     }
 
     // POST
-    @Cron('0 9 * * *', {timeZone: 'Australia/Melbourne'})
+    @Cron('10 0 0 * * *', {timeZone: 'Australia/Melbourne'})
     async scheduledAddTodayPredictions() {
-        const result = await this.addTodayPredictions();
+        const result = await this.addPredictions();
         console.info(result.message);
     }
 
-    async addTodayPredictions() {
-        const date = new Date().toLocaleDateString('en-CA', {timeZone: 'Australia/Melbourne'});
-
-        const {predictionCount, weatherCount} = await this.countExisting(date);
-
-        if (predictionCount === 504 && weatherCount === 24) {
-            return {success: true, message: `${date} already exists`};
-        }
-
-        const {data} = await axios.get<FastApiPredictionResponse>(`${process.env.FASTAPI_URL}/predictions`, {
-            headers: {'X-API-Key': process.env.FASTAPI_KEY},
-        });
-
-        return this.insertPredictions(data, predictionCount, weatherCount, date);
-    }
-
-    async addPredictionByDate(date: string) {
-        const {predictionCount, weatherCount} = await this.countExisting(date);
+    async addPredictions(date?: string): Promise<{success: boolean; message: string}> {
+        const targetDate = date ?? getTodayDate();
+        const {predictionCount, weatherCount} = await this.countExisting(targetDate);
 
         if (predictionCount === 504 && weatherCount === 24) {
-            return {success: true, message: `${date} already exists`};
+            return {success: true, message: `${targetDate} already exists`};
         }
 
-        const {data} = await axios.get<FastApiPredictionResponse>(`${process.env.FASTAPI_URL}/predictions/${date}`, {
-            headers: {'X-API-Key': process.env.FASTAPI_KEY},
-        });
+        const endpoint = targetDate === getTodayDate() ? 'predictions' : `predictions/${targetDate}`;
 
-        return this.insertPredictions(data, predictionCount, weatherCount, date);
+        try {
+            const {data} = await axios.get<FastApiPredictionResponse>(`${process.env.FASTAPI_URL}/${endpoint}`, {
+                headers: {'X-API-Key': process.env.FASTAPI_KEY},
+            });
+
+            return this.insertPredictions(data, predictionCount, weatherCount, targetDate);
+        } catch (error) {
+            console.error(`Error fetching predictions for ${targetDate}:`, error);
+            throw new BadGatewayException({
+                statusCode: 502,
+                error: 'fastapi_fetch_failed',
+                message: `Failed to fetch predictions for ${targetDate} from solargen-model.`,
+            });
+        }
     }
 
     private async countExisting(date: string): Promise<{predictionCount: number; weatherCount: number}> {
@@ -261,10 +258,11 @@ export class PredictionsService {
         if (totalPredictions === 504 && totalWeather === 24) {
             return {success: true, message: `Predictions for ${date} inserted`};
         } else {
-            return {
-                success: false,
-                message: `Incomplete data for ${date}`,
-            };
+            throw new InternalServerErrorException({
+                statusCode: 500,
+                error: 'incomplete_predictions_data',
+                message: `Incomplete data for ${date}.`,
+            });
         }
     }
 }

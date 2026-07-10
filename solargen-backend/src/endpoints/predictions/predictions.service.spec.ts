@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/unbound-method */
+import {BadGatewayException, InternalServerErrorException} from '@nestjs/common';
 import {Test, TestingModule} from '@nestjs/testing';
 import {PredictionsService} from './predictions.service';
 import {PrismaService} from '../../prisma/prisma.service';
@@ -5,9 +7,15 @@ import {WeatherService} from '../weather/weather.service';
 import axios from 'axios';
 import {WeatherDto} from '../weather/dto/weather.dto';
 import {FastApiPredictionResponse} from '../../types/fastapi.types';
+import {getTodayDate} from '../../common/utils/utils';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
+
+jest.mock('../../common/utils/utils', () => ({
+    getTodayDate: jest.fn(),
+}));
+const mockedGetTodayDate = getTodayDate as jest.Mock;
 
 const mockWeather: WeatherDto[] = [
     {
@@ -68,6 +76,7 @@ describe('PredictionsService', () => {
         service = module.get<PredictionsService>(PredictionsService);
         jest.clearAllMocks();
         mockWeatherService.getByDate.mockResolvedValue(mockWeather);
+        mockedGetTodayDate.mockReturnValue('2026-07-10');
     });
 
     describe('getByDate', () => {
@@ -233,16 +242,15 @@ describe('PredictionsService', () => {
         });
     });
 
-    describe('addTodayPredictions', () => {
+    describe('addPredictions (today, no date argument)', () => {
         it('skips fetching if data for today is already complete', async () => {
             mockPrismaService.prediction.count.mockResolvedValue(504);
             mockPrismaService.weather.count.mockResolvedValue(24);
 
-            const result = await service.addTodayPredictions();
+            const result = await service.addPredictions();
 
             expect(result.success).toBe(true);
             expect(result.message).toContain('already exists');
-            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(mockedAxios.get).toHaveBeenCalledTimes(0);
         });
 
@@ -253,25 +261,67 @@ describe('PredictionsService', () => {
             mockPrismaService.weather.createMany.mockResolvedValue({count: 24});
             mockPrismaService.prediction.createMany.mockResolvedValue({count: 504});
 
-            const result = await service.addTodayPredictions();
+            const result = await service.addPredictions();
 
             expect(result.success).toBe(true);
             expect(result.message).toContain('inserted');
         });
     });
 
-    describe('addPredictionByDate', () => {
-        it('returns incomplete when inserted counts do not reach expected totals', async () => {
+    describe('addPredictions (explicit date argument)', () => {
+        it('throws InternalServerErrorException when inserted counts do not reach expected totals', async () => {
             mockPrismaService.prediction.count.mockResolvedValue(0);
             mockPrismaService.weather.count.mockResolvedValue(0);
             mockedAxios.get.mockResolvedValue(mockFastApiResponse);
             mockPrismaService.weather.createMany.mockResolvedValue({count: 10});
             mockPrismaService.prediction.createMany.mockResolvedValue({count: 300});
 
-            const result = await service.addPredictionByDate('2026-06-15');
+            await expect(service.addPredictions('2026-06-15')).rejects.toThrow(InternalServerErrorException);
+            await expect(service.addPredictions('2026-06-15')).rejects.toMatchObject({
+                status: 500,
+                response: expect.objectContaining({error: 'incomplete_predictions_data'}) as unknown,
+            });
+        });
 
-            expect(result.success).toBe(false);
-            expect(result.message).toContain('Incomplete');
+        it('throws BadGatewayException when the FastAPI request fails', async () => {
+            mockPrismaService.prediction.count.mockResolvedValue(0);
+            mockPrismaService.weather.count.mockResolvedValue(0);
+            mockedAxios.get.mockRejectedValue(new Error('network error'));
+
+            await expect(service.addPredictions('2026-06-15')).rejects.toThrow(BadGatewayException);
+            await expect(service.addPredictions('2026-06-15')).rejects.toMatchObject({
+                status: 502,
+                response: expect.objectContaining({error: 'fastapi_fetch_failed'}) as unknown,
+            });
+        });
+
+        it('calls the /predictions endpoint (no date suffix) when the requested date is today', async () => {
+            mockedGetTodayDate.mockReturnValue('2026-06-15');
+            mockPrismaService.prediction.count.mockResolvedValue(0);
+            mockPrismaService.weather.count.mockResolvedValue(0);
+            mockedAxios.get.mockResolvedValue(mockFastApiResponse);
+            mockPrismaService.weather.createMany.mockResolvedValue({count: 24});
+            mockPrismaService.prediction.createMany.mockResolvedValue({count: 504});
+
+            await service.addPredictions('2026-06-15');
+
+            expect(mockedAxios.get).toHaveBeenCalledWith(`${process.env.FASTAPI_URL}/predictions`, expect.anything());
+        });
+
+        it('calls the /predictions/:date endpoint when the requested date is not today', async () => {
+            mockedGetTodayDate.mockReturnValue('2026-07-10');
+            mockPrismaService.prediction.count.mockResolvedValue(0);
+            mockPrismaService.weather.count.mockResolvedValue(0);
+            mockedAxios.get.mockResolvedValue(mockFastApiResponse);
+            mockPrismaService.weather.createMany.mockResolvedValue({count: 24});
+            mockPrismaService.prediction.createMany.mockResolvedValue({count: 504});
+
+            await service.addPredictions('2026-06-15');
+
+            expect(mockedAxios.get).toHaveBeenCalledWith(
+                `${process.env.FASTAPI_URL}/predictions/2026-06-15`,
+                expect.anything(),
+            );
         });
     });
 });

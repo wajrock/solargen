@@ -1,5 +1,5 @@
+import {BadGatewayException, INestApplication, InternalServerErrorException, ValidationPipe} from '@nestjs/common';
 import {Test, TestingModule} from '@nestjs/testing';
-import {INestApplication, ValidationPipe} from '@nestjs/common';
 import request from 'supertest';
 import {AppModule} from '../src/app.module';
 import {PredictionsService} from '../src/endpoints/predictions/predictions.service';
@@ -113,8 +113,7 @@ describe('AppModule (e2e)', () => {
                 getByDate: jest.fn().mockResolvedValue(mockGlobalPrediction),
                 getByDateAndSite: jest.fn().mockResolvedValue(mockSitePrediction),
                 getLastPredictionStatus: jest.fn().mockResolvedValue(mockPredictionStatus),
-                addTodayPredictions: jest.fn().mockResolvedValue({success: true, message: 'inserted'}),
-                addPredictionByDate: jest.fn().mockResolvedValue({success: true, message: 'inserted'}),
+                addPredictions: jest.fn().mockResolvedValue({success: true, message: 'inserted'}),
             })
             .overrideProvider(InstallationService)
             .useValue({
@@ -144,6 +143,12 @@ describe('AppModule (e2e)', () => {
     afterAll(async () => {
         await app.close();
     }, 30000);
+
+    afterEach(() => {
+        jest.clearAllMocks();
+        const predictionsService = app.get(PredictionsService);
+        (predictionsService.addPredictions as jest.Mock).mockResolvedValue({success: true, message: 'inserted'});
+    });
 
     describe('/predictions', () => {
         it('GET /predictions/status → 200', async () => {
@@ -175,16 +180,103 @@ describe('AppModule (e2e)', () => {
             await request(server).get('/predictions/2024-01-01/0Y6D').expect(200).expect(mockSitePrediction);
         });
 
+        it('POST /predictions/today → 401 without API key', async () => {
+            await request(server).post('/predictions/today').expect(401);
+        });
+
+        it('POST /predictions/today → 201 with valid API key', async () => {
+            await request(server)
+                .post('/predictions/today')
+                .set('x-api-key', API_KEY)
+                .expect(201)
+                .expect({success: true, message: 'inserted'});
+        });
+
+        it('POST /predictions/today → 502 when the FastAPI request fails', async () => {
+            const predictionsService = app.get(PredictionsService);
+            (predictionsService.addPredictions as jest.Mock).mockRejectedValueOnce(
+                new BadGatewayException({
+                    statusCode: 502,
+                    error: 'fastapi_fetch_failed',
+                    message: 'Failed to fetch predictions for 2026-07-10 from solargen-model.',
+                }),
+            );
+
+            const response = await request(server).post('/predictions/today').set('x-api-key', API_KEY).expect(502);
+
+            expect((response.body as {error: string}).error).toBe('fastapi_fetch_failed');
+        });
+
+        it('POST /predictions/today → 500 when inserted data is incomplete', async () => {
+            const predictionsService = app.get(PredictionsService);
+            (predictionsService.addPredictions as jest.Mock).mockRejectedValueOnce(
+                new InternalServerErrorException({
+                    statusCode: 500,
+                    error: 'incomplete_predictions_data',
+                    message: 'Incomplete data for 2026-07-10.',
+                }),
+            );
+
+            const response = await request(server).post('/predictions/today').set('x-api-key', API_KEY).expect(500);
+
+            expect((response.body as {error: string}).error).toBe('incomplete_predictions_data');
+        });
+
         it('POST /predictions/:date → 401 without API key', async () => {
             await request(server).post('/predictions/2024-01-01').expect(401);
         });
 
-        it('POST /predictions/:date → 200 with valid API key', async () => {
+        it('POST /predictions/:date → 201 with valid API key', async () => {
             await request(server)
                 .post('/predictions/2024-01-01')
                 .set('x-api-key', API_KEY)
                 .expect(201)
                 .expect({success: true, message: 'inserted'});
+        });
+
+        it('POST /predictions/:date → 400 for invalid date format', async () => {
+            await request(server).post('/predictions/invalid-date').set('x-api-key', API_KEY).expect(400);
+        });
+
+        it('POST /predictions/:date → 400 for today or future date', async () => {
+            const today = new Date().toLocaleDateString('en-CA', {timeZone: 'Australia/Melbourne'});
+            await request(server).post(`/predictions/${today}`).set('x-api-key', API_KEY).expect(400);
+        });
+
+        it('POST /predictions/:date → 502 when the FastAPI request fails', async () => {
+            const predictionsService = app.get(PredictionsService);
+            (predictionsService.addPredictions as jest.Mock).mockRejectedValueOnce(
+                new BadGatewayException({
+                    statusCode: 502,
+                    error: 'fastapi_fetch_failed',
+                    message: 'Failed to fetch predictions for 2024-01-01 from solargen-model.',
+                }),
+            );
+
+            const response = await request(server)
+                .post('/predictions/2024-01-01')
+                .set('x-api-key', API_KEY)
+                .expect(502);
+
+            expect((response.body as {error: string}).error).toBe('fastapi_fetch_failed');
+        });
+
+        it('POST /predictions/:date → 500 when inserted data is incomplete', async () => {
+            const predictionsService = app.get(PredictionsService);
+            (predictionsService.addPredictions as jest.Mock).mockRejectedValueOnce(
+                new InternalServerErrorException({
+                    statusCode: 500,
+                    error: 'incomplete_predictions_data',
+                    message: 'Incomplete data for 2024-01-01.',
+                }),
+            );
+
+            const response = await request(server)
+                .post('/predictions/2024-01-01')
+                .set('x-api-key', API_KEY)
+                .expect(500);
+
+            expect((response.body as {error: string}).error).toBe('incomplete_predictions_data');
         });
     });
 
