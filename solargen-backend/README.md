@@ -1,6 +1,6 @@
 # SolarGen Backend
 
-> Part of the [SolarGen](../README.md) project — see the root README for the full architecture overview.
+> Part of the [SolarGen](../README.md) project. See the root README for the full architecture overview.
 
 **Live API & docs:** [Swagger documentation](https://api--solargen-backend--mdh6jkptypjr.code.run/docs)
 
@@ -8,12 +8,12 @@ REST API powering the SolarGen dashboard. It serves solar production predictions
 
 ## Tech Stack
 
-- **NestJS** — application framework
-- **Prisma** — ORM and database schema management
-- **MySQL** — data persistence
-- **Swagger** — API documentation
-- **Jest** — unit and end-to-end testing
-- **Axios** — HTTP client used to fetch predictions from `solargen-model`
+- **NestJS**: application framework
+- **Prisma**: ORM and database schema management
+- **MySQL**: data persistence
+- **Swagger**: API documentation
+- **Jest**: unit and end-to-end testing
+- **Axios**: HTTP client used to fetch predictions from `solargen-model`
 
 ## Endpoints Overview
 
@@ -31,7 +31,7 @@ REST API powering the SolarGen dashboard. It serves solar production predictions
 | `POST` | `/predictions/today`         | Triggers prediction ingestion for the current day. Requires an API key. |
 | `POST` | `/predictions/:date`         | Triggers prediction ingestion for a past date. Requires an API key.     |
 
-**Example response** — `GET /predictions/today` (truncated, showing one of 24 hourly entries)
+**Example response** for `GET /predictions/today` (truncated, showing one of 24 hourly entries):
 
 ```json
 {
@@ -91,7 +91,7 @@ src/
 
 ## Data Ingestion
 
-A scheduled cron job runs daily at 9:00 AM (Australia/Melbourne), which corresponds to 1:00 AM in France. It fetches the day's predictions from `solargen-model` and persists them to MySQL via Prisma. This keeps the whole architecture self-sufficient, so the dashboard always has fresh data without any manual intervention. The same ingestion logic is also exposed through the protected `POST /predictions/:date` endpoint for on-demand backfills.
+A scheduled cron job runs daily at 9:00 AM (Australia/Melbourne), which corresponds to 1:00 AM in France. It fetches the day's predictions from `solargen-model` and persists them to MySQL via Prisma. This keeps the whole architecture self-sufficient, so the dashboard always has fresh data without any manual intervention. The same ingestion logic is also exposed through the protected `POST /predictions/today` and `POST /predictions/:date` endpoints for on-demand backfills.
 
 ## Testing
 
