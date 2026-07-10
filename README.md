@@ -2,7 +2,7 @@
 
 SolarGen is a full-stack monitoring and forecasting platform based on La Trobe University's Bundoora campus (Melbourne, Australia). It tracks and predicts hourly solar production across 21 rooftop installations, combining a machine learning model with a real-time dashboard so campus managers can monitor output, compare site performance, and review historical trends at a glance.
 
-The forecasts are produced by a LightGBM model trained on the [UNISOLAR dataset](https://github.com/akashkumar916/UNISOLAR), fed with live weather data, and served through a dedicated backend to a React dashboard.
+The forecasts are produced by a LightGBM model trained on the [UNISOLAR dataset](https://www.kaggle.com/datasets/cdaclab/unisolar), fed with live weather data, and served through a dedicated backend to a React dashboard.
 
 ![SolarGen dashboard preview](.github/assets/project-cover.png)
 
@@ -30,10 +30,10 @@ The Bundoora campus operates 21 solar installations with a combined capacity of 
 
 ## Features
 
-- **Overview** — daily predictions, capacity factor, CO₂ savings, and estimated energy value, benchmarked against the monthly average
-- **Installation** — comparative view of all 21 sites, filterable by performance level and inverter model
-- **History** — month-over-month production comparison between the current and previous year
-- **ML Model** — model performance metrics (R², MAE), input features, and the status of the latest prediction run
+- **Overview**: daily predictions, capacity factor, CO₂ savings, and estimated energy value, benchmarked against the monthly average
+- **Installation**: comparative view of all 21 sites, filterable by performance level and inverter model
+- **History**: month-over-month production comparison between the current and previous year
+- **ML Model**: model performance metrics (R², MAE), input features, and the status of the latest prediction run
 
 ## Testing
 
@@ -47,8 +47,8 @@ Each service maintains its own test suite. See the respective README for setup a
 
 ## Deployment
 
-- **Frontend** — deployed to Hostinger via GitHub Actions on every push
-- **Backend & Model** — deployed to Northflank with path-based build triggers, so each service only rebuilds when its own directory is modified
+- **Frontend**: deployed to Hostinger via GitHub Actions on every push
+- **Backend & Model**: deployed to Northflank with path-based build triggers, so each service only rebuilds when its own directory is modified
 
 ## License
 

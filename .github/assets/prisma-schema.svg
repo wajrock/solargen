@@ -1,147 +1,138 @@
-<svg viewBox="0 0 1030 630" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
-  <defs>
-    <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
-    </marker>
-  </defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1190 760" role="img">
+<title>SolarGen Prisma schema</title>
+<desc>Entity relationship diagram of the solargen-backend Prisma schema: Installation has many Site, Site has many Prediction. Weather and ModelInfo are standalone tables with no relations.</desc>
 
-  <rect width="1030" height="630" rx="16" fill="#ffffff"/>
+<defs>
+  <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#4b5563"/>
+  </marker>
+</defs>
 
-  <g transform="translate(50,25)">
+<rect x="0" y="0" width="1190" height="760" rx="16" fill="#ffffff"/>
 
-  <g transform="translate(-10,-10)">
-  <!-- ================= Installation ================= -->
-  <rect x="30" y="30" width="230" height="180" rx="8" fill="#f1f5f9" stroke="#334155" stroke-width="2"/>
-  <rect x="30" y="30" width="230" height="32" fill="#334155"/>
-  <rect x="30" y="30" width="230" height="8" rx="8" fill="#334155"/>
-  <text x="145" y="51" text-anchor="middle" font-size="13" fill="#ffffff" font-weight="700">Installation</text>
+<!-- ================= Installation ================= -->
+<rect x="80" y="80" width="250" height="190" rx="12" fill="#f1f5f9" stroke="#475569" stroke-width="1.8"/>
+<text x="205" y="112" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1e293b">Installation</text>
+<line x1="100" y1="126" x2="310" y2="126" stroke="#475569" stroke-width="1" opacity="0.3"/>
 
-  <text x="45" y="82" font-size="11" fill="#0f172a" font-weight="700">id</text>
-  <text x="140" y="82" font-size="11" fill="#64748b">Int (PK)</text>
-  <text x="45" y="100" font-size="11" fill="#0f172a">name</text>
-  <text x="140" y="100" font-size="11" fill="#64748b">String</text>
-  <text x="45" y="118" font-size="11" fill="#0f172a">latitude</text>
-  <text x="140" y="118" font-size="11" fill="#64748b">Float</text>
-  <text x="45" y="136" font-size="11" fill="#0f172a">longitude</text>
-  <text x="140" y="136" font-size="11" fill="#64748b">Float</text>
-  <text x="45" y="154" font-size="11" fill="#0f172a">sites</text>
-  <text x="140" y="154" font-size="11" fill="#64748b">Site[]</text>
+<text x="100" y="148" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1e293b">id</text>
+<text x="200" y="148" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#475569">Int (PK)</text>
+<text x="100" y="167" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1e293b">name</text>
+<text x="200" y="167" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#475569">String</text>
+<text x="100" y="186" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1e293b">latitude</text>
+<text x="200" y="186" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#475569">Float</text>
+<text x="100" y="205" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1e293b">longitude</text>
+<text x="200" y="205" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#475569">Float</text>
+<text x="100" y="224" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1e293b">sites</text>
+<text x="200" y="224" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#475569">Site[]</text>
 
-  <text x="45" y="186" font-size="10" fill="#94a3b8">@@map("installation")</text>
+<text x="100" y="252" font-family="Helvetica, Arial, sans-serif" font-size="12" font-style="italic" fill="#64748b">@@map("installation")</text>
 
-  <!-- ================= Site ================= -->
-  <rect x="360" y="30" width="230" height="230" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
-  <rect x="360" y="30" width="230" height="32" fill="#2563eb"/>
-  <rect x="360" y="30" width="230" height="8" rx="8" fill="#2563eb"/>
-  <text x="475" y="51" text-anchor="middle" font-size="13" fill="#ffffff" font-weight="700">Site</text>
+<!-- ================= Site ================= -->
+<rect x="430" y="80" width="250" height="240" rx="12" fill="#eaf2fc" stroke="#2563eb" stroke-width="1.8"/>
+<text x="555" y="112" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1e3a8a">Site</text>
+<line x1="450" y1="126" x2="660" y2="126" stroke="#2563eb" stroke-width="1" opacity="0.3"/>
 
-  <text x="375" y="82" font-size="11" fill="#0f172a" font-weight="700">id</text>
-  <text x="470" y="82" font-size="11" fill="#64748b">String (PK)</text>
-  <text x="375" y="100" font-size="11" fill="#0f172a">kwp</text>
-  <text x="470" y="100" font-size="11" fill="#64748b">Float</text>
-  <text x="375" y="118" font-size="11" fill="#0f172a">panel_count</text>
-  <text x="470" y="118" font-size="11" fill="#64748b">Int</text>
-  <text x="375" y="136" font-size="11" fill="#0f172a">panel_model</text>
-  <text x="470" y="136" font-size="11" fill="#64748b">String</text>
-  <text x="375" y="154" font-size="11" fill="#0f172a">inverters</text>
-  <text x="470" y="154" font-size="11" fill="#64748b">Json</text>
-  <text x="375" y="172" font-size="11" fill="#0f172a" font-weight="700">installation_id</text>
-  <text x="470" y="172" font-size="11" fill="#64748b">Int (FK)</text>
-  <text x="375" y="190" font-size="11" fill="#0f172a">installation</text>
-  <text x="470" y="190" font-size="11" fill="#64748b">Installation</text>
-  <text x="375" y="208" font-size="11" fill="#0f172a">predictions</text>
-  <text x="470" y="208" font-size="11" fill="#64748b">Prediction[]</text>
+<text x="450" y="148" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1e3a8a">id</text>
+<text x="595" y="148" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1d4ed8">String (PK)</text>
+<text x="450" y="167" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1e3a8a">kwp</text>
+<text x="595" y="167" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1d4ed8">Float</text>
+<text x="450" y="186" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1e3a8a">panel_count</text>
+<text x="595" y="186" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1d4ed8">Int</text>
+<text x="450" y="205" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1e3a8a">panel_model</text>
+<text x="595" y="205" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1d4ed8">String</text>
+<text x="450" y="224" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1e3a8a">inverters</text>
+<text x="595" y="224" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1d4ed8">Json</text>
+<text x="450" y="243" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1e3a8a">installation_id</text>
+<text x="595" y="243" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1d4ed8">Int (FK)</text>
+<text x="450" y="262" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1e3a8a">installation</text>
+<text x="595" y="262" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1d4ed8">Installation</text>
+<text x="450" y="281" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1e3a8a">predictions</text>
+<text x="595" y="281" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1d4ed8">Prediction[]</text>
 
-  <text x="375" y="240" font-size="10" fill="#94a3b8">@@map("sites")</text>
+<text x="450" y="304" font-family="Helvetica, Arial, sans-serif" font-size="12" font-style="italic" fill="#64748b">@@map("sites")</text>
 
-  <!-- ================= Prediction ================= -->
-  <rect x="690" y="30" width="230" height="270" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
-  <rect x="690" y="30" width="230" height="32" fill="#dc2626"/>
-  <rect x="690" y="30" width="230" height="8" rx="8" fill="#dc2626"/>
-  <text x="805" y="51" text-anchor="middle" font-size="13" fill="#ffffff" font-weight="700">Prediction</text>
+<!-- ================= Prediction ================= -->
+<rect x="780" y="80" width="330" height="290" rx="12" fill="#fdecee" stroke="#dc2626" stroke-width="1.8"/>
+<text x="945" y="112" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#7f1d1d">Prediction</text>
+<line x1="800" y1="126" x2="1090" y2="126" stroke="#dc2626" stroke-width="1" opacity="0.3"/>
 
-  <text x="705" y="82" font-size="11" fill="#0f172a" font-weight="700">id</text>
-  <text x="800" y="82" font-size="11" fill="#64748b">Int (PK)</text>
-  <text x="705" y="100" font-size="11" fill="#0f172a" font-weight="700">site_id</text>
-  <text x="800" y="100" font-size="11" fill="#64748b">String (FK)</text>
-  <text x="705" y="118" font-size="11" fill="#0f172a">timestamp</text>
-  <text x="800" y="118" font-size="11" fill="#64748b">String</text>
-  <text x="705" y="136" font-size="11" fill="#0f172a">capacity_factor</text>
-  <text x="800" y="136" font-size="11" fill="#64748b">Float</text>
-  <text x="705" y="154" font-size="11" fill="#0f172a">solar_generation</text>
-  <text x="800" y="154" font-size="11" fill="#64748b">Float</text>
-  <text x="705" y="172" font-size="11" fill="#0f172a">fetched_at</text>
-  <text x="800" y="172" font-size="11" fill="#64748b">DateTime</text>
-  <text x="705" y="190" font-size="11" fill="#0f172a">site</text>
-  <text x="800" y="190" font-size="11" fill="#64748b">Site</text>
+<text x="800" y="148" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#7f1d1d">id</text>
+<text x="945" y="148" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#b91c1c">Int (PK)</text>
+<text x="800" y="167" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#7f1d1d">site_id</text>
+<text x="945" y="167" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#b91c1c">String (FK)</text>
+<text x="800" y="186" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#7f1d1d">timestamp</text>
+<text x="945" y="186" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#b91c1c">String</text>
+<text x="800" y="205" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#7f1d1d">capacity_factor</text>
+<text x="945" y="205" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#b91c1c">Float</text>
+<text x="800" y="224" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#7f1d1d">solar_generation</text>
+<text x="945" y="224" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#b91c1c">Float</text>
+<text x="800" y="243" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#7f1d1d">fetched_at</text>
+<text x="945" y="243" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#b91c1c">DateTime</text>
+<text x="800" y="262" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#7f1d1d">site</text>
+<text x="945" y="262" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#b91c1c">Site</text>
 
-  <text x="705" y="222" font-size="10" fill="#94a3b8">@@unique([site_id, timestamp])</text>
-  <text x="705" y="236" font-size="10" fill="#94a3b8">@@index([site_id, capacity_factor])</text>
-  <text x="705" y="250" font-size="10" fill="#94a3b8">@@index([timestamp])</text>
-  <text x="705" y="264" font-size="10" fill="#94a3b8">@@index([site_id, timestamp])</text>
-  <text x="705" y="282" font-size="10" fill="#94a3b8">@@map("predictions")</text>
+<text x="800" y="288" font-family="Helvetica, Arial, sans-serif" font-size="12" font-style="italic" fill="#64748b">@@unique([site_id, timestamp])</text>
+<text x="800" y="304" font-family="Helvetica, Arial, sans-serif" font-size="12" font-style="italic" fill="#64748b">@@index([site_id, capacity_factor])</text>
+<text x="800" y="320" font-family="Helvetica, Arial, sans-serif" font-size="12" font-style="italic" fill="#64748b">@@index([timestamp])</text>
+<text x="800" y="336" font-family="Helvetica, Arial, sans-serif" font-size="12" font-style="italic" fill="#64748b">@@index([site_id, timestamp])</text>
+<text x="800" y="352" font-family="Helvetica, Arial, sans-serif" font-size="12" font-style="italic" fill="#64748b">@@map("predictions")</text>
 
-  <!-- Relationship lines (top row) -->
-  <line x1="260" y1="118" x2="356" y2="118" stroke="#475569" stroke-width="1.75" marker-end="url(#arrow2)"/>
-  <text x="308" y="108" text-anchor="middle" font-size="10" fill="#334155" font-weight="600">1 : N</text>
+<!-- Relationship lines -->
+<line x1="330" y1="157" x2="426" y2="157" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow2)"/>
+<text x="378" y="147" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#374151">1 : N</text>
 
-  <line x1="590" y1="118" x2="686" y2="118" stroke="#475569" stroke-width="1.75" marker-end="url(#arrow2)"/>
-  <text x="638" y="108" text-anchor="middle" font-size="10" fill="#334155" font-weight="600">1 : N</text>
-  </g>
+<line x1="680" y1="157" x2="776" y2="157" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow2)"/>
+<text x="728" y="147" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#374151">1 : N</text>
 
-  <g transform="translate(-10,-30)">
-  <!-- ================= Weather ================= -->
-  <rect x="30" y="340" width="230" height="240" rx="8" fill="#fefce8" stroke="#ca8a04" stroke-width="2"/>
-  <rect x="30" y="340" width="230" height="32" fill="#ca8a04"/>
-  <rect x="30" y="340" width="230" height="8" rx="8" fill="#ca8a04"/>
-  <text x="145" y="361" text-anchor="middle" font-size="13" fill="#ffffff" font-weight="700">Weather</text>
+<!-- ================= Weather ================= -->
+<rect x="80" y="410" width="300" height="250" rx="12" fill="#fdf3e3" stroke="#d97706" stroke-width="1.8"/>
+<text x="230" y="442" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#92400e">Weather</text>
+<line x1="100" y1="456" x2="360" y2="456" stroke="#d97706" stroke-width="1" opacity="0.3"/>
 
-  <text x="45" y="392" font-size="11" fill="#0f172a" font-weight="700">id</text>
-  <text x="155" y="392" font-size="11" fill="#64748b">Int (PK)</text>
-  <text x="45" y="410" font-size="11" fill="#0f172a">timestamp</text>
-  <text x="155" y="410" font-size="11" fill="#64748b">String (unique)</text>
-  <text x="45" y="428" font-size="11" fill="#0f172a">temperature</text>
-  <text x="155" y="428" font-size="11" fill="#64748b">Float</text>
-  <text x="45" y="446" font-size="11" fill="#0f172a">relative_humidity</text>
-  <text x="155" y="446" font-size="11" fill="#64748b">Float</text>
-  <text x="45" y="464" font-size="11" fill="#0f172a">cloud_cover</text>
-  <text x="155" y="464" font-size="11" fill="#64748b">Float</text>
-  <text x="45" y="482" font-size="11" fill="#0f172a">shortwave_radiation</text>
-  <text x="155" y="482" font-size="11" fill="#64748b">Float</text>
-  <text x="45" y="500" font-size="11" fill="#0f172a">diffuse_radiation</text>
-  <text x="155" y="500" font-size="11" fill="#64748b">Float</text>
-  <text x="45" y="518" font-size="11" fill="#0f172a">fetched_at</text>
-  <text x="155" y="518" font-size="11" fill="#64748b">DateTime</text>
+<text x="100" y="478" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#92400e">id</text>
+<text x="260" y="478" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#b45309">Int (PK)</text>
+<text x="100" y="497" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#92400e">timestamp</text>
+<text x="260" y="497" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#b45309">String (unique)</text>
+<text x="100" y="516" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#92400e">temperature</text>
+<text x="260" y="516" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#b45309">Float</text>
+<text x="100" y="535" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#92400e">relative_humidity</text>
+<text x="260" y="535" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#b45309">Float</text>
+<text x="100" y="554" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#92400e">cloud_cover</text>
+<text x="260" y="554" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#b45309">Float</text>
+<text x="100" y="573" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#92400e">shortwave_radiation</text>
+<text x="260" y="573" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#b45309">Float</text>
+<text x="100" y="592" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#92400e">diffuse_radiation</text>
+<text x="260" y="592" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#b45309">Float</text>
+<text x="100" y="611" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#92400e">fetched_at</text>
+<text x="260" y="611" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#b45309">DateTime</text>
 
-  <text x="45" y="550" font-size="10" fill="#94a3b8">@@map("weather")</text>
+<text x="100" y="637" font-family="Helvetica, Arial, sans-serif" font-size="12" font-style="italic" fill="#64748b">@@map("weather")</text>
 
-  <!-- ================= ModelInfo ================= -->
-  <rect x="360" y="340" width="230" height="250" rx="8" fill="#f3e8ff" stroke="#9333ea" stroke-width="2"/>
-  <rect x="360" y="340" width="230" height="32" fill="#9333ea"/>
-  <rect x="360" y="340" width="230" height="8" rx="8" fill="#9333ea"/>
-  <text x="475" y="361" text-anchor="middle" font-size="13" fill="#ffffff" font-weight="700">ModelInfo</text>
+<!-- ================= ModelInfo ================= -->
+<rect x="430" y="410" width="250" height="270" rx="12" fill="#f1edfc" stroke="#7c3aed" stroke-width="1.8"/>
+<text x="555" y="442" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#4c1d95">ModelInfo</text>
+<line x1="450" y1="456" x2="660" y2="456" stroke="#7c3aed" stroke-width="1" opacity="0.3"/>
 
-  <text x="375" y="392" font-size="11" fill="#0f172a" font-weight="700">id</text>
-  <text x="470" y="392" font-size="11" fill="#64748b">Int (PK)</text>
-  <text x="375" y="410" font-size="11" fill="#0f172a">model</text>
-  <text x="470" y="410" font-size="11" fill="#64748b">String</text>
-  <text x="375" y="428" font-size="11" fill="#0f172a">r2</text>
-  <text x="470" y="428" font-size="11" fill="#64748b">Float</text>
-  <text x="375" y="446" font-size="11" fill="#0f172a">mae</text>
-  <text x="470" y="446" font-size="11" fill="#64748b">Float</text>
-  <text x="375" y="464" font-size="11" fill="#0f172a">train_start</text>
-  <text x="470" y="464" font-size="11" fill="#64748b">String</text>
-  <text x="375" y="482" font-size="11" fill="#0f172a">train_end</text>
-  <text x="470" y="482" font-size="11" fill="#64748b">String</text>
-  <text x="375" y="500" font-size="11" fill="#0f172a">features</text>
-  <text x="470" y="500" font-size="11" fill="#64748b">Json</text>
-  <text x="375" y="518" font-size="11" fill="#0f172a">sites_count</text>
-  <text x="470" y="518" font-size="11" fill="#64748b">Int</text>
-  <text x="375" y="536" font-size="11" fill="#0f172a">fetched_at</text>
-  <text x="470" y="536" font-size="11" fill="#64748b">DateTime</text>
+<text x="450" y="478" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#4c1d95">id</text>
+<text x="595" y="478" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#6d28d9">Int (PK)</text>
+<text x="450" y="497" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#4c1d95">model</text>
+<text x="595" y="497" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#6d28d9">String</text>
+<text x="450" y="516" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#4c1d95">r2</text>
+<text x="595" y="516" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#6d28d9">Float</text>
+<text x="450" y="535" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#4c1d95">mae</text>
+<text x="595" y="535" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#6d28d9">Float</text>
+<text x="450" y="554" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#4c1d95">train_start</text>
+<text x="595" y="554" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#6d28d9">String</text>
+<text x="450" y="573" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#4c1d95">train_end</text>
+<text x="595" y="573" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#6d28d9">String</text>
+<text x="450" y="592" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#4c1d95">features</text>
+<text x="595" y="592" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#6d28d9">Json</text>
+<text x="450" y="611" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#4c1d95">sites_count</text>
+<text x="595" y="611" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#6d28d9">Int</text>
+<text x="450" y="630" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#4c1d95">fetched_at</text>
+<text x="595" y="630" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#6d28d9">DateTime</text>
 
-  <text x="375" y="568" font-size="10" fill="#94a3b8">@@map("model_info")</text>
-  </g>
+<text x="450" y="656" font-family="Helvetica, Arial, sans-serif" font-size="12" font-style="italic" fill="#64748b">@@map("model_info")</text>
 
-  </g>
 </svg>
