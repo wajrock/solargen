@@ -26,7 +26,7 @@ A daily cron job fetches new predictions from `solargen-model` and populates the
 
 ## Context
 
-The Bundoora campus operates 21 solar installations with a combined capacity of approximately 1,842 kWp. Hourly production forecasts are generated daily by a LightGBM model trained on the UNISOLAR dataset, using weather variables (temperature, solar radiation, cloud cover) retrieved from the Open-Meteo API.
+The Bundoora campus operates 21 solar installations with a combined capacity of approximately 2,119 kWp. Hourly production forecasts are generated daily by a LightGBM model trained on the UNISOLAR dataset, using weather variables (temperature, solar radiation, cloud cover) retrieved from the Open-Meteo API.
 
 ## Features
 
