@@ -103,7 +103,7 @@ describe('OverviewCards', () => {
         expect(formatProduction).toHaveBeenCalledWith(300);
         expect(screen.getByText('300 kWh')).toBeInTheDocument();
 
-        expect(formatDate).toHaveBeenCalledWith(new Date('2026-07-05T14:30:00Z'), 'hh:mm');
+        expect(formatDate).toHaveBeenCalledWith(new Date('2026-07-05T14:30:00Z'), 'HH:mm');
         expect(Tag).toHaveBeenCalledWith(expect.objectContaining({text: '14:30'}), undefined);
 
         expect(formatCapacityFactor).toHaveBeenCalledWith(0.25);
