@@ -50,7 +50,7 @@ function OverviewCards({data, loading}: OverviewCardsProps) {
             <Card name="Pic de production">
                 <div className={cardStyles.cardGroup}>
                     <span className={cardStyles.cardValue}>{formatProduction(data.peak.solar_generation)}</span>
-                    <Tag text={data.peak.timestamp ? formatDate(new Date(data.peak.timestamp), 'hh:mm') : '—'} />
+                    <Tag text={data.peak.timestamp ? formatDate(new Date(data.peak.timestamp), 'HH:mm') : '—'} />
                 </div>
             </Card>
             <Card
