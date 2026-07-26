@@ -102,7 +102,6 @@ function History() {
                     xKey="timestamp"
                     title="Production solaire sur 24h"
                     tooltip="Productions prédites par le modèle."
-                    interval={(historyData?.current_year.daily ?? []).length > 25 ? 1 : 0}
                     margin={{top: 1, right: 20, left: -20, bottom: -10}}
                     series={[
                         {
